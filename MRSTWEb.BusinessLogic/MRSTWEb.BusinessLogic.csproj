@@ -187,6 +187,7 @@
     <Compile Include="Interfaces\IServiceCreator.cs" />
     <Compile Include="Interfaces\IUserService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\CartService.cs" />
     <Compile Include="Services\ServiceCreator.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -200,7 +201,12 @@
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\MRSTWEb.Domain\MRSTWEb.Domain.csproj">
+      <Project>{58e98f90-a7a3-4967-b111-b3583038efd2}</Project>
+      <Name>MRSTWEb.Domain</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

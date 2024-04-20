@@ -351,6 +351,16 @@
     <Content Include="Scripts\jquery-3.7.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.7.1.min.map" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MRSTWEb.BusinessLogic\MRSTWEb.BusinessLogic.csproj">
+      <Project>{6695bee8-b28a-4742-9ac7-b9f9658f9c8e}</Project>
+      <Name>MRSTWEb.BusinessLogic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MRSTWEb.Domain\MRSTWEb.Domain.csproj">
+      <Project>{58e98f90-a7a3-4967-b111-b3583038efd2}</Project>
+      <Name>MRSTWEb.Domain</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
