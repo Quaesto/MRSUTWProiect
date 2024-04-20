@@ -182,6 +182,11 @@
     <Compile Include="Entities\ClientProfile.cs" />
     <Compile Include="Entities\Order.cs" />
     <Compile Include="Entities\OrderItem.cs" />
+    <Compile Include="Identity\ApplicationRoleManager.cs" />
+    <Compile Include="Identity\ApplicationUserManager.cs" />
+    <Compile Include="Interfaces\IClientManager.cs" />
+    <Compile Include="Interfaces\IRepository.cs" />
+    <Compile Include="Interfaces\IUnitOfWork.cs" />
     <Compile Include="Migrations\202404201203123_first.cs" />
     <Compile Include="Migrations\202404201203123_first.Designer.cs">
       <DependentUpon>202404201203123_first.cs</DependentUpon>
