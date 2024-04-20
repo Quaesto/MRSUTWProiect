@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MRSTWEb.Web", "MRSTWEb.Web.csproj", "{8C93DFA6-88A3-4F42-8EDD-3A2276512F50}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MRSTWEb", "MRSTWEb.csproj", "{8C93DFA6-88A3-4F42-8EDD-3A2276512F50}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MRSTWEb.BusinessLogic", "..\MRSTWEb.BusinessLogic\MRSTWEb.BusinessLogic.csproj", "{6695BEE8-B28A-4742-9AC7-B9F9658F9C8E}"
 EndProject
