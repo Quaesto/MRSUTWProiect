@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MRSTWEb.BuisnessLogic.DTO
+namespace MRSTWEb.BusinessLogic.DTO
 {
     public class OrderDTO
     {

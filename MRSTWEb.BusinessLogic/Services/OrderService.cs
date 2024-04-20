@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
-using MRSTWEb.BuisnessLogic.BuisnessModels;
-using MRSTWEb.BuisnessLogic.DTO;
-using MRSTWEb.BuisnessLogic.Interfaces;
+using MRSTWEb.BusinessLogic.BusinessModels;
+using MRSTWEb.BusinessLogic.DTO;
+using MRSTWEb.BusinessLogic.Interfaces;
 using MRSTWEb.Domain.Entities;
 using MRSTWEb.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Web;
 
-namespace MRSTWEb.BuisnessLogic.Services
+namespace MRSTWEb.BusinessLogic.Services
 {
     public class OrderService : IOrderService
     {

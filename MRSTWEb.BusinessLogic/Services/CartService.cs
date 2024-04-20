@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
-using MRSTWEb.BuisnessLogic.BuisnessModels;
-using MRSTWEb.BuisnessLogic.DTO;
-using MRSTWEb.BuisnessLogic.Infrastructure;
-using MRSTWEb.BuisnessLogic.Interfaces;
+using MRSTWEb.BusinessLogic.BusinessModels;
+using MRSTWEb.BusinessLogic.DTO;
+using MRSTWEb.BusinessLogic.Infrastructure;
+using MRSTWEb.BusinessLogic.Interfaces;
 using MRSTWEb.Domain.Entities;
 using MRSTWEb.Domain.Interfaces;
 using System.Collections.Generic;
 using System.Web;
 
-namespace MRSTWEb.BuisnessLogic.Services
+namespace MRSTWEb.BusinessLogic.Services
 {
     public class CartService : ICartService
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNet.Identity;
-using MRSTWEb.BuisnessLogic.DTO;
-using MRSTWEb.BuisnessLogic.Infrastructure;
-using MRSTWEb.BuisnessLogic.Interfaces;
+using MRSTWEb.BusinessLogic.DTO;
+using MRSTWEb.BusinessLogic.Infrastructure;
+using MRSTWEb.BusinessLogic.Interfaces;
 using MRSTWEb.Domain.Entities;
 using MRSTWEb.Domain.Interfaces;
 using System;
@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using System.Data.Entity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
-namespace MRSTWEb.BuisnessLogic.Services
+namespace MRSTWEb.BusinessLogic.Services
 {
     public class UserService : IUserService
     {

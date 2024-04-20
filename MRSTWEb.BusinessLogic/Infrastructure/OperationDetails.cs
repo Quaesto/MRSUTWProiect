@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MRSTWEb.BuisnessLogic.Infrastructure
+namespace MRSTWEb.BusinessLogic.Infrastructure
 {
     public class OperationDetails
     {

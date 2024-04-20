@@ -1,7 +1,7 @@
-﻿using MRSTWEb.BuisnessLogic.Interfaces;
+﻿using MRSTWEb.BusinessLogic.Interfaces;
 using MRSTWEb.Domain.Repositories;
 
-namespace MRSTWEb.BuisnessLogic.Services
+namespace MRSTWEb.BusinessLogic.Services
 {
     public class ServiceCreator : IServiceCreator
     {

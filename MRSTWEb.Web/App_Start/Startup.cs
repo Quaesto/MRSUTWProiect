@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
-using MRSTWEb.BuisnessLogic.Interfaces;
-using MRSTWEb.BuisnessLogic.Services;
+using MRSTWEb.BusinessLogic.Interfaces;
+using MRSTWEb.BusinessLogic.Services;
 using Owin;
 using System;
 using System.Collections.Generic;

@@ -2,7 +2,7 @@
 using MRSTWEb.Domain.Repositories;
 using Ninject.Modules;
 
-namespace MRSTWEb.BuisnessLogic.Infrastructure
+namespace MRSTWEb.BusinessLogic.Infrastructure
 {
     public class ServiceModule : NinjectModule
     {
