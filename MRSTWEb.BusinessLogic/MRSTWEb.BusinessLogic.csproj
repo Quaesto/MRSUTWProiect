@@ -174,8 +174,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BusinessModels\Item.cs" />
     <Compile Include="Class1.cs" />
+    <Compile Include="Infrastructure\ServiceModule.cs" />
+    <Compile Include="Interfaces\IServiceCreator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ServiceCreator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -188,6 +192,7 @@
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
