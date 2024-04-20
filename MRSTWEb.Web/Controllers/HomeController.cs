@@ -1,4 +1,10 @@
-﻿using System;
+﻿using AutoMapper;
+using MRSTWEb.BusinessLogic.DTO;
+using MRSTWEb.BusinessLogic.Interfaces;
+using MRSTWEb.BusinessLogic.DTO;
+using MRSTWEb.BusinessLogic.Interfaces;
+using MRSTWEb.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,9 +14,19 @@ namespace MRSTWEb.Controllers
 {
     public class HomeController : Controller
     {
+        private ICartService cartService;
+        public HomeController(ICartService _cartService)
+        {
+            cartService = _cartService;
+        }
         public ActionResult Index()
         {
-            return View();
+
+            var booksDTO = cartService.GetBooks();
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<BookDTO, BookViewModel>()).CreateMapper();
+            var books = mapper.Map<IEnumerable<BookDTO>, List<BookViewModel>>(booksDTO);
+
+            return View(books);
         }
 
         public ActionResult About()
@@ -26,5 +42,11 @@ namespace MRSTWEb.Controllers
 
             return View();
         }
+        protected override void Dispose(bool disposing)
+        {
+            cartService.Dispose();
+            base.Dispose(disposing);
+        }
+
     }
 }
