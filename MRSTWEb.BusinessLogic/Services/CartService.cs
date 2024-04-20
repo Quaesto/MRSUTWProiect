@@ -5,6 +5,7 @@ using MRSTWEb.BusinessLogic.Infrastructure;
 using MRSTWEb.BusinessLogic.Interfaces;
 using MRSTWEb.Domain.Entities;
 using MRSTWEb.Domain.Interfaces;
+using MRSTWEb.Domain.Repositories;
 using System.Collections.Generic;
 using System.Web;
 
@@ -13,7 +14,7 @@ namespace MRSTWEb.BusinessLogic.Services
     public class CartService : ICartService
     {
         private IUnitOfWork DataBase { get; set; }
-        public CartService(IUnitOfWork uow) { DataBase = uow; }
+        public CartService() { DataBase = new EFUnitOfWork(); }
 
         public void AddToCart(int BookId)
         {

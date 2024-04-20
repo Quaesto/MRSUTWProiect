@@ -7,15 +7,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using MRSTWEb.BusinessLogic.Services;
 
 namespace MRSTWEb.Controllers
 {
     public class HomeController : Controller
     {
         private ICartService cartService;
-        public HomeController(ICartService _cartService)
+        public HomeController()
         {
-            cartService = _cartService;
+            cartService = new CartService();
         }
         public ActionResult Index()
         {

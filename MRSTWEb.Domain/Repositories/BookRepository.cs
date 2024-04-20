@@ -8,9 +8,9 @@ namespace MRSTWEb.Domain.Repositories
     public class BookRepository : IRepository<Book>
     {
         private EF.AppContext db;
-        public BookRepository(EF.AppContext db)
+        public BookRepository()
         {
-            this.db = db;
+            this.db = new EF.AppContext();
         }
         public void Create(Book item)
         {

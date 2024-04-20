@@ -32,7 +32,7 @@ namespace MRSTWEb.Domain.Repositories
         {
             get
             {
-                if (bookRepository == null) return new BookRepository(db);
+                if (bookRepository == null) return new BookRepository();
                 return bookRepository;
             }
         }
@@ -41,7 +41,7 @@ namespace MRSTWEb.Domain.Repositories
         {
             get
             {
-                if(orderRepository == null) return new OrderRepository(db); 
+                if(orderRepository == null) return new OrderRepository(); 
                 return orderRepository;
             }
         }

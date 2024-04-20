@@ -4,6 +4,7 @@ using MRSTWEb.BusinessLogic.DTO;
 using MRSTWEb.BusinessLogic.Interfaces;
 using MRSTWEb.Domain.Entities;
 using MRSTWEb.Domain.Interfaces;
+using MRSTWEb.Domain.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Web;
@@ -13,7 +14,7 @@ namespace MRSTWEb.BusinessLogic.Services
     public class OrderService : IOrderService
     {
         IUnitOfWork DataBase { get; set; }
-        public OrderService(IUnitOfWork uow) { DataBase = uow; }
+        public OrderService() { DataBase = new EFUnitOfWork(); }
         public bool DeleteOrdersByUserId(string userId)
         {
             try

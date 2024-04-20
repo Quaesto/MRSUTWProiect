@@ -9,9 +9,9 @@ namespace MRSTWEb.Domain.Repositories
     public class OrderRepository : IRepository<Order>
     {
         private EF.AppContext db;
-        public OrderRepository(EF.AppContext db)
+        public OrderRepository()
         {
-            this.db = db;
+            this.db = new EF.AppContext();
         }
         public void Create(Order item)
         {

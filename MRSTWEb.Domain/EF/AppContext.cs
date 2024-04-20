@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNet.Identity.EntityFramework;
 using MRSTWEb.Domain.Entities;
 using System.Data.Entity;
-using MRSTWEb.Domain.Entities;
+
 
 namespace MRSTWEb.Domain.EF
 {
