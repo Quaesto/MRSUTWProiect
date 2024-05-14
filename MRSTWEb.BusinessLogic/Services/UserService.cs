@@ -4,14 +4,11 @@ using MRSTWEb.BusinessLogic.Infrastructure;
 using MRSTWEb.BusinessLogic.Interfaces;
 using MRSTWEb.Domain.Entities;
 using MRSTWEb.Domain.Interfaces;
-using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
-using System.Data.Entity;
-using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace MRSTWEb.BusinessLogic.Services
 {

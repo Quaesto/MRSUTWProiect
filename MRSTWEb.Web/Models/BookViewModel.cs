@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace MRSTWEb.Models
+﻿namespace MRSTWEb.Models
 {
     public class BookViewModel
     {
@@ -13,6 +8,8 @@ namespace MRSTWEb.Models
         public string PathImage { get; set; }
         public decimal Price { get; set; }
         public int Quantity { get; set; }
-        
+        public string Language { get;  set; }
+        public string Genre { get;  set; }
+        public object AddedTime { get; internal set; }
     }
 }

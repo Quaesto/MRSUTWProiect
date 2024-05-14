@@ -13,7 +13,7 @@ namespace MRSTWEb.Domain.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "202404201203123_first"; }
+            get { return "202404251136069_first"; }
         }
         
         string IMigrationMetadata.Source

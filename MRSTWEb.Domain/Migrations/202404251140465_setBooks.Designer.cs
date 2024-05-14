@@ -13,7 +13,7 @@ namespace MRSTWEb.Domain.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "202404201711208_setBooks"; }
+            get { return "202404251140465_setBooks"; }
         }
         
         string IMigrationMetadata.Source
