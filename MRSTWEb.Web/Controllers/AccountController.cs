@@ -115,7 +115,7 @@ namespace MRSTWEb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterModel model)
         {
-            /*  await SetInitialData();*/
+             await SetInitialData();
             if (ModelState.IsValid)
             {
                 UserDTO userDTO = new UserDTO

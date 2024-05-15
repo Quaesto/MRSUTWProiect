@@ -11,6 +11,6 @@ namespace MRSTWEb.BusinessLogic.DTO
         public decimal Price { get; set; }
         public string Language { get; set; }
         public string Genre { get; set; }
-        public DateTime AddedTime { get; set; }
+
     }
 }

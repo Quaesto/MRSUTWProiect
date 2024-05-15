@@ -203,6 +203,10 @@
     <Compile Include="Migrations\202404251140465_setBooks.Designer.cs">
       <DependentUpon>202404251140465_setBooks.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202405150913517_BookLanguageAndGenreadded.cs" />
+    <Compile Include="Migrations\202405150913517_BookLanguageAndGenreadded.Designer.cs">
+      <DependentUpon>202405150913517_BookLanguageAndGenreadded.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\BookRepository.cs" />
@@ -220,6 +224,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202404251140465_setBooks.resx">
       <DependentUpon>202404251140465_setBooks.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202405150913517_BookLanguageAndGenreadded.resx">
+      <DependentUpon>202405150913517_BookLanguageAndGenreadded.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

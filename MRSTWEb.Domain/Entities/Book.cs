@@ -7,5 +7,7 @@
         public string Author { get; set; }
         public string PathImage { get; set; }
         public decimal Price { get; set; }
+        public string Language { get; set; }
+        public string Genre { get; set; }
     }
 }
