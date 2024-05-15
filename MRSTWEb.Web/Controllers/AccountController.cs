@@ -43,9 +43,17 @@ namespace MRSTWEb.Controllers
             this.orderService = new OrderService();
 
         }
+
+
+        [Authorize(Roles = "admin")]
+
+        public async Task<ActionResult> OtherUsers()
+        {
+            var users = await GetAllUsers();
+            return View(users);
+        }
+
         [HttpPost]
-
-
         [Authorize(Roles = "admin")]
         public async Task<ActionResult> DeleteUser(string userId)
         {
@@ -66,13 +74,7 @@ namespace MRSTWEb.Controllers
             return RedirectToAction("OtherUsers");
         }
 
-        [Authorize(Roles = "admin")]
-
-        public async Task<ActionResult> OtherUsers()
-        {
-            var users = await GetAllUsers();
-            return View(users);
-        }
+       
 
 
         [HttpGet]   
@@ -91,6 +93,17 @@ namespace MRSTWEb.Controllers
             var adminModel = MapToUserModel(userAdmin);
 
             return View(adminModel);
+        }
+
+        [Authorize]
+        public async Task<ActionResult> ClientProfile()
+        {
+            var userDto = await userService.GetUserById(User.Identity.GetUserId());
+            var user = new UserModel { Id = userDto.Id, Email = userDto.Email, Address = userDto.Address, Name = userDto.Name, UserName = userDto.UserName };
+
+            if (user == null) return HttpNotFound();
+
+            return View(user);
         }
 
 
@@ -163,6 +176,7 @@ namespace MRSTWEb.Controllers
                     UserName = model.UserName,
                     Password = model.Password,
                     Role = "user",
+
 
                 };
                 OperationDetails operationDetalis = await userService.Create(userDTO);
@@ -243,6 +257,12 @@ namespace MRSTWEb.Controllers
                 Id = user.Id,
                 Name = user.Name,
             };
+        }
+
+        private async Task<UserDTO> GetUserAdmin()
+        {
+            var userId = User.Identity.GetUserId();
+            return await userService.GetUserById(userId);
         }
 
         private async Task<IEnumerable<UserModel>> GetAllUsers()
