@@ -359,6 +359,7 @@
     <Content Include="Views\Shared\_Scripts.cshtml" />
     <Content Include="Scripts\js\.DS_Store" />
     <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Account\AdminDashboard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

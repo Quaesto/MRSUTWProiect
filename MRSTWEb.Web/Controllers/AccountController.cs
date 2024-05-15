@@ -11,6 +11,9 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using MRSTWEb.BusinessLogic.Services;
+using System.Net;
+using System.Linq;
 
 namespace MRSTWEb.Controllers
 {
@@ -34,18 +37,43 @@ namespace MRSTWEb.Controllers
             }
         }
 
-        public AccountController(ICartService cartService, IOrderService orderService)
+        public AccountController()
         {
-            this.cartService = cartService;
-            this.orderService = orderService;
+            this.cartService = new CartService();
+            this.orderService = new OrderService();
 
         }
         [HttpPost]
 
 
         [Authorize(Roles = "admin")]
+        public async Task<ActionResult> DeleteUser(string userId)
+        {
+            if (userId == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var result = await userService.DeleteUserByUserId(userId);
 
-  
+            if (result.Succeeded)
+            {
+                TempData["SuccessMessage"] = "User deleted successfully.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Failed to delete user.";
+            }
+            return RedirectToAction("OtherUsers");
+        }
+
+        [Authorize(Roles = "admin")]
+
+        public async Task<ActionResult> OtherUsers()
+        {
+            var users = await GetAllUsers();
+            return View(users);
+        }
+
 
         [HttpGet]   
 
@@ -54,6 +82,15 @@ namespace MRSTWEb.Controllers
         {
 
             return View();
+        }
+
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult> AdminDashboard()
+        {
+            var userAdmin = await GetUserAdmin();
+            var adminModel = MapToUserModel(userAdmin);
+
+            return View(adminModel);
         }
 
 
@@ -79,7 +116,7 @@ namespace MRSTWEb.Controllers
                         authenticationManager.SignIn(new AuthenticationProperties { IsPersistent = false }, claim);
 
 
-                        return RedirectToAction("", "Account");
+                        return RedirectToAction("AdminDashboard", "Account");
                     }
                     else if (userRole == "user")
                     {
@@ -88,7 +125,7 @@ namespace MRSTWEb.Controllers
                         authenticationManager.SignIn(new AuthenticationProperties { IsPersistent = false }, claim);
 
 
-                        return RedirectToAction("", "Account");
+                        return RedirectToAction("ClientProfile", "Account");
                     }
                 }
             }
@@ -134,16 +171,93 @@ namespace MRSTWEb.Controllers
             }
             return View(model);
         }
-
-
-
-        #region Helpers
         private async Task SetInitialData()
         {
             UserDTO adminUser = GetAdminInfo();
             await userService.SetInitialData(adminUser, new List<string> { "user", "admin" });
 
         }
+       
+       
+      
+
+        protected override void Dispose(bool disposing)
+        {
+            userService.Dispose();
+            cartService.Dispose();
+
+            base.Dispose(disposing);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        #region Helpers
+        private UserDTO GetAdminInfo()
+        {
+            return new UserDTO
+            {
+                Email = "MRSUTWEB@mail.com",
+                UserName = "Admin",
+                Password = "Admin123",
+                Name = "Application Admin",
+                Address = "Chisinau,str.Studentilor",
+                Role = "admin",
+            };
+        }
+
+        private BookViewModel MapBookToBookModel(BookDTO book)
+        {
+            return new BookViewModel
+            {
+
+                Id = book.Id,
+                Title = book.Title,
+                Author = book.Author,
+                PathImage = book.PathImage,
+                Language = book.Language,
+                Genre = book.Genre,
+                Price = book.Price,
+
+
+            };
+        }
+
+        private UserModel MapToUserModel(UserDTO user)
+        {
+            return new UserModel
+            {
+                UserName = user.UserName,
+                Email = user.Email,
+                Address = user.Address,
+                Id = user.Id,
+                Name = user.Name,
+            };
+        }
+
+        private async Task<IEnumerable<UserModel>> GetAllUsers()
+        {
+            var usersDto = await userService.GetAllUsers();
+            if (usersDto == null) return Enumerable.Empty<UserModel>();
+            var users = new List<UserModel>();
+            foreach (var userDto in usersDto)
+            {
+                var userModel = MapToUserModel(userDto);
+                users.Add(userModel);
+            }
+            return users;
+        }
+
         private string SaveImage(string name)
         {
             var file = Request.Files[name];
@@ -157,43 +271,6 @@ namespace MRSTWEb.Controllers
             }
             return string.Empty;
         }
-        private UserModel MapToUserModel(UserDTO user)
-        {
-            return new UserModel
-            {
-                UserName = user.UserName,
-                Email = user.Email,
-                Address = user.Address,
-                Id = user.Id,
-                Name = user.Name,
-            };
-        }
-        private BookViewModel MapBookToBookModel(BookDTO book)
-        {
-            return new BookViewModel
-            {
-
-                Id = book.Id,
-                Title = book.Title,
-                Author = book.Author,
-                PathImage = book.PathImage,
-                Language = book.Language,
-                Genre = book.Genre,
-                Price = book.Price,
-                AddedTime = book.AddedTime,
-
-            };
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            userService.Dispose();
-            cartService.Dispose();
-
-            base.Dispose(disposing);
-        }
-
-
         #endregion
     }
 }
