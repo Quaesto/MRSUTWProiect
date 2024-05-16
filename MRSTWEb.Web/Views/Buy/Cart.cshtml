@@ -1,0 +1,113 @@
+﻿@model MRSTWEb.BuisnessLogic.BuisnessModels.Item
+@{
+    ViewBag.Title = "Cart";
+    Layout = "~/Views/Shared/_MainPageLayout.cshtml";
+}
+
+
+<section class="shopping-cart dark" style="margin-top:100px;margin-bottom:100px;">
+    <div class="container">
+
+        <div class="content">
+            <div class="row">
+                <div class="col-md-12 col-lg-8">
+                    <div class="items" id="cartItems">
+                        @Html.Partial("_addToCartForm", (IEnumerable<MRSTWEb.BuisnessLogic.BuisnessModels.Item>)ViewBag.Cart)
+
+                    </div>
+
+                </div>
+                <div class="col-md-12 col-lg-4">
+                    <div class="summary">
+                        <h3>Summary</h3>
+
+                        <div class="summary-item"><span class="text">Subtotal</span><span class="price">$0.00</span></div>
+                        <div class="summary-item"><span class="text">Shipping</span><span class="delivery">$0.00</span></div>
+                        <div class="summary-item"><span class="text">Total</span><span id="totalPrice" class="price">$0.00</span></div>
+
+                        @Html.ActionLink("Checkout", "Checkout", "Buy", null, new { @class = "btn btn-primary btn-lg btn-block" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@if (!Request.IsAuthenticated)
+{
+    <div style="display: flex; justify-content: center;">
+        <div id="InfoContainer" class="alert alert-info alert-dismissible fade show" role="contentinfo" style="width: 600px; text-align: center; font-size: 18px;">
+            <strong>You have to be Logged In!</strong> Please Log In in order to buy our products.
+            <button type="button" class="btn btn-primary" style="padding:3px" data-bs-dismiss="alert" aria-label="Close">Close</button>
+        </div>
+    </div>
+}
+
+<section class="py-5 bg-light" style="margin-bottom:100px">
+    <div class="container px-4 px-lg-5 mt-5">
+        
+        <h2 class="fw-bolder mb-4">Related products</h2>
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            @{ byte items = 0;}
+            @foreach (var item in ViewBag.Books)
+            {
+                if (items < 4)
+                {
+                    <div class="col mb-5">
+                        <div class="card h-100">
+                            <!-- Product image-->
+                            <img class="card-img-top" src="@item.PathImage" alt="..." />
+                            <!-- Product details-->
+                            <div class="card-body p-4">
+                                <div class="text-center">
+
+                                    <h5 class="fw-bolder" style="font-size:20px">@item.Title</h5>
+
+                                    <p style="font-size:17px">$@item.Price</p>
+
+                                </div>
+                            </div>
+
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                @using (Ajax.BeginForm("AddToCart", "Buy", new { BookId = item.Id }, new AjaxOptions
+                                {
+                                    HttpMethod = "POST",
+                                    UpdateTargetId = "cartItems",
+                                    InsertionMode = InsertionMode.Replace,
+                                    OnSuccess = "updateTotalPriceAndItemCount('add')"
+                                }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn add-to-cart">Add To Cart</button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    items++;
+                }
+            }
+
+        </div>
+    </div>
+</section>
+
+<link rel="stylesheet" type="text/css" href="~/Content/css/cart.css" />
+
+@if (!Request.IsAuthenticated)
+{
+
+    <script>
+        function clearLocalStorage() {
+
+
+            document.getElementById("cartItemCount").textContent = 0;
+
+            var cart = document.getElementById("cartItems");
+            cart.innerHTML = '';
+
+            console.log("clearing local storage!")
+            localStorage.clear();
+        }
+        clearLocalStorage();
+    </script>
+    Session.Clear();
+}

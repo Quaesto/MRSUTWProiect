@@ -9,12 +9,18 @@ using System;
 using System.Collections.Generic;
 using System.Web;
 
-namespace MRSTWEb.BusinessLogic.Services
+namespace MRSTWEb.BuisnessLogic.Services
 {
     public class OrderService : IOrderService
     {
         IUnitOfWork DataBase { get; set; }
-        public OrderService() { DataBase = new EFUnitOfWork(); }
+        public OrderService(IUnitOfWork uow) { DataBase = uow; }
+
+        public OrderService()
+        {
+            DataBase = new EFUnitOfWork();
+        }
+
         public bool DeleteOrdersByUserId(string userId)
         {
             try
@@ -86,7 +92,7 @@ namespace MRSTWEb.BusinessLogic.Services
             {
                 var orderItem = new OrderItem
                 {
-                    BookId = cartItem.Book.Id, // Associate existing Product with OrderItem
+                    BookId = cartItem.Book.Id,
                     Order = order,
                     Quantity = cartItem.Quantity,
 
