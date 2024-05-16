@@ -228,6 +228,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BuyController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -254,6 +255,13 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\css\cart.css" />
+    <Content Include="Content\css\Checkout-style.css" />
+    <Content Include="Content\css\Custom-edit-form.css" />
+    <Content Include="Content\css\custom-login-form.css" />
+    <Content Include="Content\css\custom-profile.css" />
+    <Content Include="Content\css\dropdown.css" />
+    <Content Include="Content\css\star-rating.css" />
     <Content Include="Content\style.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
@@ -290,6 +298,7 @@
     <Content Include="Images\pic-6.png" />
     <Content Include="Images\stand.png" />
     <Content Include="Images\worldmap.png" />
+    <Content Include="Jquery_scripts\getAllBooks.js" />
     <Content Include="Jquery_scripts\UpdateTotalPrice.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
@@ -340,7 +349,6 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Home\_MainPageLayout.cshtml" />
     <Content Include="Views\Shared\_Arrivals.cshtml" />
     <Content Include="Views\Shared\_Blogs.cshtml" />
     <Content Include="Views\Shared\_BottomNavbar.cshtml" />
@@ -362,6 +370,10 @@
     <Content Include="Views\Account\AdminDashboard.cshtml" />
     <Content Include="Views\Account\OtherUsers.cshtml" />
     <Content Include="Views\Account\ClientProfile.cshtml" />
+    <Content Include="Views\Search\Search.cshtml" />
+    <Content Include="Views\Shared\_AccountDropDownList.cshtml" />
+    <Content Include="Views\Account\Register.cshtml" />
+    <Content Include="Views\Shared\_FilterBooks.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

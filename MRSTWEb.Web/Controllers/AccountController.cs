@@ -185,15 +185,18 @@ namespace MRSTWEb.Controllers
             }
             return View(model);
         }
+
+
+
+
+
+        #region Helpers
         private async Task SetInitialData()
         {
             UserDTO adminUser = GetAdminInfo();
             await userService.SetInitialData(adminUser, new List<string> { "user", "admin" });
 
         }
-       
-       
-      
 
         protected override void Dispose(bool disposing)
         {
@@ -202,21 +205,6 @@ namespace MRSTWEb.Controllers
 
             base.Dispose(disposing);
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        #region Helpers
         private UserDTO GetAdminInfo()
         {
             return new UserDTO

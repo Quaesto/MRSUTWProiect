@@ -1,0 +1,44 @@
+﻿.heart-red {
+    color: red !important;
+}
+
+p {
+    font-size: 17px;
+}
+
+.star-group {
+    display: inline-block;
+}
+
+.star-rating {
+    font-size: 24px;
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: row-reverse;
+}
+
+    .star-rating i {
+        color: #ccc;
+        transition: color 0.5s;
+    }
+
+        .star-rating i:hover,
+        .star-rating i:hover ~ i {
+            color: #ffcc00;
+        }
+
+        .star-rating i[data-clicked] {
+            color: #ffcc00;
+        }
+
+            .star-rating i[data-clicked] ~ i {
+                color: #ffcc00;
+            }
+
+    .star-rating .fa.disabled {
+        cursor: not-allowed;
+    }
+    /* CSS for filled stars */
+    .star-rating i.filled {
+        color: gold; /* Change color to indicate filled */
+    }

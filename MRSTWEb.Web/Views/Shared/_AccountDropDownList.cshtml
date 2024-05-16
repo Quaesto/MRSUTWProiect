@@ -1,0 +1,49 @@
+﻿@using Microsoft.AspNet.Identity
+
+<div class="icons" style="display: flex; align-items: center;">
+    <div id="search-btn" class="fas fa-search"></div>
+    <a href="#" class="fas fa-heart"></a>
+    <a href="@Url.Action("Cart", "Buy")" class="fas fa-shopping-cart">
+        <span id="cartItemCount" class="badge badge-pill badge-primary"></span>
+    </a>
+
+    @if (Request.IsAuthenticated)
+    {
+        if (User.IsInRole("user"))
+        {
+            <ul class="navbar-nav ml-auto" style="display: flex; align-items: center;">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" style="font-size:20px;" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Hello, @User.Identity.Name!
+                    </a>
+                    <div class="dropdown-menu dropdown-width" aria-labelledby="userDropdown">
+                        <a class="dropdown-item" href="@Url.Action("ClientProfile", "Account",new { Id = User.Identity.GetUserId() })"> Client Profile</a>
+                        <a class="dropdown-item" href="@Url.Action("ChangePassword", "Account")">Change Password</a>
+                    </div>
+                </li>
+            </ul>
+        }
+        else
+        {
+            <ul class="navbar-nav ml-auto" style="display: flex; align-items: center;">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" style="font-size:20px;" href="#" id="adminDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Hello, @User.Identity.Name!
+                    </a>
+                    <div class="dropdown-menu dropdown-width" aria-labelledby="adminDropdown">
+                        <a class="dropdown-item" href="@Url.Action("AdminDashboard", "Account")"> Admin Profile</a>
+                        <a class="dropdown-item" href="@Url.Action("ChangePassword", "Account")">Change Password</a>
+                        <a class="dropdown-item" href="@Url.Action("OtherUsers", "Account")">View Users</a>
+
+
+                    </div>
+                </li>
+            </ul>
+        }
+        <a style="font-size:18px;" href="@Url.Action("Logout","Account")">Logout</a>
+    }
+    else
+    {
+        <a id="login-btn" class="fas fa-user" href="@Url.Action("Login", "Account")"></a>
+    }
+</div>

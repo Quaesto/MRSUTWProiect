@@ -55,6 +55,8 @@ namespace MRSTWEb.Domain.Repositories
                 book.PathImage = item.PathImage;
                 book.Title = item.Title;
                 book.Price = item.Price;  
+                book.Language = item.Language;  
+                book.Genre = item.Genre;
             }
         }
     }
