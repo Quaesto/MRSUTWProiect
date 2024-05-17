@@ -102,16 +102,24 @@
                     <div class="content">
                         <h3>@book.Title</h3>
                         <div class="price">$@book.Price <span>$20.99</span></div>
-                        @using (Ajax.BeginForm("AddToCart", "Buy", new { BookId = book.Id }, new AjaxOptions
+
+                        @if (Request.IsAuthenticated)
                         {
-                            HttpMethod = "POST",
-                            UpdateTargetId = "cartItems",
-                            InsertionMode = InsertionMode.Replace,
-                            OnSuccess = "updateTotalPriceAndItemCount('add')"
-                        }))
+                            using (Ajax.BeginForm("AddToCart", "Buy", new { BookId = book.Id }, new AjaxOptions
+                            {
+                                HttpMethod = "POST",
+                                UpdateTargetId = "cartItems",
+                                InsertionMode = InsertionMode.Replace,
+                                OnSuccess = "updateTotalPriceAndItemCount('add')"
+                            }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <button type="submit" style="cursor:pointer" class="btn-lg btn-success add-to-cart">Add To Cart</button>
+                            }
+                        }
+                        else
                         {
-                            @Html.AntiForgeryToken()
-                            <button type="submit" class="btn add-to-cart">Add To Cart</button>
+                            <button type="button" style="cursor:pointer" class="btn-lg btn-success add-to-cart" onclick="redirectToLogin()">Add To Cart</button>
                         }
                     </div>
                 </div>
@@ -512,3 +520,22 @@
 
 </section>
 
+
+<script src="~/Jquery_scripts/GetBookDetails.js"></script>
+
+<script>
+    function redirectToLogin() {
+        window.location.href = '@Url.Action("Login", "Account")';
+    }
+
+</script>
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<style>
+    .heart-red {
+        color: red !important;
+    }
+
+    p {
+        font-size: 17px;
+    }
+</style>

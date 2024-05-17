@@ -91,8 +91,12 @@ var swiper = new Swiper(".arrivals-slider", {
     loop: true,
     centeredSlides: true,
     autoplay: {
-        delay: 9500,
+        delay: 5000,
         disableOnInteraction: false,
+    },
+    navigation: {
+        nextEl: ".swiper-button-next_arrival",
+        prevEl: ".swiper-button-prev_arival",
     },
     breakpoints: {
         0: {
@@ -113,7 +117,7 @@ var swiper = new Swiper(".reviews-slider", {
     loop: true,
     centeredSlides: true,
     autoplay: {
-        delay: 9500,
+        delay: 5000,
         disableOnInteraction: false,
     },
     breakpoints: {

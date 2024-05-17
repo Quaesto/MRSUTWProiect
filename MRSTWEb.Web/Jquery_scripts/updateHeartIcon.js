@@ -61,7 +61,7 @@
     updateHeartIconColor();
     displayWishItemCount();
 
-    $('.addToWishlistLink').click(function (e) {
+    $('.addToWishlistLink').off('click').on('click', function (e) {
         e.preventDefault();
 
         var form = $(this).closest('form');
@@ -93,6 +93,7 @@
                             wishlistItems.splice(index, 1);
                             localStorage.setItem('wishlistItems', JSON.stringify(wishlistItems));
                             UpdateWishItemCounter('remove');
+                            console.log("items is removing from wish list");
                         },
                         error: function (xhr, status, error) {
 
@@ -101,6 +102,8 @@
                 } else {
                     wishlistItems.push({ Id: bookId });
                     localStorage.setItem('wishlistItems', JSON.stringify(wishlistItems));
+                    console.log("items is adding to wish list");
+
                     UpdateWishItemCounter('add');
                 }
             },

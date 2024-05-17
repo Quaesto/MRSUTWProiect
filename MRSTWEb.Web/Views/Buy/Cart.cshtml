@@ -1,4 +1,4 @@
-﻿@model MRSTWEb.BuisnessLogic.BuisnessModels.Item
+﻿@model MRSTWEb.BusinessLogic.BusinessModels.Item
 @{
     ViewBag.Title = "Cart";
     Layout = "~/Views/Shared/_MainPageLayout.cshtml";
@@ -12,7 +12,7 @@
             <div class="row">
                 <div class="col-md-12 col-lg-8">
                     <div class="items" id="cartItems">
-                        @Html.Partial("_addToCartForm", (IEnumerable<MRSTWEb.BuisnessLogic.BuisnessModels.Item>)ViewBag.Cart)
+                        @Html.Partial("_addToCartForm", (IEnumerable<MRSTWEb.BusinessLogic.BusinessModels.Item>)ViewBag.Cart)
 
                     </div>
 
@@ -44,7 +44,7 @@
 
 <section class="py-5 bg-light" style="margin-bottom:100px">
     <div class="container px-4 px-lg-5 mt-5">
-        
+
         <h2 class="fw-bolder mb-4">Related products</h2>
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
             @{ byte items = 0;}

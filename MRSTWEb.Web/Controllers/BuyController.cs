@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using MRSTWEb.BuisnessLogic.Services;
 using MRSTWEb.BusinessLogic.BusinessModels;
 using MRSTWEb.BusinessLogic.DTO;
 using MRSTWEb.BusinessLogic.Interfaces;
+using MRSTWEb.BusinessLogic.Services;
 using MRSTWEb.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,14 +28,14 @@ namespace MRSTWEb.Controllers
                 return HttpContext.GetOwinContext().GetUserManager<IUserService>();
             }
         }
-        public BuyController(ICartService _cartService, IOrderService orderService)
+        public BuyController()
         {
-            cartService = _cartService;
-            this.orderService = orderService;
+            cartService = new CartService();
+            this.orderService = new OrderService();
         }
 
         [Authorize]
-        /*   [SessionTimeout]*/
+ 
         public ActionResult SuccessfullOrder()
         {
             string userId = User.Identity.GetUserId();

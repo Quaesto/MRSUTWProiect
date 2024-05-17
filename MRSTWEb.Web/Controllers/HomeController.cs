@@ -14,18 +14,13 @@ namespace MRSTWEb.Controllers
     {
         private ICartService cartService;
         private IWishListService wishListService;
-        //private IReviewService reviewService;
-        //private IManageBooksService manageBooksService;
-        public HomeController(ICartService _cartService, IWishListService wishListService)
-        {
-            this.cartService = _cartService;
-            this.wishListService = wishListService;
-        }
+
         public HomeController()
         {
             this.cartService = new CartService();
             this.wishListService = new WishListService();
         }
+
         public ActionResult Index()
         {
 
@@ -91,7 +86,11 @@ namespace MRSTWEb.Controllers
         }
 
         //
-
+        public JsonResult GetBookDetails(int id)
+        {
+            var book = cartService.GetPBook(id);
+            return Json(new { book }, JsonRequestBehavior.AllowGet);
+        }
 
         public ActionResult About()
         {
@@ -109,6 +108,7 @@ namespace MRSTWEb.Controllers
         protected override void Dispose(bool disposing)
         {
             cartService.Dispose();
+            wishListService.Dispose();
             base.Dispose(disposing);
         }
 
