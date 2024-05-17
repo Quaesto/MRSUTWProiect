@@ -2,7 +2,9 @@
 
 <div class="icons" style="display: flex; align-items: center;">
     <div id="search-btn" class="fas fa-search"></div>
-    <a href="#" class="fas fa-heart"></a>
+    <a href="@Url.Action("WishList","Home")" class="fas fa-heart">
+        <span id="wishItemCount" class="badge badge-pill badge-primary">0</span>
+    </a>
     <a href="@Url.Action("Cart", "Buy")" class="fas fa-shopping-cart">
         <span id="cartItemCount" class="badge badge-pill badge-primary"></span>
     </a>

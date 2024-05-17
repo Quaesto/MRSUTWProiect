@@ -1,0 +1,78 @@
+﻿@model IEnumerable<MRSTWEb.Models.BookViewModel>
+
+<div class="row">
+    @foreach (var book in Model)
+    {
+        <div class="col-md-4">
+            <div class="card mb-4 box-shadow">
+                <img class="card-img-top" style="width:100px;height:120px" src="@book.PathImage" alt="Book Image">
+                <div class="card-body">
+                    <h5 class="card-title">@book.Title</h5>
+                    <p class="card-text">@book.Author</p>
+                    @if (Request.IsAuthenticated)
+                    {
+                        using (Ajax.BeginForm("AddToCart", "Buy", new { BookId = book.Id }, new AjaxOptions
+                        {
+                            HttpMethod = "POST",
+                            UpdateTargetId = "cartItems",
+                            InsertionMode = InsertionMode.Replace,
+                            OnSuccess = "updateTotalPriceAndItemCount('add')"
+                        }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <button type="submit" style="cursor:pointer" class="btn-lg btn-success add-to-cart">Add To Cart</button>
+                        }
+                    }
+                    else
+                    {
+                        <button type="button" style="cursor:pointer" class="btn-lg btn-success add-to-cart" onclick="redirectToLogin()">Add To Cart</button>
+                    }
+                </div>
+                <div class="book-details card p-3">
+                    <p>Details:</p>
+                    <img src="@book.PathImage" style="width:50px;" />
+                    <p>Title: @book.Title</p>
+                    <p>Author: @book.Author</p>
+                    <p>Genre: @book.Genre</p>
+                    <p>Language: @book.Language</p>
+                    <p>Price: @book.Price$</p>
+
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+<style>
+
+    .book-details {
+        display: none;
+        position: absolute;
+        top: 70%;
+        left: 60%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        border: 1px solid #ccc;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        z-index: 999;
+    }
+
+    .card:hover .book-details {
+        display: block;
+    }
+
+    p {
+        font-size: 12px;
+    }
+
+    h5 {
+        font-size: 20px;
+    }
+</style>
+<script>
+    function redirectToLogin() {
+        window.location.href = '@Url.Action("Login", "Account")';
+    }
+</script>

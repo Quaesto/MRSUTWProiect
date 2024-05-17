@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using MRSTWEb.BuisnessLogic.Interfaces;
+using MRSTWEb.BuisnessLogic.Services;
 using MRSTWEb.BusinessLogic.DTO;
 using MRSTWEb.BusinessLogic.Interfaces;
 using MRSTWEb.BusinessLogic.Services;
@@ -11,9 +13,18 @@ namespace MRSTWEb.Controllers
     public class HomeController : Controller
     {
         private ICartService cartService;
+        private IWishListService wishListService;
+        //private IReviewService reviewService;
+        //private IManageBooksService manageBooksService;
+        public HomeController(ICartService _cartService, IWishListService wishListService)
+        {
+            this.cartService = _cartService;
+            this.wishListService = wishListService;
+        }
         public HomeController()
         {
-            cartService = new CartService();
+            this.cartService = new CartService();
+            this.wishListService = new WishListService();
         }
         public ActionResult Index()
         {
@@ -24,6 +35,63 @@ namespace MRSTWEb.Controllers
 
             return View(books);
         }
+
+
+
+        //WishList
+
+        [HttpPost]
+        public ActionResult AddToWishList(int bookId)
+        {
+            var bookDto = cartService.GetPBook(bookId);
+            wishListService.AddToWishList(bookDto);
+            var books = getBooksFromWishList();
+
+            return PartialView("_addToWishList", books);
+        }
+        [HttpPost]
+        public ActionResult RemoveFromWishList(int bookId)
+        {
+            wishListService.RemoveFromTheList(bookId);
+            var books = getBooksFromWishList();
+            return PartialView("_addToWishList", books);
+        }
+        [HttpGet]
+        public ActionResult WishList()
+        {
+            var books = getBooksFromWishList();
+            return View(books);
+        }
+        [HttpGet]
+        public JsonResult getWishList()
+        {
+            var books = getBooksFromWishList();
+            return Json(new { books }, JsonRequestBehavior.AllowGet);
+        }
+        private List<BookViewModel> getBooksFromWishList()
+        {
+            var wishList = wishListService.GetWishList();
+            var books = new List<BookViewModel>();
+            foreach (var item in wishList)
+            {
+                var bookViewModel = new BookViewModel
+                {
+                    Id = item.BookDTO.Id,
+                    Title = item.BookDTO.Title,
+                    PathImage = item.BookDTO.PathImage,
+                    Price = item.BookDTO.Price,
+                    Language = item.BookDTO.Language,
+                    Genre = item.BookDTO.Genre,
+                    Author = item.BookDTO.Author,
+
+                };
+                books.Add(bookViewModel);
+            }
+            return books;
+        }
+
+        //
+
 
         public ActionResult About()
         {

@@ -300,6 +300,7 @@
     <Content Include="Images\stand.png" />
     <Content Include="Images\worldmap.png" />
     <Content Include="Jquery_scripts\getAllBooks.js" />
+    <Content Include="Jquery_scripts\updateHeartIcon.js" />
     <Content Include="Jquery_scripts\UpdateTotalPrice.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
@@ -378,6 +379,8 @@
     <Content Include="Views\Buy\Cart.cshtml" />
     <Content Include="Views\Buy\Checkout.cshtml" />
     <Content Include="Views\Buy\SuccessfullOrder.cshtml" />
+    <Content Include="Views\Home\WishList.cshtml" />
+    <Content Include="Views\Shared\_addToWishList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

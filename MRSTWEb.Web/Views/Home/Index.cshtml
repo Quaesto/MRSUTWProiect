@@ -3,6 +3,7 @@
     ViewBag.Title = "Home Page";
     Layout = "~/Views/Shared/_MainPageLayout.cshtml";
 }
+<script src="~/Jquery_scripts/updateHeartIcon.js"></script>
 
 
 <div class="home-container">
@@ -69,7 +70,6 @@
 </section>
 
 
-
 <!-- ======= Featured ======= -->
 <section class="featured" id="featured">
 
@@ -82,9 +82,19 @@
             {
                 <div class="swiper-slide box">
                     <div class="icons">
-                        <a href="#" class="fas fa-search"></a>
-                        <a href="#" class="fas fa-heart"></a>
-                        <a href="#" class="fas fa-eye"></a>
+                        @using (Ajax.BeginForm("AddToWishList", "Home", new { bookId = book.Id }, new AjaxOptions
+                        {
+                            HttpMethod = "POST",
+                            UpdateTargetId = "wishListItems",
+                            InsertionMode = InsertionMode.Replace,
+                        }, new { @class = "addToWishListForm" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <a href="#" class="addToWishlistLink fas fa-heart" data-book-id="@book.Id"></a>
+                        }
+
+                        <a href="#" class="fas fa-eye" data-toggle="modal" data-target="#bookModal" data-book-id="@book.Id"></a>
+
                     </div>
                     <div class="image">
                         <img src="@book.PathImage" alt="">
@@ -501,3 +511,4 @@
     </div>
 
 </section>
+

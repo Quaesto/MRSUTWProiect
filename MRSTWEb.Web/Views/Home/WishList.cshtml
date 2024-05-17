@@ -1,0 +1,23 @@
+﻿@model IEnumerable<MRSTWEb.Models.BookViewModel>
+
+@{
+    ViewBag.Title = "WishList";
+    Layout = "~/Views/Shared/_MainPageLayout.cshtml";
+}
+
+<div id="wishListItems" style="margin-top:100px;margin-bottom:150px;">
+    <div class="container">
+        <h2>Wishlist</h2>
+        @if (Model.Any())
+        {
+            @Html.Partial("_addToWishList", Model)
+        }
+        else
+        {
+            <p style="font-size:15px;">Your wishlist is empty.</p>
+        }
+    </div>
+</div>
+
+
+<script src="~/Jquery_scripts/updateHeartIcon.js"></script>
