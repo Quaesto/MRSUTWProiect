@@ -116,7 +116,9 @@ namespace MRSTWEb.BusinessLogic.Services
             var book = DataBase.Books.Get(id.Value);
             if (book == null) throw new ValidationException("The Book was not found", "");
 
-            return new BookDTO { Id = book.Id, Title = book.Title, Price = book.Price, PathImage = book.PathImage,Author = book.Author };
+            return new BookDTO { Id = book.Id, Title = book.Title, 
+                Price = book.Price, 
+                PathImage = book.PathImage,Author = book.Author,Genre = book.Genre,Language = book.Language };
         }
     }
 }

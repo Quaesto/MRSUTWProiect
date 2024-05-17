@@ -1,0 +1,111 @@
+﻿@model IEnumerable<MRSTWEb.Models.BookViewModel>
+@{
+    ViewBag.Title = "ViewAllProducts";
+    Layout = "~/Views/Shared/_MainPageLayout.cshtml";
+}
+
+<section class="ftco-section ftco-cart" style="margin-top:100px;margin-bottom:150px">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 ftco-animate">
+
+
+                <table class="table   table-bordered">
+                    <thead class="thead-primary">
+                        <tr class="text-center">
+                            <th>Image</th>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Genre</th>
+                            <th>Language</th>
+                            <th>Price</th>
+                            <th>Actions</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var book in Model)
+                        {
+
+                            <tr class="text-center">
+                                <td>
+                                    <img class="card-img-top" style="width:100px;" src="@book.PathImage" alt="Book Image" />
+                                </td>
+                                <td>@book.Title</td>
+                                <td>@book.Author</td>
+                                <td>@book.Genre</td>
+                                <td>@book.Language</td>
+                                <td>@book.Price$</td>
+
+
+                                <td>
+                                    <div class="btn-group" role="group" aria-label="Books Actions">
+
+                                        @Html.ActionLink("Edit", "EditProduct", "Account", new { ProductId = book.Id }, new { @class = "action-link" })
+                                        /
+                                        @using (Html.BeginForm("DeleteProduct", "Account", new { BookId = book.Id }, FormMethod.Post, new { @class = "removeBookForm-" + book.Id }))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="BookId" value="@book.Id" />
+                                            <p class="action-link" onclick="confirmDelete('@book.Id')">Delete</p>
+                                        }
+                                    </div>
+                                </td>
+
+                            </tr>
+                        }
+
+
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    td {
+        text-align: center;
+        color: #333;
+        padding: 10px;
+        font-size: 20px;
+    }
+
+    th {
+        text-align: center;
+        color: #fff;
+        background-color: #007bff;
+        padding: 10px;
+        font-size: 22px;
+    }
+
+    .action-link {
+        text-decoration: none;
+        color: #007bff;
+    }
+
+        .action-link:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+    tbody tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+</style>
+<script>
+    function confirmDelete(bookId) {
+        if (confirm("Are you sure you want to remove this book?")) {
+            var form = document.querySelector(".removeBookForm-" + bookId);
+            if (form) {
+                form.submit();
+            } else {
+                console.error("Form not found for user ID:", bookId);
+            }
+        }
+    }
+</script>
+

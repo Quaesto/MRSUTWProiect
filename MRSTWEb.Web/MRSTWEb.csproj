@@ -381,6 +381,9 @@
     <Content Include="Views\Buy\SuccessfullOrder.cshtml" />
     <Content Include="Views\Home\WishList.cshtml" />
     <Content Include="Views\Shared\_addToWishList.cshtml" />
+    <Content Include="Views\Account\ViewAllProducts.cshtml" />
+    <Content Include="Views\Account\EditProduct.cshtml" />
+    <Content Include="Views\Account\AddProduct.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

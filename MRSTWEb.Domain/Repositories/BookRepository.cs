@@ -15,6 +15,7 @@ namespace MRSTWEb.Domain.Repositories
         public void Create(Book item)
         {
             db.Books.Add(item);
+            db.SaveChanges();
         }
 
         public void Delete(int id)
@@ -22,7 +23,8 @@ namespace MRSTWEb.Domain.Repositories
             var book = db.Books.FirstOrDefault( c => c.Id == id);
             if ( book != null)
             {
-                db.Books.Remove(book);  
+                db.Books.Remove(book);
+                db.SaveChanges();
             }
         }
 
@@ -58,6 +60,7 @@ namespace MRSTWEb.Domain.Repositories
                 book.Language = item.Language;  
                 book.Genre = item.Genre;
             }
+            db.SaveChanges();
         }
     }
 }

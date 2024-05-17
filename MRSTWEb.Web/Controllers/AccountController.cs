@@ -15,6 +15,7 @@ using MRSTWEb.BusinessLogic.Services;
 using System.Net;
 using System.Linq;
 using MRSTWEb.BuisnessLogic.Services;
+using System;
 
 namespace MRSTWEb.Controllers
 {
@@ -22,7 +23,7 @@ namespace MRSTWEb.Controllers
     {
         private ICartService cartService;
         private IOrderService orderService;
-
+        private IManageBooksService manageBooksService;
         private IUserService userService
         {
             get
@@ -42,7 +43,7 @@ namespace MRSTWEb.Controllers
         {
             this.cartService = new CartService();
             this.orderService = new OrderService();
-
+            manageBooksService  = new ManageBooksService(); 
         }
 
 
@@ -188,6 +189,98 @@ namespace MRSTWEb.Controllers
         }
 
 
+
+        //Manage Books functionalities added here
+        [Authorize(Roles = "admin")]
+        [HttpGet]
+        public ActionResult ViewAllProducts()
+        {
+            var booksDto = cartService.GetBooks();
+            var bookViewModel = new List<BookViewModel>();
+            foreach (var book in booksDto)
+            {
+                bookViewModel.Add(MapBookToBookModel(book));
+            }
+            return View(bookViewModel);
+        }
+        [Authorize(Roles = "admin")]
+        [HttpGet]
+        public ActionResult EditProduct(int ProductId)
+        {
+            var bookDto = cartService.GetPBook(ProductId);
+            var book = MapBookToBookModel(bookDto);
+
+            return View(book);
+        }
+        [Authorize(Roles = "admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditProduct(BookViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                string path = SaveImage("ImageFile");
+                if (!string.IsNullOrEmpty(path))
+                {
+                    model.PathImage = path;
+                }
+                var bookDTO = new BookDTO
+                {
+                    Id = model.Id,
+                    Author = model.Author,
+                    Title = model.Title,
+                    Genre = model.Genre,
+                    Language = model.Language,
+                    Price = model.Price,
+                    PathImage = model.PathImage,
+                };
+
+                manageBooksService.UpdateProduct(bookDTO);
+                return RedirectToAction("ViewAllProducts");
+            }
+            return View(model);
+        }
+        [HttpGet]
+        [Authorize(Roles = "admin")]
+        public ActionResult AddProduct()
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddProduct(BookViewModel model)
+        {
+
+            if (ModelState.IsValid)
+            {
+                model.PathImage = SaveImage("PathImage");
+
+                var bookDTO = new BookDTO
+                {
+                    Id = model.Id,
+                    Author = model.Author,
+                    Title = model.Title,
+                    Genre = model.Genre,
+                    Language = model.Language,
+                    Price = model.Price,
+                    PathImage = model.PathImage,
+
+                };
+                manageBooksService.AddBook(bookDTO);
+                return RedirectToAction("ViewAllProducts");
+            }
+            return View(model);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
+        public ActionResult DeleteProduct(int BookId)
+        {
+            manageBooksService.DeleteBook(BookId);
+
+            return RedirectToAction("ViewAllProducts");
+        }
+        //END of manage books functionalities
 
 
 
