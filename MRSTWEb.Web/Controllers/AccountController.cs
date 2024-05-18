@@ -16,6 +16,7 @@ using System.Net;
 using System.Linq;
 using MRSTWEb.BuisnessLogic.Services;
 using System;
+using System.Data.Entity.Core.Metadata.Edm;
 
 namespace MRSTWEb.Controllers
 {
@@ -88,6 +89,48 @@ namespace MRSTWEb.Controllers
             return View();
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<ActionResult> ChangePassword(PasswordModel model)
+        {
+            var user = await userService.GetUserById(User.Identity.GetUserId());
+            if (user == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            var passwordHasher = new PasswordHasher();
+            var passwordVerificationResult = passwordHasher.VerifyHashedPassword(user.Password, model.CurrentPassword);
+
+            if (passwordVerificationResult == PasswordVerificationResult.Success)
+            {
+                var newPasswordHash = passwordHasher.HashPassword(model.Password);
+                user.Password = newPasswordHash;
+                OperationDetails operationDetails = await userService.UpdateClient(user);
+
+                if (operationDetails.Succeeded)
+                {
+                    ViewBag.PasswordChanged = true;
+                    return RedirectToAction("Login");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Error changing password. Please try again.");
+                    return View(model);
+                }
+            }
+            else
+            {
+
+                ModelState.AddModelError("", "The current password is incorrect.");
+                return View(model);
+            }
+
+
+        }
+
+
         [Authorize(Roles = "admin")]
         public async Task<ActionResult> AdminDashboard()
         {
@@ -107,6 +150,74 @@ namespace MRSTWEb.Controllers
 
             return View(user);
         }
+
+        [HttpGet]
+
+        public async Task<ActionResult> EditClientProfile()
+        {
+            var user = await userService.GetUserById(User.Identity.GetUserId());
+            var editModel = new EditModel
+            {   
+                UserName = user.UserName,
+                Name = user.Name,
+                Address = user.Address,
+                Email = user.Email,
+            };
+            return View(editModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "user, admin")]
+
+        public async Task<ActionResult> EditClientProfile(EditModel model)
+        {
+            var user = await userService.GetUserById(User.Identity.GetUserId());
+            if (user == null) return new HttpStatusCodeResult(System.Net.HttpStatusCode.NotFound);
+
+            if (ModelState.IsValid)
+            {
+                // Update the properties only if the model properties are not empty
+                if (!string.IsNullOrEmpty(model.Email))
+                {
+                    user.Email = model.Email;
+                }
+                if (!string.IsNullOrEmpty(model.Name))
+                {
+                    user.Name = model.Name;
+                }
+
+                if (!string.IsNullOrEmpty(model.Address))
+                {
+                    user.Address = model.Address;
+                }
+
+
+                if (!string.IsNullOrEmpty(model.UserName))
+                {
+                    user.UserName = model.UserName;
+                }
+                if (!string.IsNullOrEmpty(model.Email))
+                {
+
+                }
+                OperationDetails operationDetails = await userService.UpdateClient(user);
+
+                if (operationDetails.Succeeded)
+                {
+                    if (User.IsInRole("admin"))
+                    {
+                        return RedirectToAction("AdminDashboard");
+                    }
+                    else
+                    {
+                        return RedirectToAction("ClientProfile");
+                    }
+                }
+            }
+            return View(model);
+        }
+
 
 
         [HttpPost]

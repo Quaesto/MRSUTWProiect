@@ -233,8 +233,10 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\BookViewModel.cs" />
+    <Compile Include="Models\EditModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\OrderViewModel.cs" />
+    <Compile Include="Models\PasswordModel.cs" />
     <Compile Include="Models\RegisterModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
