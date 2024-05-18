@@ -15,8 +15,6 @@ using MRSTWEb.BusinessLogic.Services;
 using System.Net;
 using System.Linq;
 using MRSTWEb.BuisnessLogic.Services;
-using System;
-using System.Data.Entity.Core.Metadata.Edm;
 
 namespace MRSTWEb.Controllers
 {
@@ -25,6 +23,7 @@ namespace MRSTWEb.Controllers
         private ICartService cartService;
         private IOrderService orderService;
         private IManageBooksService manageBooksService;
+        private IReviewService reviewService;
         private IUserService userService
         {
             get
@@ -45,6 +44,7 @@ namespace MRSTWEb.Controllers
             this.cartService = new CartService();
             this.orderService = new OrderService();
             manageBooksService  = new ManageBooksService(); 
+            reviewService = new ReviewService();
         }
 
 
@@ -393,6 +393,45 @@ namespace MRSTWEb.Controllers
         }
         //END of manage books functionalities
 
+        //Admin Manage Review
+        [HttpGet]
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult> ViewClientReviews()
+        {
+            var usersDTO = await userService.GetAllUsers();
+            var usersModel = new List<UserModel>();
+            foreach (var user in usersDTO)
+            {
+                if (reviewService.GetUserReview(user.Id).Any())
+                {
+
+                    var userModel = new UserModel
+                    {
+                        Id = user.Id,
+                        Name = user.Name,
+                        UserName = user.UserName,
+                        Address = user.Address,
+                        Email = user.Email,
+                    };
+                    foreach (var reviewDto in reviewService.GetUserReview(user.Id))
+                    {
+                        var review = new ReviewViewModel
+                        {
+                            Id = reviewDto.Id,
+                            ApplicationUserId = user.Id,
+                            BookId = reviewDto.BookId,
+                            Comment = reviewDto.Comment,
+                            Rating = reviewDto.Rating,
+                        };
+                        userModel.Reviews.Add(review);
+                    }
+                    usersModel.Add(userModel);
+                }
+            }
+
+
+            return View(usersModel);
+        }
 
 
         #region Helpers
@@ -406,6 +445,8 @@ namespace MRSTWEb.Controllers
         protected override void Dispose(bool disposing)
         {
             userService.Dispose();
+            manageBooksService.Dispose();
+            reviewService.Dispose();
             cartService.Dispose();
 
             base.Dispose(disposing);

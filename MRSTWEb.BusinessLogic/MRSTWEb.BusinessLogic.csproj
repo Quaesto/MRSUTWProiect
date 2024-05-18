@@ -187,12 +187,14 @@
     <Compile Include="BusinessModels\WishList.cs" />
     <Compile Include="DTO\BookDTO.cs" />
     <Compile Include="DTO\OrderDTO.cs" />
+    <Compile Include="DTO\ReviewDTO.cs" />
     <Compile Include="DTO\UserDTO.cs" />
     <Compile Include="Infrastructure\OperationDetails.cs" />
     <Compile Include="Infrastructure\ValidationException.cs" />
     <Compile Include="Interfaces\ICartService.cs" />
     <Compile Include="Interfaces\IManageBooksService.cs" />
     <Compile Include="Interfaces\IOrderService.cs" />
+    <Compile Include="Interfaces\IReviewService.cs" />
     <Compile Include="Interfaces\ISearchService.cs" />
     <Compile Include="Interfaces\IServiceCreator.cs" />
     <Compile Include="Interfaces\IUserService.cs" />
@@ -201,6 +203,7 @@
     <Compile Include="Services\CartService.cs" />
     <Compile Include="Services\ManageBooksService.cs" />
     <Compile Include="Services\OrderService.cs" />
+    <Compile Include="Services\ReviewService.cs" />
     <Compile Include="Services\SearchService.cs" />
     <Compile Include="Services\ServiceCreator.cs" />
     <Compile Include="Services\UserService.cs" />

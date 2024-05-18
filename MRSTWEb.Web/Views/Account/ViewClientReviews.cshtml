@@ -1,0 +1,177 @@
+﻿@model IEnumerable<MRSTWEb.Models.UserModel>
+@{
+    ViewBag.Title = "ViewClientReviews";
+    Layout = "~/Views/Shared/_MainPageLayout.cshtml";
+}
+
+<section class="reviews" style="margin-top:100px;margin-bottom:200px" id="reviews">
+    <h1 class="heading"> <span>client's reviews</span> </h1>
+
+    @if (Model != null && Model.Any())
+    {
+
+
+
+        <div class="swiper reviews-slider">
+
+            <div class="swiper-wrapper">
+                @foreach (var user in Model)
+                {
+                    foreach (var review in user.Reviews)
+                    {
+                        <div class="swiper-slide box">
+                       @*     <img src="@user.ProfileImage" style="height:70px" alt="User Image">*@
+                            <h3>@user.UserName</h3>
+                            @if (!string.IsNullOrEmpty(review.Comment))
+                            {
+                                <p>@review.Comment</p>
+                            }
+                            else
+                            {
+                                <p>No Comment found for this user!</p>
+                            }
+
+                            <div class="book-details_@review.BookId"></div>
+                            <div data-productId="@(review.BookId)" data-userid="@user.Id" class="star-rating">
+
+                                <i class="fa fa-star read" data-rating="5"></i>
+                                <i class="fa fa-star read" data-rating="4"></i>
+                                <i class="fa fa-star read" data-rating="3"></i>
+                                <i class="fa fa-star read" data-rating="2"></i>
+                                <i class="fa fa-star read" data-rating="1"></i>
+                            </div>
+                            <p style="font-size: 16px; font-weight: bold; color: #333;" class="total-rating_@(review.BookId)" data-userid="@user.Id"></p>
+
+                            <button type="submit" class="btn btn-danger favouriteButton" data-review="@review.Id">Post Review</button>
+
+
+                        </div>
+
+
+                    }
+                }
+
+
+            </div>
+
+        </div>
+
+    }
+    else
+    {
+        <p style="font-size:15px;">No reviews available.</p>
+    }
+
+    <div class="alert alert-success  fade show justify-content-center" role="alert" style="display:none">
+        Review Successfuly added to main page.
+
+    </div>
+    <div class="alert alert-warning  fade show justify-content-center" role="alert" style="display:none">
+        Review was already added to main page.
+
+    </div>
+</section>
+
+
+
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/Jquery_scripts/getFavouriteReview.js"></script>
+<script>
+    function updateStars(productId, userId) {
+        $('.star-rating[data-productid="' + productId + '"]').html('<i class="fa fa-spinner fa-spin"></i>');
+        $.ajax({
+            url: '/Home/GetUserReviews',
+            type: 'GET',
+            data: {
+                bookId: productId,
+                userId: userId
+            },
+            success: function (data) {
+                var userReview = data.review;
+                var book = data.book;
+
+                if (userReview && book) {
+                    var rating = userReview.Rating;
+                    var starsHtml = '';
+
+                    for (var i = 5; i >= 1; i--) {
+                        if (i <= rating) {
+                            starsHtml += '<i class="fa fa-star filled" data-rating="' + i + '"></i>';
+                        } else {
+                            starsHtml += '<i class="fa fa-star" data-rating="' + i + '"></i>';
+                        }
+                    }
+
+                    $('.star-rating[data-productid="' + productId + '"][data-userid="' + userId + '"]').html(starsHtml);
+                    $('.total-rating_' + productId + '[data-userid="' + userId + '"]').text('Total Rating: ' + rating);
+                    $('.book-details_' + productId).html('<p>Book Title: ' + book.Title + '</p><img class= "rounded" style="height:200px;width:100px" src="' + book.PathImage + '"/>');
+                } else {
+                    $('.star-rating[data-productid="' + productId + '"][data-userid="' + userId + '"]').html('<p>No rating found for this user.</p>');
+                    $('.total-rating_' + productId + '[data-userid="' + userId + '"]').text('');
+                    $('.book-details_' + productId + '[data-userid="' + userId + '"]').html('');
+                }
+            },
+            error: function () {
+                console.log("An error occurred while fetching user reviews.");
+            }
+        });
+    }
+
+
+
+
+
+    $("[data-productid]").each(function () {
+        let productId = $(this).data("productid");
+        let userId = $(this).data("userid");
+        updateStars(productId, userId);
+    });
+
+</script>
+<style>
+    .star-group {
+        display: inline-block;
+    }
+
+    .star-rating {
+        font-size: 24px;
+        display: flex;
+        justify-content: center;
+        flex-direction: row-reverse;
+    }
+
+        .star-rating i {
+            color: #ccc;
+            transition: color 0.5s;
+        }
+
+            .star-rating i:hover,
+            .star-rating i:hover ~ i {
+                color: #ffcc00;
+            }
+
+            .star-rating i[data-clicked] {
+                color: #ffcc00;
+            }
+
+                .star-rating i[data-clicked] ~ i {
+                    color: #ffcc00;
+                }
+
+        .star-rating .fa.disabled {
+            cursor: not-allowed;
+        }
+
+        .star-rating i.filled {
+            color: gold; 
+        }
+
+    .alert {
+        font-size: 15px;
+    }
+
+        .alert button {
+            font-size: 20px;
+        }
+</style>

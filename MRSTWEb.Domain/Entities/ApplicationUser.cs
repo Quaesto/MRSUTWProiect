@@ -7,10 +7,11 @@ namespace MRSTWEb.Domain.Entities
     {
         public virtual ClientProfile ClientProfile { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
-
+        public virtual ICollection<Review> Reviews { get; set; }
         public ApplicationUser()
         {
             Orders = new List<Order>();
+            Reviews = new List<Review>();
         }
     }
 }

@@ -7,6 +7,8 @@ namespace MRSTWEb.Domain.Interfaces
 {
     public interface IUnitOfWork : IDisposable  
     {
+
+        IRepository<Review> Reviews { get; }
         IRepository<Book> Books {  get; }   
         IRepository<Order> Orders { get; }
         ApplicationUserManager UserManager { get; }

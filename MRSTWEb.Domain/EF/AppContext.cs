@@ -8,6 +8,7 @@ namespace MRSTWEb.Domain.EF
     public class AppContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<ClientProfile> ClientProfiles { get; set; }
+        public DbSet<Review> Reviews { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }

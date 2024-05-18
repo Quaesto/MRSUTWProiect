@@ -22,6 +22,8 @@ namespace MRSTWEb.Models
         public string Password { get; set; }
 
 
+        public ICollection<OrderViewModel> Orders { get; set; } = new List<OrderViewModel>();
+        public ICollection<ReviewViewModel> Reviews { get; set; } = new List<ReviewViewModel>();
 
     }
 }

@@ -69,5 +69,10 @@ namespace MRSTWEb.Domain.Repositories
                 order.PostCode = item.PostCode; 
             }
         }
+
+        public IEnumerable<Order> GetByBook(int bookId)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

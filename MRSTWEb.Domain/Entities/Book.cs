@@ -1,4 +1,6 @@
-﻿namespace MRSTWEb.Domain.Entities
+﻿using System.Collections.Generic;
+
+namespace MRSTWEb.Domain.Entities
 {
     public class Book
     {
@@ -9,5 +11,6 @@
         public decimal Price { get; set; }
         public string Language { get; set; }
         public string Genre { get; set; }
+        public ICollection<Review> Review { get; set; }
     }
 }

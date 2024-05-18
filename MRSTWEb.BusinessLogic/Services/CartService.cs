@@ -46,11 +46,11 @@ namespace MRSTWEb.BusinessLogic.Services
         {
             decimal totalPrice = 0;
             var cart = GetCart();
-            foreach(var item in cart)
+            foreach (var item in cart)
             {
                 var price = item.Book.Price;
                 var quantity = item.Quantity;
-                totalPrice += price * quantity; 
+                totalPrice += price * quantity;
             }
             return totalPrice;
         }
@@ -116,9 +116,16 @@ namespace MRSTWEb.BusinessLogic.Services
             var book = DataBase.Books.Get(id.Value);
             if (book == null) throw new ValidationException("The Book was not found", "");
 
-            return new BookDTO { Id = book.Id, Title = book.Title, 
-                Price = book.Price, 
-                PathImage = book.PathImage,Author = book.Author,Genre = book.Genre,Language = book.Language };
+            return new BookDTO
+            {
+                Id = book.Id,
+                Title = book.Title,
+                Price = book.Price,
+                PathImage = book.PathImage,
+                Author = book.Author,
+                Genre = book.Genre,
+                Language = book.Language
+            };
         }
     }
 }

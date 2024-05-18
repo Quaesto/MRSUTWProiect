@@ -43,6 +43,11 @@ namespace MRSTWEb.Domain.Repositories
             throw new System.NotImplementedException();
         }
 
+        public IEnumerable<Book> GetByBook(int bookId)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public IEnumerable<Order> GetOrdersByUserId(string userId)
         {
             throw new System.NotImplementedException();

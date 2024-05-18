@@ -15,6 +15,8 @@ namespace MRSTWEb.Domain.Repositories
         private ApplicationUserManager userManager;
         private ApplicationRoleManager roleManager;
 
+        private ReviewRepository reviewRepository;
+
         private IClientManager clientManager;
 
         public EFUnitOfWork()
@@ -48,6 +50,16 @@ namespace MRSTWEb.Domain.Repositories
         public IClientManager ClientManager => clientManager;
 
         public ApplicationRoleManager RoleManager => roleManager;
+
+        public IRepository<Review> Reviews
+        {
+            get
+            {
+                if (reviewRepository == null) return new ReviewRepository();
+                return reviewRepository;
+            }
+        }
+
 
         public void Dispose()
         {

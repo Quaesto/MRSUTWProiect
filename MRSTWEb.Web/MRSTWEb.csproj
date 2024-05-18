@@ -238,6 +238,7 @@
     <Compile Include="Models\OrderViewModel.cs" />
     <Compile Include="Models\PasswordModel.cs" />
     <Compile Include="Models\RegisterModel.cs" />
+    <Compile Include="Models\ReviewViewModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -303,6 +304,8 @@
     <Content Include="Images\worldmap.png" />
     <Content Include="Jquery_scripts\getAllBooks.js" />
     <Content Include="Jquery_scripts\GetBookDetails.js" />
+    <Content Include="Jquery_scripts\getFavouriteReview.js" />
+    <Content Include="Jquery_scripts\submitReviews.js" />
     <Content Include="Jquery_scripts\updateHeartIcon.js" />
     <Content Include="Jquery_scripts\UpdateTotalPrice.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
@@ -388,6 +391,7 @@
     <Content Include="Views\Account\EditProduct.cshtml" />
     <Content Include="Views\Account\AddProduct.cshtml" />
     <Content Include="Views\Shared\_addToCartForm.cshtml" />
+    <Content Include="Views\Account\ViewClientReviews.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -12,5 +12,6 @@ namespace MRSTWEb.Domain.Interfaces
         void Update(T item);
         IEnumerable<Order> GetAllOrdersWithUsers(string userId);
         IEnumerable<Order> GetOrdersByUserId(string userId);
+        IEnumerable<T> GetByBook(int bookId);
     }
 }

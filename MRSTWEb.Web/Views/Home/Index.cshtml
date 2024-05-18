@@ -1,9 +1,11 @@
 ﻿@model IEnumerable<MRSTWEb.Models.BookViewModel>
+@using Microsoft.AspNet.Identity;
+@using MRSTWEb.Models
 @{
     ViewBag.Title = "Home Page";
     Layout = "~/Views/Shared/_MainPageLayout.cshtml";
 }
-<script src="~/Jquery_scripts/updateHeartIcon.js"></script>
+
 
 
 <div class="home-container">
@@ -13,7 +15,10 @@
 
             <div class="content">
                 <h3>upto 75% off</h3>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam deserunt nostrum accusamus. Nam alias sit necessitatibus, aliquid ex minima at!</p>
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam deserunt nostrum accusamus. Nam alias
+                    sit necessitatibus, aliquid ex minima at!
+                </p>
                 <a href="#" class="btn">shop now</a>
             </div>
 
@@ -70,6 +75,7 @@
 </section>
 
 
+
 <!-- ======= Featured ======= -->
 <section class="featured" id="featured">
 
@@ -81,27 +87,33 @@
             @foreach (var book in Model)
             {
                 <div class="swiper-slide box">
+
+
+
                     <div class="icons">
+
                         @using (Ajax.BeginForm("AddToWishList", "Home", new { bookId = book.Id }, new AjaxOptions
                         {
                             HttpMethod = "POST",
                             UpdateTargetId = "wishListItems",
                             InsertionMode = InsertionMode.Replace,
+
                         }, new { @class = "addToWishListForm" }))
                         {
-                            @Html.AntiForgeryToken()
                             <a href="#" class="addToWishlistLink fas fa-heart" data-book-id="@book.Id"></a>
                         }
-
-                        <a href="#" class="fas fa-eye" data-toggle="modal" data-target="#bookModal" data-book-id="@book.Id"></a>
+                        <a href="#" class="fas fa-eye" data-toggle="modal" data-target="#bookModal"
+                           data-book-id="@book.Id"></a>
 
                     </div>
+
                     <div class="image">
                         <img src="@book.PathImage" alt="">
                     </div>
                     <div class="content">
                         <h3>@book.Title</h3>
-                        <div class="price">$@book.Price <span>$20.99</span></div>
+                
+                        <div class="price">$@book.Price <span>$21.00</span></div>
 
                         @if (Request.IsAuthenticated)
                         {
@@ -114,17 +126,28 @@
                             }))
                             {
                                 @Html.AntiForgeryToken()
-                                <button type="submit" style="cursor:pointer" class="btn-lg btn-success add-to-cart">Add To Cart</button>
+                                <button type="submit" style="cursor:pointer" class="btn-lg btn-success add-to-cart">
+                                    Add To
+                                    Cart
+                                </button>
                             }
                         }
                         else
                         {
-                            <button type="button" style="cursor:pointer" class="btn-lg btn-success add-to-cart" onclick="redirectToLogin()">Add To Cart</button>
+                            <button type="button" style="cursor:pointer" class="btn-lg btn-success add-to-cart"
+                                    onclick="redirectToLogin()">
+                                Add To Cart
+                            </button>
                         }
                     </div>
                 </div>
+
+
             }
         </div>
+
+
+
 
         <div class="swiper-button-next"></div>
         <div class="swiper-button-prev"></div>
@@ -149,286 +172,160 @@
 
 <!-- ======= Arrivals ======= -->
 <section class="arrivals" id="arrivals">
-    <h1 class="heading"> <span>new arrivals</span> </h1>
+    <div class="alert alert-info alert-dismissible fade show" role="alert" id="loginAlert" style="display: none;">
+        You need to be logged in to rate the book.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <style>
+        .alert {
+            font-size: 15px;
+        }
+
+            .alert button {
+                font-size: 20px;
+            }
+    </style>
+    <h1 class="heading"> <span>New Arrivals</span> </h1>
 
     <div class="swiper arrivals-slider">
-
         <div class="swiper-wrapper">
-
-            <a href="#" class="swiper-slide box">
-                <div class="image">
-                    <img src="~/Images/book-1.png" alt="">
-                </div>
-                <div class="content">
-                    <h3>new arrivals</h3>
-                    <div class="price">$15.99 <span>$20.99</span></div>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
+            @foreach (var arrival in Model)
+            {
+                <a href="#" class="swiper-slide box" data-userid="@User.Identity.GetUserId()" data-book-id="@arrival.Id"
+                   onclick="openReviewModal(this,event)">
+                    <div class="image">
+                        <img src="@arrival.PathImage" alt="">
                     </div>
-                </div>
-            </a>
+                    <div class="content">
+                        <h3>@arrival.Title</h3>
+                        <div class="price">$@arrival.Price <span>$20.99</span></div>
+                        <div data-productId="@(arrival.Id)" class="star-rating">
+                            <i class="fa fa-star read" data-rating="5"></i>
+                            <i class="fa fa-star read" data-rating="4"></i>
+                            <i class="fa fa-star read" data-rating="3"></i>
+                            <i class="fa fa-star read" data-rating="2"></i>
+                            <i class="fa fa-star read" data-rating="1"></i>
+                        </div>
+                        <p style="font-size: 16px; font-weight: bold; color: #333;" class="total-rating_@(arrival.Id)"></p>
+                        <p style="font-size: 16px; font-weight: bold; color: #333;" class="total-rated_@(arrival.Id)"></p>
 
-            <a href="#" class="swiper-slide box">
-                <div class="image">
-                    <img src="~/Images/book-2.png" alt="">
-                </div>
-                <div class="content">
-                    <h3>new arrivals</h3>
-                    <div class="price">$15.99 <span>$20.99</span></div>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
                     </div>
-                </div>
-            </a>
-
-            <a href="#" class="swiper-slide box">
-                <div class="image">
-                    <img src="~/Images/book-3.png" alt="">
-                </div>
-                <div class="content">
-                    <h3>new arrivals</h3>
-                    <div class="price">$15.99 <span>$20.99</span></div>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                    </div>
-                </div>
-            </a>
-
-            <a href="#" class="swiper-slide box">
-                <div class="image">
-                    <img src="~/Images/book-4.png" alt="">
-                </div>
-                <div class="content">
-                    <h3>new arrivals</h3>
-                    <div class="price">$15.99 <span>$20.99</span></div>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                    </div>
-                </div>
-            </a>
-
-            <a href="#" class="swiper-slide box">
-                <div class="image">
-                    <img src="~/Images/book-5.png" alt="">
-                </div>
-                <div class="content">
-                    <h3>new arrivals</h3>
-                    <div class="price">$15.99 <span>$20.99</span></div>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                    </div>
-                </div>
-            </a>
+                </a>
+            }
 
         </div>
 
     </div>
 
-    <div class="swiper arrivals-slider">
 
-        <div class="swiper-wrapper">
 
-            <a href="#" class="swiper-slide box">
-                <div class="image">
-                    <img src="~/Images/book-6.png" alt="">
-                </div>
-                <div class="content">
-                    <h3>new arrivals</h3>
-                    <div class="price">$15.99 <span>$20.99</span></div>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                    </div>
-                </div>
-            </a>
-
-            <a href="#" class="swiper-slide box">
-                <div class="image">
-                    <img src="~/Images/book-7.png" alt="">
-                </div>
-                <div class="content">
-                    <h3>new arrivals</h3>
-                    <div class="price">$15.99 <span>$20.99</span></div>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                    </div>
-                </div>
-            </a>
-
-            <a href="#" class="swiper-slide box">
-                <div class="image">
-                    <img src="~/Images/book-8.png" alt="">
-                </div>
-                <div class="content">
-                    <h3>new arrivals</h3>
-                    <div class="price">$15.99 <span>$20.99</span></div>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                    </div>
-                </div>
-            </a>
-
-            <a href="#" class="swiper-slide box">
-                <div class="image">
-                    <img src="~/Images/book-9.png" alt="">
-                </div>
-                <div class="content">
-                    <h3>new arrivals</h3>
-                    <div class="price">$15.99 <span>$20.99</span></div>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                    </div>
-                </div>
-            </a>
-
-            <a href="#" class="swiper-slide box">
-                <div class="image">
-                    <img src="~/Images/book-10.png" alt="">
-                </div>
-                <div class="content">
-                    <h3>new arrivals</h3>
-                    <div class="price">$15.99 <span>$20.99</span></div>
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                    </div>
-                </div>
-            </a>
-
-        </div>
-
-    </div>
 
 </section>
 
 
 
-<!-- ======= Reviews ======= -->
-<section class="reviews" id="reviews">
+@foreach (var arrival in Model)
+{
+    <div class="modal fade" id="reviewModal_@(arrival.Id)" tabindex="-1" role="dialog"
+         aria-labelledby="reviewModalLabel_@(arrival.Id)" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="reviewModalLabel_@(arrival.Id)">Leave a Review For @(arrival.Title)</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+
+                </div>
+                <div class="modal-body">
+                    <div class="book-details">
+
+                    </div>
+                    <div class="star-group">
+                        <label style="font-size:13px;" for="starRating_@(arrival.Id)">Your Rating:</label>
+                        <div data-userid="@User.Identity.GetUserId()" data-productid="@(arrival.Id)" class="star-rating">
+                            <i class="fa fa-star" data-rating="5"></i>
+                            <i class="fa fa-star" data-rating="4"></i>
+                            <i class="fa fa-star" data-rating="3"></i>
+                            <i class="fa fa-star" data-rating="2"></i>
+                            <i class="fa fa-star" data-rating="1"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-size:15px;" class="reviewLabel_@(arrival.Id)">Your Review:</label>
+                        <textarea class="form-control" style="font-size:16px;" id="reviewText_@(arrival.Id)"
+                                  rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-warnings_@(arrival.Id)"></div>
+                <div class="modal-footer">
+
+                    <button type="button" data-userid="@User.Identity.GetUserId()" data-productid="@(arrival.Id)"
+                            class="btn btn-primary submit">
+                        Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+}
+
+<section class="reviews" style="margin-top:100px;margin-bottom:200px" id="reviews">
     <h1 class="heading"> <span>client's reviews</span> </h1>
 
     <div class="swiper reviews-slider">
 
         <div class="swiper-wrapper">
+            @foreach (var user in ViewBag.UsersReview)
+            {
+                foreach (var review in user.Reviews)
+                {
+                    <div class="swiper-slide box">
+                       @* <img src="@user.ProfileImage" style="height:70px;" alt="User Image">*@
+                        <h3>@user.UserName</h3>
+                        @if (!string.IsNullOrEmpty(review.Comment))
+                        {
+                            <p>@review.Comment</p>
+                        }
+                        else
+                        {
+                            <p>No Comment found for this user!</p>
+                        }
 
-            <div class="swiper-slide box">
-                <img src="~/Images/pic-1.png" alt="">
-                <h3>john deo</h3>
-                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aspernatur nihil ipsa placeat. Aperiam at sint, eos ex similique facere hic.</p>
-                <div class="stars">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star-half-alt"></i>
-                </div>
-            </div>
+                        <div class="book-details_@review.BookId"></div>
+                        <div data-bookId="@(review.BookId)" data-userid="@user.Id" class="rating-review">
 
-            <div class="swiper-slide box">
-                <img src="~/Images/pic-2.png" alt="">
-                <h3>john deo</h3>
-                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aspernatur nihil ipsa placeat. Aperiam at sint, eos ex similique facere hic.</p>
-                <div class="stars">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star-half-alt"></i>
-                </div>
-            </div>
+                            <i class="fa fa-star read" data-rating="5"></i>
+                            <i class="fa fa-star read" data-rating="4"></i>
+                            <i class="fa fa-star read" data-rating="3"></i>
+                            <i class="fa fa-star read" data-rating="2"></i>
+                            <i class="fa fa-star read" data-rating="1"></i>
+                        </div>
+                        <p style="font-size: 16px; font-weight: bold; color: #333;" class="rating_@(review.BookId)"
+                           data-userid="@user.Id"></p>
 
-            <div class="swiper-slide box">
-                <img src="~/Images/pic-3.png" alt="">
-                <h3>john deo</h3>
-                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aspernatur nihil ipsa placeat. Aperiam at sint, eos ex similique facere hic.</p>
-                <div class="stars">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star-half-alt"></i>
-                </div>
-            </div>
-            <div class="swiper-slide box">
-                <img src="~/Images/pic-4.png" alt="">
-                <h3>john deo</h3>
-                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aspernatur nihil ipsa placeat. Aperiam at sint, eos ex similique facere hic.</p>
-                <div class="stars">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star-half-alt"></i>
-                </div>
-            </div>
+                        @if (Request.IsAuthenticated && User.IsInRole("admin"))
+                        {
+                            using (Html.BeginForm("RemovePostedReviewFromMainPage", "Home", FormMethod.Post))
+                            {
+                                <input type="hidden" name="reviewId" value="@review.Id" />
+                                <button type="submit" class="btn btn-danger">Unpublic Review</button>
+                            }
+                        }
+                    </div>
 
-            <div class="swiper-slide box">
-                <img src="~/Images/pic-5.png" alt="">
-                <h3>john deo</h3>
-                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aspernatur nihil ipsa placeat. Aperiam at sint, eos ex similique facere hic.</p>
-                <div class="stars">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star-half-alt"></i>
-                </div>
-            </div>
 
-            <div class="swiper-slide box">
-                <img src="~/Images/pic-6.png" alt="">
-                <h3>john deo</h3>
-                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aspernatur nihil ipsa placeat. Aperiam at sint, eos ex similique facere hic.</p>
-                <div class="stars">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star-half-alt"></i>
-                </div>
-            </div>
+                }
+            }
+
 
         </div>
 
     </div>
+
 </section>
 
 <div class="deal-container">
@@ -437,7 +334,10 @@
         <div class="content">
             <h3>deal of the day</h3>
             <h1>upto 50% off</h1>
-            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Unde perspiciatis in atque dolore tempora quaerat at fuga dolorum natus velit.</p>
+            <p>
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Unde perspiciatis in atque dolore tempora
+                quaerat at fuga dolorum natus velit.
+            </p>
             <a href="#" class="btn">shop now</a>
         </div>
 
@@ -518,10 +418,27 @@
 
     </div>
 
+    <div class="modal fade" id="bookModal" tabindex="-1" role="dialog" aria-labelledby="bookModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="bookModalLabel">Book Details</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="font-size: 3em;">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 </section>
 
 
-<script src="~/Jquery_scripts/GetBookDetails.js"></script>
+<link rel="stylesheet" href="~/Content/css/star-rating.css" />
 
 <script>
     function redirectToLogin() {
@@ -529,13 +446,121 @@
     }
 
 </script>
-<script src="~/Scripts/jquery-3.7.1.min.js"></script>
-<style>
-    .heart-red {
-        color: red !important;
+<script src="~/Jquery_scripts/GetBookDetails.js"></script>
+<script src="~/Jquery_scripts/submitReviews.js"></script>
+
+<script>
+    function openReviewModal(element, event) {
+        event.preventDefault();
+        $.ajax({
+            url: "@Url.Action("IsAuthenticated", "Home")",
+            method: "GET",
+            dataType: "json",
+            success: function (response) {
+                var isLoggedIn = response.isAuthenticated;
+                if (isLoggedIn) {
+                    var bookId = $(element).data("book-id");
+                    var modalId = "#reviewModal_" + bookId;
+
+                    $(modalId).modal('show');
+
+
+                    $(modalId + ' .close').click(function () {
+                        $(modalId).modal('hide');
+                    });
+
+                } else {
+                    $("#loginAlert").show();
+                    $(".star-rating .fa").addClass("disabled");
+
+                }
+            }
+        });
     }
 
-    p {
-        font-size: 17px;
+</script>
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+
+<script>
+    function updateStars(productId, userId) {
+        $('.rating-review[data-bookid="' + productId + '"]').html('<i class="fa fa-spinner fa-spin"></i>');
+        $.ajax({
+            url: '/Home/GetUserReviews',
+            type: 'GET',
+            data: {
+                bookId: productId,
+                userId: userId
+            },
+            success: function (data) {
+                var userReview = data.review;
+                var book = data.book;
+
+                if (userReview && book) {
+                    var rating = userReview.Rating;
+                    var starsHtml = '';
+
+                    for (var i = 5; i >= 1; i--) {
+                        if (i <= rating) {
+                            starsHtml += '<i class="fa fa-star filled" data-rating="' + i + '"></i>';
+                        } else {
+                            starsHtml += '<i class="fa fa-star" data-rating="' + i + '"></i>';
+                        }
+                    }
+
+                    $('.rating-review[data-bookId="' + productId + '"][data-userid="' + userId + '"]').html(starsHtml);
+                    $('.rating_' + productId + '[data-userid="' + userId + '"]').text('Total Rating: ' + rating);
+                    $('.book-details_' + productId).html('<p>Book Title: ' + book.Title + '</p><img class= "rounded" style="height:200px;width:100px" src="' + book.PathImage + '"/>');
+                } else {
+                    $('.rating-review[data-bookid="' + productId + '"][data-userid="' + userId + '"]').html('<p>No rating found for this user.</p>');
+                    $('.total-rating_' + productId + '[data-userid="' + userId + '"]').text('');
+                    $('.book-details_' + productId + '[data-userid="' + userId + '"]').html('');
+                }
+            },
+            error: function () {
+                console.log("An error occurred while fetching user reviews.");
+            }
+        });
     }
+
+
+
+
+
+    $("[data-bookId]").each(function () {
+        let productId = $(this).data("bookid");
+        let userId = $(this).data("userid");
+        updateStars(productId, userId);
+    });
+
+</script>
+<style>
+    .rating-review {
+        font-size: 24px;
+        display: flex;
+        justify-content: center;
+        flex-direction: row-reverse;
+    }
+
+        .rating-review i {
+            color: #ccc;
+            transition: color 0.5s;
+        }
+
+
+            .rating-review i[data-clicked] {
+                color: #ffcc00;
+            }
+
+                .rating-review i[data-clicked] ~ i {
+                    color: #ffcc00;
+                }
+
+        .rating-review .fa.disabled {
+            cursor: not-allowed;
+        }
+
+        .rating-review i.filled {
+            color: gold;
+            /* Change color to indicate filled */
+        }
 </style>
