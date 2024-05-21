@@ -4,6 +4,7 @@ using MRSTWEb.BusinessLogic.Infrastructure;
 using MRSTWEb.BusinessLogic.Interfaces;
 using MRSTWEb.Domain.Entities;
 using MRSTWEb.Domain.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -84,16 +85,31 @@ namespace MRSTWEb.BusinessLogic.Services
         {
             var users = await Database.UserManager.Users.ToListAsync();
 
-            return users.Select(u => new UserDTO
+            if (users == null || !users.Any())
             {
-                Id = u.Id,
-                Email = u.Email,
-                UserName = u.UserName,
-                Address = u.ClientProfile.Address,
-                Name = u.ClientProfile.Name,
-             
+                return Enumerable.Empty<UserDTO>();
+            }
+
+            var userDTOs = users.Select(u =>
+            {
+                if (u.ClientProfile == null)
+                {
+                    Console.WriteLine($"User {u.Id} has a null ClientProfile.");
+                }
+
+                return new UserDTO
+                {
+                    Id = u.Id,
+                    Email = u.Email,
+                    UserName = u.UserName,
+                    Address = u.ClientProfile?.Address, 
+                    Name = u.ClientProfile?.Name        
+                };
             }).ToList();
+
+            return userDTOs;
         }
+
 
         public async Task<UserDTO> GetUserById(string userId)
         {
