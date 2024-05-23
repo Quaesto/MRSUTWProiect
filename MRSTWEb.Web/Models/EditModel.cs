@@ -17,5 +17,6 @@ namespace MRSTWEb.Models
         [Required]
 
         public string Email { get; set; }
+        public string ProfileImage { get; set; }
     }
 }

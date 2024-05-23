@@ -18,6 +18,7 @@
                         <p class="mb-2" style="font-size:16px"><strong>User Name:</strong>  @Model.UserName</p>
                         <p class="mb-2" style="font-size:16px"><strong>Address:</strong>  @Model.Address</p>
                         <p class="mb-4" style="font-size:16px"><strong>Email:</strong>  @Model.Email</p>
+                        @Html.ActionLink("Edit", "EditClientProfile", "Account", null, new { @class = "btn btn-primary edit" })
                     </div>
                 </div>
             </div>

@@ -392,6 +392,7 @@
     <Content Include="Views\Account\AddProduct.cshtml" />
     <Content Include="Views\Shared\_addToCartForm.cshtml" />
     <Content Include="Views\Account\ViewClientReviews.cshtml" />
+    <Content Include="Views\Account\EditClientProfile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -196,9 +196,9 @@
     <Compile Include="Interfaces\IClientManager.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Interfaces\IUnitOfWork.cs" />
-    <Compile Include="Migrations\202405181705324_ReviewsAdded.cs" />
-    <Compile Include="Migrations\202405181705324_ReviewsAdded.Designer.cs">
-      <DependentUpon>202405181705324_ReviewsAdded.cs</DependentUpon>
+    <Compile Include="Migrations\202405231714209_profileImage.cs" />
+    <Compile Include="Migrations\202405231714209_profileImage.Designer.cs">
+      <DependentUpon>202405231714209_profileImage.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -213,8 +213,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202405181705324_ReviewsAdded.resx">
-      <DependentUpon>202405181705324_ReviewsAdded.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202405231714209_profileImage.resx">
+      <DependentUpon>202405231714209_profileImage.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

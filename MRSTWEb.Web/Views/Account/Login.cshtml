@@ -15,12 +15,12 @@
             @Html.ValidationSummary("", new { @class = "text-danger" })
             <div class="form-group">
                 @Html.LabelFor(u => u.UserName)
-                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", @style = "text-transform: none;" })
                 @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
             </div>
             <div class="form-group">
                 @Html.LabelFor(m => m.Password)
-                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control", @style = "text-transform: none;" })
                 @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
             </div>
 
@@ -31,7 +31,7 @@
 
         <div class="form-group">
             <p style="font-size: 15px">Don't have an account? <a href="@Url.Action("Register", "Account")">Register</a></p>
-            
+
         </div>
     </div>
 </div>
