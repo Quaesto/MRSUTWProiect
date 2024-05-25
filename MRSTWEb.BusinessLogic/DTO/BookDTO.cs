@@ -1,4 +1,9 @@
-﻿using System;
+﻿using MRSTWEb.Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace MRSTWEb.BusinessLogic.DTO
 {
@@ -9,8 +14,11 @@ namespace MRSTWEb.BusinessLogic.DTO
         public string Author { get; set; }
         public string PathImage { get; set; }
         public decimal Price { get; set; }
-        public string Language { get; set; }
         public string Genre { get; set; }
+        public string Language { get; set; }
 
+        public decimal Percentage { get; set; }
+        public DateTime SetTime { get; set; }
+        public DateTime ExpirationTime { get; set; }
     }
 }

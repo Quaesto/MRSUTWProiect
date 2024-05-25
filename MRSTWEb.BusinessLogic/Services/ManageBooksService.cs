@@ -1,31 +1,15 @@
 ﻿using AutoMapper;
 using MRSTWEb.BusinessLogic.DTO;
-using MRSTWEb.BusinessLogic.Interfaces;
+using MRSTWEb.BuisnessLogic.Interfaces;
 using MRSTWEb.Domain.Entities;
 using MRSTWEb.Domain.Interfaces;
-using MRSTWEb.Domain.Repositories;
 
-namespace MRSTWEb.BusinessLogic.Services
+namespace MRSTWEb.BuisnessLogic.Services
 {
     public class ManageBooksService : IManageBooksService
     {
         private IUnitOfWork DataBase { get; set; }
-        public ManageBooksService() { DataBase = new EFUnitOfWork(); }
-        public void AddBook(BookDTO bookDTO)
-        {
-            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<BookDTO, Book>()).CreateMapper();
-            var book = mapper.Map<BookDTO, Book>(bookDTO);
-            DataBase.Books.Create(book);
-    
-        }
-
-        public void DeleteBook(int BookId)
-        {
-            DataBase.Books.Delete(BookId);
- 
-        }
-
-       
+        public ManageBooksService(IUnitOfWork DataBase) { this.DataBase = DataBase; }
 
         public void UpdateProduct(BookDTO bookDTO)
         {
@@ -41,8 +25,21 @@ namespace MRSTWEb.BusinessLogic.Services
             };
 
             DataBase.Books.Update(book);
-
+            DataBase.Save();
         }
+        public void AddBook(BookDTO bookDTO)
+        {
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<BookDTO, Book>()).CreateMapper();
+            var book = mapper.Map<BookDTO, Book>(bookDTO);
+            DataBase.Books.Create(book);
+            DataBase.Save();
+        }
+        public void DeleteBook(int BookId)
+        {
+            DataBase.Books.Delete(BookId);
+            DataBase.Save();
+        }
+
         public void Dispose()
         {
             DataBase.Dispose();

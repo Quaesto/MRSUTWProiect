@@ -11,11 +11,14 @@ namespace MRSTWEb.Domain.Repositories
     {
         private EF.AppContext db;
         private BookRepository bookRepository;
+        private ReviewRepository reviewRepository;
         private OrderRepository orderRepository;
         private ApplicationUserManager userManager;
         private ApplicationRoleManager roleManager;
 
-        private ReviewRepository reviewRepository;
+        private DiscountRepository discountRepository;
+
+        private DeliveryRepository deliveryCostRepository;
 
         private IClientManager clientManager;
 
@@ -26,12 +29,29 @@ namespace MRSTWEb.Domain.Repositories
             roleManager = new ApplicationRoleManager(new RoleStore<ApplicationRole>(db));
             clientManager = new ClientManager(db);
         }
+        public IRepository<Discount> Discounts
+        {
+            get
+            {
+                if (discountRepository == null) return new DiscountRepository(db);
+                return discountRepository;
+            }
+        }
+
+        public IRepository<DeliveryCost> DeliveryCost
+        {
+            get
+            {
+                if (deliveryCostRepository == null) return new DeliveryRepository(db);
+                return deliveryCostRepository;
+            }
+        }
 
         public IRepository<Book> Books
         {
             get
             {
-                if (bookRepository == null) return new BookRepository();
+                if (bookRepository == null) return new BookRepository(db);
                 return bookRepository;
             }
         }
@@ -40,7 +60,7 @@ namespace MRSTWEb.Domain.Repositories
         {
             get
             {
-                if(orderRepository == null) return new OrderRepository(); 
+                if (orderRepository == null) return new OrderRepository(db);
                 return orderRepository;
             }
         }
@@ -55,10 +75,11 @@ namespace MRSTWEb.Domain.Repositories
         {
             get
             {
-                if (reviewRepository == null) return new ReviewRepository();
+                if (reviewRepository == null) return new ReviewRepository(db);
                 return reviewRepository;
             }
         }
+
 
 
         public void Dispose()

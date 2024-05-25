@@ -186,6 +186,7 @@
     <Compile Include="BusinessModels\Item.cs" />
     <Compile Include="BusinessModels\WishList.cs" />
     <Compile Include="DTO\BookDTO.cs" />
+    <Compile Include="DTO\DeliveryCostDTO.cs" />
     <Compile Include="DTO\OrderDTO.cs" />
     <Compile Include="DTO\ReviewDTO.cs" />
     <Compile Include="DTO\UserDTO.cs" />

@@ -112,8 +112,18 @@
                     </div>
                     <div class="content">
                         <h3>@book.Title</h3>
-                
-                        <div class="price">$@book.Price <span>$21.00</span></div>
+                        @{
+
+
+                            string originalPrice = (book.Price / (1 - book.Percentage / 100)).ToString("0.00");
+                            string discountedPrice = book.Price.ToString("0.00");
+
+
+                        }
+
+                        <div class="price">$@discountedPrice <span>@(book.ExpirationTime > DateTime.Now ? "$" + originalPrice : "")</span></div>
+
+
 
                         @if (Request.IsAuthenticated)
                         {
@@ -126,7 +136,7 @@
                             }))
                             {
                                 @Html.AntiForgeryToken()
-                                <button type="submit" style="cursor:pointer" class="btn-lg btn-success add-to-cart">
+                                <button type="submit" style="cursor:pointer" class="btn-lg btn-success add-to-cart" data-bookId="@book.Id">
                                     Add To
                                     Cart
                                 </button>
@@ -153,6 +163,7 @@
         <div class="swiper-button-prev"></div>
 
     </div>
+
 </section>
 
 <!-- ======= Newsletter container ======= -->
@@ -193,14 +204,23 @@
         <div class="swiper-wrapper">
             @foreach (var arrival in Model)
             {
-                <a href="#" class="swiper-slide box" data-userid="@User.Identity.GetUserId()" data-book-id="@arrival.Id"
+                <a href="#" class="swiper-slide box" style="height:250px;" data-userid="@User.Identity.GetUserId()" data-book-id="@arrival.Id"
                    onclick="openReviewModal(this,event)">
                     <div class="image">
                         <img src="@arrival.PathImage" alt="">
                     </div>
                     <div class="content">
                         <h3>@arrival.Title</h3>
-                        <div class="price">$@arrival.Price <span>$20.99</span></div>
+                        @{
+
+
+                            string originalPrice = (arrival.Price / (1 - arrival.Percentage / 100)).ToString("0.00");
+                            string discountedPrice = arrival.Price.ToString("0.00");
+
+
+                        }
+
+                        <div class="price">$@discountedPrice <span>@(arrival.ExpirationTime > DateTime.Now ? "$" + originalPrice : "")</span></div>
                         <div data-productId="@(arrival.Id)" class="star-rating">
                             <i class="fa fa-star read" data-rating="5"></i>
                             <i class="fa fa-star read" data-rating="4"></i>
@@ -284,7 +304,7 @@
                 foreach (var review in user.Reviews)
                 {
                     <div class="swiper-slide box">
-                       @* <img src="@user.ProfileImage" style="height:70px;" alt="User Image">*@
+                        <img src="@user.ProfileImage" style="height:70px;" alt="User Image">
                         <h3>@user.UserName</h3>
                         @if (!string.IsNullOrEmpty(review.Comment))
                         {
@@ -449,6 +469,7 @@
 <script src="~/Jquery_scripts/GetBookDetails.js"></script>
 <script src="~/Jquery_scripts/submitReviews.js"></script>
 
+
 <script>
     function openReviewModal(element, event) {
         event.preventDefault();
@@ -480,59 +501,7 @@
 
 </script>
 <script src="~/Scripts/jquery-3.7.1.min.js"></script>
-
-<script>
-    function updateStars(productId, userId) {
-        $('.rating-review[data-bookid="' + productId + '"]').html('<i class="fa fa-spinner fa-spin"></i>');
-        $.ajax({
-            url: '/Home/GetUserReviews',
-            type: 'GET',
-            data: {
-                bookId: productId,
-                userId: userId
-            },
-            success: function (data) {
-                var userReview = data.review;
-                var book = data.book;
-
-                if (userReview && book) {
-                    var rating = userReview.Rating;
-                    var starsHtml = '';
-
-                    for (var i = 5; i >= 1; i--) {
-                        if (i <= rating) {
-                            starsHtml += '<i class="fa fa-star filled" data-rating="' + i + '"></i>';
-                        } else {
-                            starsHtml += '<i class="fa fa-star" data-rating="' + i + '"></i>';
-                        }
-                    }
-
-                    $('.rating-review[data-bookId="' + productId + '"][data-userid="' + userId + '"]').html(starsHtml);
-                    $('.rating_' + productId + '[data-userid="' + userId + '"]').text('Total Rating: ' + rating);
-                    $('.book-details_' + productId).html('<p>Book Title: ' + book.Title + '</p><img class= "rounded" style="height:200px;width:100px" src="' + book.PathImage + '"/>');
-                } else {
-                    $('.rating-review[data-bookid="' + productId + '"][data-userid="' + userId + '"]').html('<p>No rating found for this user.</p>');
-                    $('.total-rating_' + productId + '[data-userid="' + userId + '"]').text('');
-                    $('.book-details_' + productId + '[data-userid="' + userId + '"]').html('');
-                }
-            },
-            error: function () {
-                console.log("An error occurred while fetching user reviews.");
-            }
-        });
-    }
-
-
-
-
-
-    $("[data-bookId]").each(function () {
-        let productId = $(this).data("bookid");
-        let userId = $(this).data("userid");
-        updateStars(productId, userId);
-    });
-
-</script>
+<script src="~/Jquery_scripts/updateUserReviewInIndex.js"></script>
 <style>
     .rating-review {
         font-size: 24px;
