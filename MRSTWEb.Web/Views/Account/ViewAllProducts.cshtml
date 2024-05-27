@@ -36,7 +36,7 @@
                                 <td>@book.Author</td>
                                 <td>@book.Genre</td>
                                 <td>@book.Language</td>
-                                <td>@book.Price$</td>
+                                <td>$@(book.Price.ToString("0.00"))</td>
 
 
                                 <td>
@@ -50,6 +50,8 @@
                                             <input type="hidden" name="BookId" value="@book.Id" />
                                             <p class="action-link" onclick="confirmDelete('@book.Id')">Delete</p>
                                         }
+                                        /
+                                        @Html.ActionLink("Discount", "SetBookDiscount", "Account", new { bookId = book.Id }, new { @class = "action-link" })
                                     </div>
                                 </td>
 

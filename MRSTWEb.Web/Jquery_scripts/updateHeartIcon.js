@@ -1,23 +1,21 @@
 ﻿$(document).ready(function () {
 
-    function checkIfBookIsInWishlist(bookId) {
-        return new Promise((resolve, reject) => {
-            $.ajax({
+    async function getWishlistItems() {
+        try {
+            const response = await $.ajax({
                 url: '/Home/getWishList',
-                type: 'GET',
-                success: function (response) {
-                    const wishlistItems = response.books;
-                    const isInWishlist = wishlistItems.some(item => item.Id === bookId);
-
-                    localStorage.setItem('wishlistItems', JSON.stringify(wishlistItems));
-
-                    resolve(isInWishlist);
-                },
-                error: function (xhr, status, error) {
-                    reject(error);
-                }
+                type: 'GET'
             });
-        });
+
+            return response.books;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    async function checkIfBookIsInWishlist(wishlistItems, bookId) {
+        return wishlistItems.some(item => item.Id === bookId);
     }
 
     function UpdateWishItemCounter(action) {
@@ -40,28 +38,18 @@
 
     function displayWishItemCount() {
         var cartWishCount = localStorage.getItem("wishItemCount") || 0;
-
-        if (cartWishCount !== null && cartWishCount !== undefined) {
-            $('#wishItemCount').text(cartWishCount);
-        } else {
-            cartWishCount = 0;
-        }
-
         $('#wishItemCount').text(cartWishCount);
     }
 
-    function updateHeartIconColor() {
+    async function updateHeartIconColor(wishlistItems) {
         $('.addToWishlistLink').each(async function () {
             const bookId = $(this).data('book-id');
-            const isInWishlist = await checkIfBookIsInWishlist(bookId);
+            const isInWishlist = await checkIfBookIsInWishlist(wishlistItems, bookId);
             $(this).toggleClass('heart-red', isInWishlist);
         });
     }
 
-    updateHeartIconColor();
-    displayWishItemCount();
-
-    $('.addToWishlistLink').off('click').on('click', function (e) {
+    async function handleAddToWishlist(e) {
         e.preventDefault();
 
         var form = $(this).closest('form');
@@ -71,45 +59,47 @@
         var formData = new FormData(form[0]);
         formData.append('bookId', bookId);
 
-        $.ajax({
-            url: 'Home/AddToWishList',
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                heartIcon.toggleClass('heart-red');
+        try {
+            const response = await $.ajax({
+                url: '/Home/AddToWishList',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false
+            });
 
+            heartIcon.toggleClass('heart-red');
 
-                const wishlistItems = JSON.parse(localStorage.getItem('wishlistItems')) || [];
-                const index = wishlistItems.findIndex(item => item.Id === bookId);
+            const wishlistItems = JSON.parse(localStorage.getItem('wishlistItems')) || [];
+            const index = wishlistItems.findIndex(item => item.Id === bookId);
 
-                if (index !== -1) {
-                    $.ajax({
-                        url: '/Home/RemoveFromWishList',
-                        type: 'POST',
-                        data: { bookId: bookId },
-                        success: function () {
-                            wishlistItems.splice(index, 1);
-                            localStorage.setItem('wishlistItems', JSON.stringify(wishlistItems));
-                            UpdateWishItemCounter('remove');
-                            console.log("items is removing from wish list");
-                        },
-                        error: function (xhr, status, error) {
-
-                        }
-                    });
-                } else {
-                    wishlistItems.push({ Id: bookId });
-                    localStorage.setItem('wishlistItems', JSON.stringify(wishlistItems));
-                    console.log("items is adding to wish list");
-
-                    UpdateWishItemCounter('add');
-                }
-            },
-            error: function (xhr, status, error) {
-                // Handle error
+            if (index !== -1) {
+                await $.ajax({
+                    url: '/Home/RemoveFromWishList',
+                    type: 'POST',
+                    data: { bookId: bookId }
+                });
+                wishlistItems.splice(index, 1);
+                UpdateWishItemCounter('remove');
+            } else {
+                wishlistItems.push({ Id: bookId });
+                UpdateWishItemCounter('add');
             }
-        });
-    });
+
+            localStorage.setItem('wishlistItems', JSON.stringify(wishlistItems));
+        } catch (error) {
+            console.error(error);
+            // Handle error
+        }
+    }
+
+    async function init() {
+        const wishlistItems = await getWishlistItems();
+        updateHeartIconColor(wishlistItems);
+        displayWishItemCount();
+
+        $('.addToWishlistLink').off('click').on('click', handleAddToWishlist);
+    }
+
+    init();
 });

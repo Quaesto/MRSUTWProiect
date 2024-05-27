@@ -199,9 +199,9 @@
     <Compile Include="Interfaces\IClientManager.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Interfaces\IUnitOfWork.cs" />
-    <Compile Include="Migrations\202405231714209_profileImage.cs" />
-    <Compile Include="Migrations\202405231714209_profileImage.Designer.cs">
-      <DependentUpon>202405231714209_profileImage.cs</DependentUpon>
+    <Compile Include="Migrations\202405270932584_DiscountAndDeliveryAdded.cs" />
+    <Compile Include="Migrations\202405270932584_DiscountAndDeliveryAdded.Designer.cs">
+      <DependentUpon>202405270932584_DiscountAndDeliveryAdded.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -218,8 +218,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202405231714209_profileImage.resx">
-      <DependentUpon>202405231714209_profileImage.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202405270932584_DiscountAndDeliveryAdded.resx">
+      <DependentUpon>202405270932584_DiscountAndDeliveryAdded.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using MRSTWEb.BuisnessLogic.Interfaces;
 using MRSTWEb.BuisnessLogic.Services;
 using MRSTWEb.BusinessLogic.BusinessModels;
 using MRSTWEb.BusinessLogic.DTO;
 using MRSTWEb.BusinessLogic.Interfaces;
 using MRSTWEb.BusinessLogic.Services;
 using MRSTWEb.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -64,10 +66,17 @@ namespace MRSTWEb.Controllers
             var mapper = new MapperConfiguration(cfg => cfg.CreateMap<OrderDTO, OrderViewModel>()).CreateMapper();
             var order = mapper.Map<OrderDTO, OrderViewModel>(orderDto);
             ViewBag.CartItems = bookModel;
-            Session.Clear();
+        
 
             return View(order);
 
+        }
+        [HttpGet]
+        public JsonResult getShippingCost()
+        {
+            var delivery = cartService.GetAllDeliveriesCost().LastOrDefault();
+
+            return Json(new { delivery }, JsonRequestBehavior.AllowGet);
         }
 
 
@@ -75,11 +84,10 @@ namespace MRSTWEb.Controllers
         [Authorize]
         public ActionResult Checkout()
         {
-            var total = cartService.CalculateTotalPrice();
-            var subtotal = total;
-            ViewBag.Total = total; ViewBag.Subtotal = subtotal;
+            var orderModel = new OrderViewModel();
 
-            return View();
+            DisplayTotalPrice();
+            return View(orderModel);
         }
         [HttpPost]
         [Authorize]
@@ -106,7 +114,7 @@ namespace MRSTWEb.Controllers
                         Phone = model.Phone,
                         PostCode = model.PostCode,
                         Email = model.Email,
-                        TotalSumToPay = totalSumToPay,
+                        TotalSumToPay = Math.Round(totalSumToPay, 2),
 
                     };
                     orderService.MakeOrder(orderDto);
@@ -114,8 +122,10 @@ namespace MRSTWEb.Controllers
                 }
 
             }
-            return View(model);
+            DisplayTotalPrice();
+            return View("Checkout", model);
         }
+
 
         [HttpGet]
         public ActionResult Cart()
@@ -156,11 +166,19 @@ namespace MRSTWEb.Controllers
             return PartialView("_addToCartForm", cart);
         }
 
-
+        private void DisplayTotalPrice()
+        {
+            var total = cartService.CalculateTotalPrice();
+            var deliveryCost = cartService.GetAllDeliveriesCost().LastOrDefault();
+            var subtotal = total - deliveryCost.Cost;
+            ViewBag.Total = total.ToString("0.00"); ViewBag.Subtotal = subtotal.ToString("0.00");
+            ViewBag.DeliveryCost = deliveryCost.Cost;
+        }
 
         protected override void Dispose(bool disposing)
         {
             cartService.Dispose();
+            orderService.Dispose();
             base.Dispose(disposing);
         }
     }

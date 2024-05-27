@@ -3,13 +3,16 @@ using MRSTWEb.BusinessLogic.DTO;
 using MRSTWEb.BuisnessLogic.Interfaces;
 using MRSTWEb.Domain.Entities;
 using MRSTWEb.Domain.Interfaces;
+using MRSTWEb.Domain.Repositories;
+using System.Linq;
+using System;
 
 namespace MRSTWEb.BuisnessLogic.Services
 {
     public class ManageBooksService : IManageBooksService
     {
         private IUnitOfWork DataBase { get; set; }
-        public ManageBooksService(IUnitOfWork DataBase) { this.DataBase = DataBase; }
+        public ManageBooksService() { this.DataBase = new EFUnitOfWork(); }
 
         public void UpdateProduct(BookDTO bookDTO)
         {
@@ -24,20 +27,46 @@ namespace MRSTWEb.BuisnessLogic.Services
                 Price = bookDTO.Price,
             };
 
+            var bookDiscount = DataBase.Books.Get(book.Id);
+
+            decimal previousPrice = bookDiscount.Price;
+            if (previousPrice != book.Price && bookDiscount.Discount != null && bookDiscount.Discount.ExpirationTime >= DateTime.Now)
+            {
+                var discount = (book.Price * bookDiscount.Discount.Percentage) / 100;
+                book.Price -= discount;
+
+
+            }
+
+
             DataBase.Books.Update(book);
-            DataBase.Save();
+   
         }
+
         public void AddBook(BookDTO bookDTO)
         {
             var mapper = new MapperConfiguration(cfg => cfg.CreateMap<BookDTO, Book>()).CreateMapper();
             var book = mapper.Map<BookDTO, Book>(bookDTO);
             DataBase.Books.Create(book);
-            DataBase.Save();
+       
         }
         public void DeleteBook(int BookId)
         {
+            var book = DataBase.Books.Get(BookId);
+            if (book.Review.Any())
+            {
+                var reviewsId = book.Review.Select(r => r.Id).ToList();
+                foreach (var reviewId in reviewsId)
+                {
+                    DataBase.Reviews.Delete(reviewId);
+                }
+            }
+            if (book.Discount != null)
+            {
+                DataBase.Discounts.Delete(BookId);
+            }
             DataBase.Books.Delete(BookId);
-            DataBase.Save();
+        
         }
 
         public void Dispose()

@@ -1,0 +1,71 @@
+﻿@model IEnumerable<MRSTWEb.Models.BookViewModel>
+@{
+    ViewBag.Title = "ItemsBought";
+    Layout = "~/Views/Shared/_MainPageLayout.cshtml";
+}
+
+<section class="ftco-section ftco-cart" style="margin-top:100px;margin-bottom:150px">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 ftco-animate">
+                <h2>Items Bought</h2>
+
+                <table class="table table-bordered">
+                    <thead class="thead-primary">
+                        <tr class="text-center">
+                            <th>&nbsp;</th>
+                            <th>Product</th>
+                            <th>Author</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr class="text-center">
+                                <td> <img src="@item.PathImage" style="height:80px;" /> </td>
+                                <td>@item.Title</td>
+                                <td>@item.Author</td>
+                                <td>@item.Price.ToString("0.00")$</td>
+                                <td>@item.Quantity</td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+<style>
+    td {
+        text-align: center;
+        color: #333;
+        padding: 10px;
+        font-size: 20px;
+    }
+
+    th {
+        text-align: center;
+        color: #fff;
+        background-color: #007bff;
+        padding: 10px;
+        font-size: 22px;
+    }
+
+    .action-link {
+        text-decoration: none;
+        color: #007bff;
+    }
+
+        .action-link:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+    tbody tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+</style>

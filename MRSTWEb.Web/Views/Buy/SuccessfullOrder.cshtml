@@ -14,7 +14,7 @@
                 <h5>Order Details:</h5>
                 <ul style="padding:20px;">
                     <li><strong>Order ID:</strong> @Model.Id</li>
-                    <li><strong>Order Date:</strong> @Model.BuyingTime.ToString("MMMM dd, yyyy")</li>
+                    <li><strong>Order Date:</strong> @Model.BuyingTime.ToString("MMMM dd, yyyy ")</li>
                     <li><strong>Customer Name:</strong> @Model.FirstName @Model.LastName</li>
                     <li><strong>Email:</strong> @Model.Email</li>
                     <li><strong>Phone:</strong> @Model.Phone</li>
@@ -26,11 +26,11 @@
                 <div class="row">
                     @foreach (var orderItem in ViewBag.CartItems)
                     {
-                        <div class="col-md-4" >
+                        <div class="col-md-4">
                             <div class="product-item">
                                 <h6>@orderItem.Title</h6>
-                                <img src="@orderItem.PathImage" alt="@orderItem.Title" style="width: 100px; height: 100px;">
-                                <p>Price: $@orderItem.Price</p>
+                                <img src="@orderItem.PathImage" alt="@orderItem.Title" style="width: 100px; height: 120px;">
+                                <p>Price: $@orderItem.Price.ToString("0.00")</p>
                                 <p>Quantity: @orderItem.Quantity</p>
 
                             </div>
@@ -38,7 +38,7 @@
                     }
 
                 </div>
-                <p>Total: <span class="text-bold text-primary">$@Model.TotalSumToPay</span> </p>
+                <p>Total: <span class="text-bold text-primary">$@(Model.TotalSumToPay)</span> </p>
             </div>
         </div>
     </div>
@@ -46,27 +46,30 @@
 @section scripts{
     <script>
         function clearLocalStorage() {
+            if (window.location.href.includes('SuccessfullOrder')) {
+                document.getElementById("cartItemCount").textContent = 0;
+                var cart = $("#cartItems");
+                cart.empty();
 
-
-            document.getElementById("cartItemCount").textContent = 0;
-            var cart = $("#cartItems");
-            cart.empty();
-
-            console.log("clearing local storage!")
-            localStorage.clear();
+                console.log("clearing local storage!");
+                localStorage.clear();
+            }
         }
+
         clearLocalStorage();
     </script>
 }
 <style>
-    .row{
-        font-size:20px;
+    .row {
+        font-size: 20px;
     }
-    h6{
-        font-size:20px;
+
+    h6 {
+        font-size: 20px;
     }
-    h5{
-        font-size:22px;
+
+    h5 {
+        font-size: 22px;
     }
 </style>
 

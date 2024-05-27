@@ -15,6 +15,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using MRSTWEb.BuisnessLogic.Services;
+using MRSTWEb.BusinessLogic.Services;
 
 namespace MRSTWEb.Controllers
 {
@@ -39,16 +41,14 @@ namespace MRSTWEb.Controllers
             }
         }
 
-        public AccountController(ICartService cartService, IOrderService orderService, IManageBooksService manageBooksService, IReviewService reviewService)
+        public AccountController()
         {
-            this.cartService = cartService;
-            this.orderService = orderService;
-            this.manageBooksService = manageBooksService;
-            this.reviewService = reviewService;
+            this.cartService = new CartService();
+            this.orderService = new OrderService();
+            this.manageBooksService = new ManageBooksService();
+            this.reviewService = new ReviewService();
         }
         [HttpPost]
-
-
         [Authorize(Roles = "admin")]
 
         public async Task<ActionResult> DeleteUser(string userId)
@@ -77,6 +77,7 @@ namespace MRSTWEb.Controllers
             var users = await GetAllUsers();
             return View(users);
         }
+
 
 
         [Authorize(Roles = "admin")]
@@ -138,6 +139,7 @@ namespace MRSTWEb.Controllers
 
 
         }
+
 
 
         [Authorize]
@@ -215,7 +217,6 @@ namespace MRSTWEb.Controllers
         {
             return View();
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterModel model)
@@ -308,7 +309,7 @@ namespace MRSTWEb.Controllers
                     ExpirationTime = bookModel.ExpirationTime,
                     SetTime = bookModel.SetTime,
                     Percentage = bookModel.Percentage,
-
+                    Price = bookModel.Price,
                 };
 
                 cartService.SetDiscount(bookDto);
@@ -345,34 +346,7 @@ namespace MRSTWEb.Controllers
 
 
         //Delivery functions
-        [HttpGet]
-        [Authorize(Roles = "admin")]
-        public ActionResult DeliveryPage()
-        {
-            var deliveryDto = cartService.GetAllDeliveriesCost().LastOrDefault();
-            var delivery = new DeliveryViewModel();
-            if (deliveryDto != null)
-            {
-                delivery.Cost = deliveryDto.Cost;
-                delivery.Id = deliveryDto.Id;
-            }
-            ViewBag.MessageRemoval = TempData["Message"];
-            return View(delivery);
-        }
-        [HttpPost]
-        [Authorize(Roles = "admin")]
-        public ActionResult SetDelivery(DeliveryViewModel deliveryCostViewModel)
-        {
-            if (ModelState.IsValid)
-            {
-                var mapper = new MapperConfiguration(cfg => cfg.CreateMap<DeliveryViewModel, DeliveryCostDTO>()).CreateMapper();
-                var delivery = mapper.Map<DeliveryViewModel, DeliveryCostDTO>(deliveryCostViewModel);
-                cartService.SetDelivery(delivery);
-                ViewBag.Message = "Delivery Cost Has Been Set Successfuly.";
-                return View("DeliveryPage", deliveryCostViewModel);
-            }
-            return View("DeliveryPage", deliveryCostViewModel);
-        }
+
         [HttpPost]
         [Authorize(Roles = "admin")]
         public ActionResult RemoveDelivery(int deliveryCostId)
@@ -401,6 +375,36 @@ namespace MRSTWEb.Controllers
                 return View("DeliveryPage", delivery);
             }
         }
+
+        [HttpGet]
+        [Authorize(Roles = "admin")]
+        public ActionResult DeliveryPage()
+        {
+            var deliveryDto = cartService.GetAllDeliveriesCost().LastOrDefault();
+            var delivery = new DeliveryViewModel();
+            if (deliveryDto != null)
+            {
+                delivery.Cost = deliveryDto.Cost;
+                delivery.Id = deliveryDto.Id;
+            }
+            ViewBag.MessageRemoval = TempData["Message"];
+            return View(delivery);
+        }
+        [HttpPost]
+        [Authorize(Roles = "admin")]
+        public ActionResult SetDelivery(DeliveryViewModel deliveryCostViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var mapper = new MapperConfiguration(cfg => cfg.CreateMap<DeliveryViewModel, DeliveryCostDTO>()).CreateMapper();
+                var delivery = mapper.Map<DeliveryViewModel, DeliveryCostDTO>(deliveryCostViewModel);
+                cartService.SetDelivery(delivery);
+                ViewBag.Message = "Delivery Cost Has Been Set Successfuly.";
+                return View("DeliveryPage", deliveryCostViewModel);
+            }
+            return View("DeliveryPage", deliveryCostViewModel);
+        }
+ 
 
         //END Delivery functions
 

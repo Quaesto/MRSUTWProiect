@@ -7,13 +7,13 @@ namespace MRSTWEb.Domain.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class profileImage : IMigrationMetadata
+    public sealed partial class DiscountAndDeliveryAdded : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(profileImage));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(DiscountAndDeliveryAdded));
         
         string IMigrationMetadata.Id
         {
-            get { return "202405231714209_profileImage"; }
+            get { return "202405270932584_DiscountAndDeliveryAdded"; }
         }
         
         string IMigrationMetadata.Source

@@ -13,6 +13,7 @@
                 <table class="table   table-bordered">
                     <thead class="thead-primary">
                         <tr class="text-center">
+                            <th>Image</th>
                             <th>User Name</th>
                             <th>Email</th>
                             <th>Name</th>
@@ -26,11 +27,24 @@
                             if (user.Name != "Application Admin")
                             {
                                 <tr class="text-center">
+                                    <td>
+                                        <img src="@user.ProfileImage" style="height:70px;" class="img-fluid" alt="User Image">
+                                    </td>
                                     <td>@user.UserName</td>
                                     <td>@user.Email</td>
                                     <td>@user.Name</td>
                                     <td>@user.Address</td>
-                                 
+                                    <td>
+                                        <div class="btn-group" role="group" aria-label="User Actions">
+                                            @using (Html.BeginForm("DeleteUser", "Account", new { userId = user.Id }, FormMethod.Post, new { @class = "removeUserForm-" + user.Id }))
+                                            {
+                                                <input type="hidden" name="userId" value="@user.Id" />
+                                                <p class="action-link" onclick="confirmDelete('@user.Id')">Delete</p>
+                                            }
+                                            /
+                                            @Html.ActionLink("Orders", "OrderDetails", "Account", new { userId = user.Id }, new { @class = "action-link" })
+                                        </div>
+                                    </td>
                                 </tr>
                             }
                         }

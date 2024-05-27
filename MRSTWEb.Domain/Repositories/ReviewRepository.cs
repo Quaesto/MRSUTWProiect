@@ -64,5 +64,10 @@ namespace MRSTWEb.Domain.Repositories
                 db.SaveChanges();
             }
         }
+
+        public void UpdateBookDiscount(decimal Price, int bookId)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

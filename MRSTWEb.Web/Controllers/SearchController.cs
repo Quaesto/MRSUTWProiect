@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using MRSTWEb.BuisnessLogic.Interfaces;
+using MRSTWEb.BuisnessLogic.Services;
 using MRSTWEb.BusinessLogic.DTO;
 using MRSTWEb.BusinessLogic.Interfaces;
 using MRSTWEb.BusinessLogic.Services;

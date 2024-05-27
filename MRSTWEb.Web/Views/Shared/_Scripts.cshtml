@@ -3,5 +3,34 @@
 <script src="~/Scripts/js/popper.min.js"></script>
 <script src="~/Scripts/js/bootstrap.min.js"></script>
 <script src="~/Scripts/js/jquery.magnific-popup.min.js"></script>
-
+@*
+    <script src="~/Scripts/js/main.js"></script>*@
 <script src="~/Jquery_scripts/updateHeartIcon.js"></script>
+@if (!Request.IsAuthenticated)
+{
+
+    <script>
+        function removeSpecificLocalStorageItem(itemKey) {
+            if (itemKey === 'cartItemCount') {
+                var cartItemCountElement = document.getElementById("cartItemCount");
+                if (cartItemCountElement) {
+                    cartItemCountElement.textContent = 0;
+                }
+            }
+
+            if (itemKey === 'cartItems') {
+                var cartItemsElement = document.getElementById("cartItems");
+                if (cartItemsElement) {
+                    cartItemsElement.innerHTML = ''; // Clear the contents of the cart
+                }
+            }
+
+
+            localStorage.removeItem(itemKey);
+        }
+
+        removeSpecificLocalStorageItem('cartItemCount');
+        removeSpecificLocalStorageItem('cartItems');
+    </script>
+
+}

@@ -42,6 +42,9 @@
     </div>
 }
 
+
+
+
 <section class="py-5 bg-light" style="margin-bottom:100px">
     <div class="container px-4 px-lg-5 mt-5">
 
@@ -92,22 +95,3 @@
 
 <link rel="stylesheet" type="text/css" href="~/Content/css/cart.css" />
 
-@if (!Request.IsAuthenticated)
-{
-
-    <script>
-        function clearLocalStorage() {
-
-
-            document.getElementById("cartItemCount").textContent = 0;
-
-            var cart = document.getElementById("cartItems");
-            cart.innerHTML = '';
-
-            console.log("clearing local storage!")
-            localStorage.clear();
-        }
-        clearLocalStorage();
-    </script>
-    Session.Clear();
-}

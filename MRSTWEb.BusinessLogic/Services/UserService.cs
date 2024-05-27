@@ -4,6 +4,7 @@ using MRSTWEb.BusinessLogic.Infrastructure;
 using MRSTWEb.BusinessLogic.Interfaces;
 using MRSTWEb.Domain.Entities;
 using MRSTWEb.Domain.Interfaces;
+using MRSTWEb.Domain.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -43,7 +44,7 @@ namespace MRSTWEb.BusinessLogic.Services
                 //Adauga roluri
                 await Database.UserManager.AddToRoleAsync(user.Id, userDTO.Role);
                 //Creaza profilul utilizatorului
-                ClientProfile clientProfile = new ClientProfile { Id = user.Id, Address = userDTO.Address, Name = userDTO.Name };
+                ClientProfile clientProfile = new ClientProfile { Id = user.Id, Address = userDTO.Address, Name = userDTO.Name, ProfileImage = userDTO.ProfileImage };
                 Database.ClientManager.Create(clientProfile);
                 await Database.SaveAsync();
                 return new OperationDetails(true, "Registration was successfull", "");
@@ -54,6 +55,7 @@ namespace MRSTWEb.BusinessLogic.Services
             }
         }
 
+
         public async Task<OperationDetails> DeleteUserByUserId(string userId)
         {
             var user = await Database.UserManager.FindByIdAsync(userId);
@@ -61,9 +63,29 @@ namespace MRSTWEb.BusinessLogic.Services
             {
                 return new OperationDetails(false, "User not found", "");
             }
+
+            if (user.Orders != null)
+            {
+                var orderIds = user.Orders.Select(o => o.Id).ToList();
+                foreach (var orderId in orderIds)
+                {
+                    Database.Orders.Delete(orderId);
+                }
+                Database.Save();
+            }
+
+            if (user.Reviews.Any())
+            {
+                var reviewIds = user.Reviews.Select(r => r.Id).ToList();
+                foreach (var reviewId in reviewIds)
+                {
+                    Database.Reviews.Delete(reviewId);
+                }
+                Database.Save();
+            }
+
             if (user.ClientProfile != null)
             {
-
                 Database.ClientManager.Delete(user.ClientProfile);
                 await Database.SaveAsync();
             }
@@ -84,32 +106,18 @@ namespace MRSTWEb.BusinessLogic.Services
         public async Task<IEnumerable<UserDTO>> GetAllUsers()
         {
             var users = await Database.UserManager.Users.ToListAsync();
-
-            if (users == null || !users.Any())
+            if (!users.Any()) return null;
+            return users.Select(u => new UserDTO
             {
-                return Enumerable.Empty<UserDTO>();
-            }
+                Id = u.Id,
+                Email = u.Email,
+                UserName = u.UserName,
+                Address = u.ClientProfile.Address,
+                Name = u.ClientProfile.Name,
+                ProfileImage = u.ClientProfile.ProfileImage,
 
-            var userDTOs = users.Select(u =>
-            {
-                if (u.ClientProfile == null)
-                {
-                    Console.WriteLine($"User {u.Id} has a null ClientProfile.");
-                }
-
-                return new UserDTO
-                {
-                    Id = u.Id,
-                    Email = u.Email,
-                    UserName = u.UserName,
-                    Address = u.ClientProfile?.Address, 
-                    Name = u.ClientProfile?.Name        
-                };
             }).ToList();
-
-            return userDTOs;
         }
-
 
         public async Task<UserDTO> GetUserById(string userId)
         {
@@ -128,7 +136,7 @@ namespace MRSTWEb.BusinessLogic.Services
                 Address = user.ClientProfile.Address,
                 Name = user.ClientProfile.Name,
                 Password = user.PasswordHash,
-            
+                ProfileImage = user.ClientProfile?.ProfileImage,
             };
         }
 
@@ -144,6 +152,7 @@ namespace MRSTWEb.BusinessLogic.Services
                     Email = user.Email,
                     Address = user.ClientProfile.Address,
                     Name = user.ClientProfile.Name,
+                    ProfileImage = user.ClientProfile?.ProfileImage,
                 };
             }
             return null;
@@ -162,7 +171,7 @@ namespace MRSTWEb.BusinessLogic.Services
             await Create(adminDto);
         }
 
-        public  async Task<OperationDetails> UpdateClient(UserDTO user)
+        public async Task<OperationDetails> UpdateClient(UserDTO user)
         {
             ClientProfile client = Database.ClientManager.GetClientProfileById(user.Id);
 
@@ -181,7 +190,10 @@ namespace MRSTWEb.BusinessLogic.Services
                 client.Address = user.Address;
             }
 
-
+            if (!string.IsNullOrEmpty(user.ProfileImage))
+            {
+                client.ProfileImage = user.ProfileImage;
+            }
             Database.ClientManager.UpdateClientProfile(client);
 
 
@@ -220,6 +232,8 @@ namespace MRSTWEb.BusinessLogic.Services
                 return new OperationDetails(false, "Something went wrong with user update", "");
             }
         }
+
+
 
         public void Dispose()
         {

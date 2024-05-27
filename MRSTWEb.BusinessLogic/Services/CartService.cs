@@ -9,13 +9,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using MRSTWEb.Domain.Repositories;
 
 namespace MRSTWEb.BuisnessLogic.Services
 {
     public class CartService : ICartService
     {
         private IUnitOfWork DataBase { get; set; }
-        public CartService(IUnitOfWork uow) { DataBase = uow; }
+        public CartService() { DataBase = new EFUnitOfWork(); }
 
         public void AddToCart(int BookId)
         {
@@ -27,7 +28,6 @@ namespace MRSTWEb.BuisnessLogic.Services
                 bookDto.ExpirationTime = book.Discount.ExpirationTime;
                 bookDto.SetTime = book.Discount.ExpirationTime;
                 bookDto.Percentage = book.Discount.Percentage;
-                bookDto.Price -= CalculateDiscountAmount(bookDto.Price, bookDto.Percentage);
             }
             List<Item> cart = GetCart();
 
@@ -53,11 +53,17 @@ namespace MRSTWEb.BuisnessLogic.Services
 
         public bool RemoveDiscount(int bookId)
         {
+
             var discount = DataBase.Discounts.Get(bookId);
+            decimal originalPrice = DataBase.Books.Get(bookId).Price;
+           ;
+
             if (discount != null)
             {
+                originalPrice = GetBookPriceWithoutDiscount(originalPrice, discount.Percentage);
                 DataBase.Discounts.Delete(bookId);
-                DataBase.Save();
+                DataBase.Books.UpdateBookDiscount(originalPrice, bookId);
+            
                 return true;
             }
             return false;
@@ -87,9 +93,11 @@ namespace MRSTWEb.BuisnessLogic.Services
 
 
 
+
         public void SetDiscount(BookDTO bookDto)
         {
-
+            decimal price = bookDto.Price;
+            price -= CalculateDiscountAmount(bookDto.Price, bookDto.Percentage);
 
             var Discount = new Discount
             {
@@ -101,13 +109,14 @@ namespace MRSTWEb.BuisnessLogic.Services
             if (DataBase.Discounts.Get(bookDto.Id) == null)
             {
                 DataBase.Discounts.Create(Discount);
-
-                DataBase.Save();
+                DataBase.Books.UpdateBookDiscount(price, bookDto.Id);
+              
             }
             else
             {
                 DataBase.Discounts.Update(Discount);
-                DataBase.Save();
+                DataBase.Books.UpdateBookDiscount(price, bookDto.Id);
+              
             }
 
         }
@@ -223,11 +232,7 @@ namespace MRSTWEb.BuisnessLogic.Services
             List<BookDTO> booksDto = new List<BookDTO>();
             foreach (var book in books)
             {
-                if (book.Discount != null && book.Discount.ExpirationTime >= DateTime.Now)
-                {
-                    book.Price -= CalculateDiscountAmount(book.Price, book.Discount.Percentage);
-
-                }
+               
                 var bookDto = new BookDTO
                 {
                     Id = book.Id,
@@ -273,10 +278,7 @@ namespace MRSTWEb.BuisnessLogic.Services
                 bookDto.ExpirationTime = book.Discount.ExpirationTime;
                 bookDto.SetTime = book.Discount.SetTime;
                 bookDto.Percentage = book.Discount.Percentage;
-                if (book.Discount.ExpirationTime >= DateTime.Now)
-                {
-                    bookDto.Price -= CalculateDiscountAmount(bookDto.Price, bookDto.Percentage);
-                }
+
             }
 
 

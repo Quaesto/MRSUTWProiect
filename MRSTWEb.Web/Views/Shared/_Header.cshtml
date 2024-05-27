@@ -1,7 +1,10 @@
-﻿
+﻿@using Microsoft.AspNet.Identity
 <link rel="stylesheet" type="text/css" href="~/Content/css/dropdown.css">
+
 <section class="header-1">
+
     @Html.Partial("_FilterBooks")
+
 
     <form action="@Url.Action("Search", "Search")" class="search-form" method="get">
         <input type="search" name="keyword" class="form-control" placeholder="Search here..." id="search-box">
@@ -9,7 +12,8 @@
 
     </form>
 
-   @Html.Partial("_AccountDropDownList")
+
+    @Html.Partial("_AccountDropDownList")
 
 </section>
 
@@ -22,13 +26,13 @@
         <a href="#blogs">blogs</a>
     </nav>
 </div>
-<style>
-    .dropdown-item {
-        font-size: 18px !important;
-    }
-</style>
+
+
 <script src="~/Scripts/jquery-3.7.1.min.js"></script>
-<script src="~/Jquery_scripts/getAllBooks.js" ></script>
+<script src="~/Jquery_scripts/getAllBooks.js"></script>
+
+
+
 <script>
     function searchByKeyword(keyWord) {
         document.getElementById('search-box').value = keyWord;

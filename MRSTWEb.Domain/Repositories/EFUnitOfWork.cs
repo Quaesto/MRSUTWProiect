@@ -33,7 +33,7 @@ namespace MRSTWEb.Domain.Repositories
         {
             get
             {
-                if (discountRepository == null) return new DiscountRepository(db);
+                if (discountRepository == null) return new DiscountRepository();
                 return discountRepository;
             }
         }
@@ -42,7 +42,7 @@ namespace MRSTWEb.Domain.Repositories
         {
             get
             {
-                if (deliveryCostRepository == null) return new DeliveryRepository(db);
+                if (deliveryCostRepository == null) return new DeliveryRepository();
                 return deliveryCostRepository;
             }
         }
@@ -51,7 +51,7 @@ namespace MRSTWEb.Domain.Repositories
         {
             get
             {
-                if (bookRepository == null) return new BookRepository(db);
+                if (bookRepository == null) return new BookRepository();
                 return bookRepository;
             }
         }
@@ -60,7 +60,7 @@ namespace MRSTWEb.Domain.Repositories
         {
             get
             {
-                if (orderRepository == null) return new OrderRepository(db);
+                if (orderRepository == null) return new OrderRepository();
                 return orderRepository;
             }
         }
@@ -75,7 +75,7 @@ namespace MRSTWEb.Domain.Repositories
         {
             get
             {
-                if (reviewRepository == null) return new ReviewRepository(db);
+                if (reviewRepository == null) return new ReviewRepository();
                 return reviewRepository;
             }
         }

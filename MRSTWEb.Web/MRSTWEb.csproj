@@ -306,9 +306,12 @@
     <Content Include="Jquery_scripts\getAllBooks.js" />
     <Content Include="Jquery_scripts\GetBookDetails.js" />
     <Content Include="Jquery_scripts\getFavouriteReview.js" />
+    <Content Include="Jquery_scripts\getUserImageProfile.js" />
     <Content Include="Jquery_scripts\submitReviews.js" />
     <Content Include="Jquery_scripts\updateHeartIcon.js" />
     <Content Include="Jquery_scripts\UpdateTotalPrice.js" />
+    <Content Include="Jquery_scripts\updateUserReviewInAdmin.js" />
+    <Content Include="Jquery_scripts\updateUserReviewInIndex.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -394,6 +397,10 @@
     <Content Include="Views\Shared\_addToCartForm.cshtml" />
     <Content Include="Views\Account\ViewClientReviews.cshtml" />
     <Content Include="Views\Account\EditClientProfile.cshtml" />
+    <Content Include="Views\Account\DeliveryPage.cshtml" />
+    <Content Include="Views\Account\ItemsBought.cshtml" />
+    <Content Include="Views\Account\OrderDetails.cshtml" />
+    <Content Include="Views\Account\SetBookDiscount.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -13,14 +13,15 @@ namespace MRSTWEb.Domain.Repositories
         private EF.AppContext db;
         private MemoryCache _cache = MemoryCache.Default;
 
-        public OrderRepository(EF.AppContext db)
+        public OrderRepository()
         {
-            this.db = db;
+            this.db = new EF.AppContext();
         }
 
         public void Create(Order item)
         {
             db.Orders.Add(item);
+            db.SaveChanges();
             InvalidateCache();
         }
 
@@ -30,6 +31,7 @@ namespace MRSTWEb.Domain.Repositories
             if (order != null)
             {
                 db.Orders.Remove(order);
+                db.SaveChanges();
                 InvalidateCache();
             }
         }
@@ -134,6 +136,8 @@ namespace MRSTWEb.Domain.Repositories
                 order.BuyingTime = item.BuyingTime;
                 order.PostCode = item.PostCode;
 
+                db.Entry(order).State = EntityState.Modified;
+                db.SaveChanges();
                 InvalidateCache();
             }
         }
@@ -149,6 +153,11 @@ namespace MRSTWEb.Domain.Repositories
             {
                 _cache.Remove(item.Key);
             }
+        }
+
+        public void UpdateBookDiscount(decimal Price, int bookId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

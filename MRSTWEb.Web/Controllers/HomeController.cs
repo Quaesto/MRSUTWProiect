@@ -207,6 +207,7 @@ namespace MRSTWEb.Controllers
             {
                 Id = userDto.Id,
                 UserName = userDto.UserName,
+                ProfileImage = userDto.ProfileImage,
             };
             return userModel;
         }

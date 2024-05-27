@@ -14,12 +14,8 @@ namespace MRSTWEb.BuisnessLogic.Services
     public class OrderService : IOrderService
     {
         IUnitOfWork DataBase { get; set; }
-        public OrderService(IUnitOfWork uow) { DataBase = uow; }
+        public OrderService() { DataBase = new EFUnitOfWork(); }
 
-        public OrderService()
-        {
-            DataBase = new EFUnitOfWork();
-        }
 
         public bool DeleteOrdersByUserId(string userId)
         {
@@ -101,7 +97,7 @@ namespace MRSTWEb.BuisnessLogic.Services
                 order.Items.Add(orderItem);
             }
             DataBase.Orders.Create(order);
-            DataBase.Save();
+       
         }
     }
 }
