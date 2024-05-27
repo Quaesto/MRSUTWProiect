@@ -40,6 +40,17 @@ namespace MRSTWEb.BusinessLogic.Services
             };
             return reviewDto;
         }
+
+        public void RemoveReview(int reviewId)
+        {
+            var review = Database.Reviews.Get(reviewId);
+            if (review != null)
+            {
+                Database.Reviews.Delete(reviewId);
+                Database.Save();
+            }
+        }
+
         public IEnumerable<ReviewDTO> GetReviewByBookId(int bookId)
         {
             var reviews = Database.Reviews.GetByBook(bookId);

@@ -116,6 +116,14 @@ namespace MRSTWEb.Controllers
         //
 
         //Reviews Functionalities
+        [HttpPost]
+        [Authorize(Roles ="admin")]
+        
+        public ActionResult RemoveReview(int reviewId)
+        {
+            reviewService.RemoveReview(reviewId);
+            return RedirectToAction("ViewClientReviews", "Account");
+        }
 
         [HttpGet]
         public JsonResult GetReviews(int bookId)
@@ -133,6 +141,7 @@ namespace MRSTWEb.Controllers
             return Json(new { review, book }, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
+  
         public ActionResult PostReview(ReviewViewModel model)
         {
             if (ModelState.IsValid)
@@ -150,7 +159,8 @@ namespace MRSTWEb.Controllers
                 return Json(new { success = true });
 
             }
-            return View(model);
+
+            return Json(new { success = false });
         }
         [HttpPost]
         [Authorize(Roles = "admin")]

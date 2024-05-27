@@ -47,7 +47,15 @@
                                 Post
                                 Review
                             </button>
-                         
+                            @using (Html.BeginForm("RemoveReview", "Home", new { reviewId = review.Id }, FormMethod.Post, new
+                            {
+                                @class = "deleteReview-" + review.Id
+                            }))
+                            {
+                                @Html.HiddenFor(model => review.Id)
+                                <button type="submit" class="btn btn-danger" onclick="confirmDelete(@review.Id)">Remove Review</button>
+
+                            }
 
                         </div>
 
@@ -83,6 +91,13 @@
 <script src="~/Jquery_scripts/getFavouriteReview.js"></script>
 
 <script src="~/Jquery_scripts/updateUserReviewInAdmin.js"></script>
+<script>
+    function confirmDelete(reviewId) {
+        if (confirm("Are you sure you want to remove the review?")) {
+            document.querySelector("deleteReview-" + reviewId).submit();
+        }
+    }
+</script>
 <style>
     .star-group {
         display: inline-block;

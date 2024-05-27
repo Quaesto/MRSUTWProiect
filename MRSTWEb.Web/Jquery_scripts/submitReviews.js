@@ -1,17 +1,9 @@
 ﻿$(document).ready(function () {
 
+
+
     function checkUserReview(productId, userId, callback) {
 
-        var cachedReviews = JSON.parse(localStorage.getItem('reviews_' + productId));
-        if (cachedReviews) {
-            var userReview = cachedReviews.find(review => review.ApplicationUserId === userId);
-            if (userReview) {
-                callback(true);
-                return;
-            }
-        }
-
-        // If not found in cache, make an AJAX request
         $.ajax({
             url: '/Home/GetReviews',
             type: 'GET',
@@ -53,23 +45,15 @@
     function updateStars(productId) {
         $('.star-rating[data-productid="' + productId + '"]').html('<i class="fa fa-spinner fa-spin"></i>');
 
-        // Check if reviews exist in local storage
-        var cachedReviews = JSON.parse(localStorage.getItem('reviews_' + productId));
-        if (cachedReviews) {
-            renderStarsAndRatings(cachedReviews, productId);
-            console.log("Using local storage");
-            return; // Exit the function, no need to make AJAX request
-        }
 
-        // If reviews not found in local storage, make AJAX request
+
         $.ajax({
             url: '/Home/GetReviews?bookId=' + productId,
             type: 'GET',
             success: function (data) {
                 var reviews = data.reviews;
                 renderStarsAndRatings(reviews, productId);
-                // Cache the reviews in local storage
-                localStorage.setItem('reviews_' + productId, JSON.stringify(reviews));
+
             },
             error: function () {
                 console.log("An error occurred while fetching reviews.");
@@ -152,17 +136,15 @@
                         ApplicationUserId: userId,
                         BookId: productId
                     },
-                    success: function (data) {
-                        if (data.success) {
+                    success: function (response) {
+                        if (response.success === true) {
                             console.log("Review successfully submitted.");
-                            // Clear the cached reviews for the product
-                            localStorage.removeItem('reviews_' + productId);
+
                             $('#reviewModal_' + productId).modal('hide');
-                            console.log(review.val());
-                            console.log(rating);
                             updateStars(productId);
                         } else {
                             modalWarnings.html(`<p style="color: red;">Failed to submit review.</p>`);
+                            console.log(rating, productId,userId);
                         }
                     },
                     error: function () {
@@ -174,6 +156,9 @@
             checkAuthentication(productId);
         });
     });
+
+
+
 
     function checkCommentLength(reviewText, modalWarnings) {
         var commentLength = reviewText.val().length;

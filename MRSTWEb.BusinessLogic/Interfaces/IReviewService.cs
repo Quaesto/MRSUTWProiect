@@ -12,6 +12,7 @@ namespace MRSTWEb.BusinessLogic.Interfaces
         IEnumerable<ReviewDTO> GetReviewByBookId(int bookId);
         IEnumerable<ReviewDTO> GetUserReview(string userId);
         void UpdateReview(ReviewDTO reviewDto);
+        void RemoveReview(int reviewId);
         void Dispose();
     }
 }
