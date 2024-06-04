@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.Owin.Security.DataProtection;
 using MRSTWEb.Domain.Entities;
 using MRSTWEb.Domain.Identity;
 using MRSTWEb.Domain.Interfaces;
@@ -22,10 +23,10 @@ namespace MRSTWEb.Domain.Repositories
 
         private IClientManager clientManager;
 
-        public EFUnitOfWork()
+        public EFUnitOfWork(IDataProtectionProvider dataProtectionProvider)
         {
             this.db = new EF.AppContext();
-            userManager = new ApplicationUserManager(new UserStore<ApplicationUser>(db));
+            userManager = new ApplicationUserManager(new UserStore<ApplicationUser>(db), dataProtectionProvider);
             roleManager = new ApplicationRoleManager(new RoleStore<ApplicationRole>(db));
             clientManager = new ClientManager(db);
         }

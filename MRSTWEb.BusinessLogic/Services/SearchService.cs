@@ -17,7 +17,7 @@ namespace MRSTWEb.BusinessLogic.Services
     public class SearchService : ISearchService
     {
         private IUnitOfWork DataBase;
-        public SearchService() { DataBase = new EFUnitOfWork(); }
+        public SearchService() { DataBase = new EFUnitOfWork(null); }
        
 
         public IEnumerable<BookDTO> FilterPrice(int minValue, int maxValue)

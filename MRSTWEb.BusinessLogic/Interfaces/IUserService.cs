@@ -17,5 +17,8 @@ namespace MRSTWEb.BusinessLogic.Interfaces
         Task<UserDTO> GetUserById(string userId);
         Task<OperationDetails> UpdateClient(UserDTO user);
         Task<UserDTO> GetUserByUsername(string username);
+        Task<UserDTO> FindByEmail(string email);
+        Task<string> GenerateResetPasswordToken(string userId);
+        Task<OperationDetails> ResetPassword(string userId, string code, string password);
     }
 }

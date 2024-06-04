@@ -235,11 +235,14 @@
     <Compile Include="Models\BookViewModel.cs" />
     <Compile Include="Models\DeliveryViewModel.cs" />
     <Compile Include="Models\EditModel.cs" />
+    <Compile Include="Models\ForgotPasswordViewModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\OrderViewModel.cs" />
     <Compile Include="Models\PasswordModel.cs" />
     <Compile Include="Models\RegisterModel.cs" />
+    <Compile Include="Models\ResetPasswordViewModel.cs" />
     <Compile Include="Models\ReviewViewModel.cs" />
+    <Compile Include="Models\SendEmail.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -401,6 +404,9 @@
     <Content Include="Views\Account\ItemsBought.cshtml" />
     <Content Include="Views\Account\OrderDetails.cshtml" />
     <Content Include="Views\Account\SetBookDiscount.cshtml" />
+    <Content Include="Views\Account\ForgotPassword.cshtml" />
+    <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
+    <Content Include="Views\Account\ResetPassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

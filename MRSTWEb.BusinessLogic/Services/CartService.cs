@@ -16,7 +16,7 @@ namespace MRSTWEb.BuisnessLogic.Services
     public class CartService : ICartService
     {
         private IUnitOfWork DataBase { get; set; }
-        public CartService() { DataBase = new EFUnitOfWork(); }
+        public CartService() { DataBase = new EFUnitOfWork(null); }
 
         public void AddToCart(int BookId)
         {
