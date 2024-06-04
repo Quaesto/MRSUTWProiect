@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using MRSTWEb.Domain.Repositories;
+using Hangfire;
 
 namespace MRSTWEb.BuisnessLogic.Services
 {
@@ -51,19 +52,21 @@ namespace MRSTWEb.BuisnessLogic.Services
         }
         //Discounts
 
+
+
         public bool RemoveDiscount(int bookId)
         {
 
             var discount = DataBase.Discounts.Get(bookId);
             decimal originalPrice = DataBase.Books.Get(bookId).Price;
-           ;
+
 
             if (discount != null)
             {
                 originalPrice = GetBookPriceWithoutDiscount(originalPrice, discount.Percentage);
                 DataBase.Discounts.Delete(bookId);
                 DataBase.Books.UpdateBookDiscount(originalPrice, bookId);
-            
+
                 return true;
             }
             return false;
@@ -110,15 +113,16 @@ namespace MRSTWEb.BuisnessLogic.Services
             {
                 DataBase.Discounts.Create(Discount);
                 DataBase.Books.UpdateBookDiscount(price, bookDto.Id);
-              
+
             }
             else
             {
                 DataBase.Discounts.Update(Discount);
                 DataBase.Books.UpdateBookDiscount(price, bookDto.Id);
-              
-            }
 
+            }
+            TimeSpan delay = Discount.ExpirationTime - DateTime.Now;
+            BackgroundJob.Schedule(() => RemoveDiscount(bookDto.Id), delay);
         }
         public decimal CalculateDiscountAmount(decimal bookPrice, decimal percentage)
         {
@@ -129,6 +133,8 @@ namespace MRSTWEb.BuisnessLogic.Services
             decimal originalPrice = bookPrice / (1 - percentage / 100);
             return originalPrice;
         }
+
+
         //end discount
 
 
@@ -232,7 +238,7 @@ namespace MRSTWEb.BuisnessLogic.Services
             List<BookDTO> booksDto = new List<BookDTO>();
             foreach (var book in books)
             {
-               
+
                 var bookDto = new BookDTO
                 {
                     Id = book.Id,

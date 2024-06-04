@@ -43,6 +43,12 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\MRSTWEb.Web\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Hangfire.Core, Version=1.8.12.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\MRSTWEb.Web\packages\Hangfire.Core.1.8.12\lib\net46\Hangfire.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Hangfire.SqlServer, Version=1.8.12.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\MRSTWEb.Web\packages\Hangfire.SqlServer.1.8.12\lib\net451\Hangfire.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Identity.Core, Version=1.2.7.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\MRSTWEb.Web\packages\Identity.Core.1.2.7\lib\netstandard2.0\Identity.Core.dll</HintPath>
     </Reference>
