@@ -12,7 +12,7 @@ namespace MRSTWEb.BusinessLogic.Services
     public class ReviewService : IReviewService
     {
         private IUnitOfWork Database { get; set; }
-        public ReviewService() { Database = new EFUnitOfWork(); }
+        public ReviewService() { Database = new EFUnitOfWork(null); }
         public void AddReview(ReviewDTO reviewDto)
         {
             var review = new Review

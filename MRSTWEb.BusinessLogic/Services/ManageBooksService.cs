@@ -12,7 +12,7 @@ namespace MRSTWEb.BuisnessLogic.Services
     public class ManageBooksService : IManageBooksService
     {
         private IUnitOfWork DataBase { get; set; }
-        public ManageBooksService() { this.DataBase = new EFUnitOfWork(); }
+        public ManageBooksService() { this.DataBase = new EFUnitOfWork(null); }
 
         public void UpdateProduct(BookDTO bookDTO)
         {

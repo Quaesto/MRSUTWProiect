@@ -15,7 +15,7 @@ namespace MRSTWEb.BuisnessLogic.Services
     public class WishListService : IWishListService
     {
         private IUnitOfWork Database;
-        public WishListService() { this.Database = new EFUnitOfWork(); }
+        public WishListService() { this.Database = new EFUnitOfWork(null); }
 
         public void AddToWishList(BookDTO bookDTO)
         {

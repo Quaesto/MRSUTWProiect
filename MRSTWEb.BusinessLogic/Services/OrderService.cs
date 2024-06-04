@@ -14,7 +14,7 @@ namespace MRSTWEb.BuisnessLogic.Services
     public class OrderService : IOrderService
     {
         IUnitOfWork DataBase { get; set; }
-        public OrderService() { DataBase = new EFUnitOfWork(); }
+        public OrderService() { DataBase = new EFUnitOfWork(null); }
 
 
         public bool DeleteOrdersByUserId(string userId)

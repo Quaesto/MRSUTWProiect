@@ -233,6 +233,38 @@ namespace MRSTWEb.BusinessLogic.Services
             }
         }
 
+        public async Task<UserDTO> FindByEmail(string email)
+        {
+            var user = await Database.UserManager.FindByEmailAsync(email);
+            var userDto = new UserDTO
+            {
+                Id = user.ClientProfile.Id,
+                Email = user.Email,
+                UserName = user.UserName,
+                Address = user.ClientProfile.Address,
+                Name = user.ClientProfile.Name,
+                Password = user.PasswordHash,
+                ProfileImage = user.ClientProfile?.ProfileImage,
+            };
+            return userDto;
+        }
+        public async Task<string> GenerateResetPasswordToken(string userId)
+        {
+            var code = await Database.UserManager.GeneratePasswordResetTokenAsync(userId);
+            return code;
+        }
+        public async Task<OperationDetails> ResetPassword(string userId, string code, string password)
+        {
+            var result = await Database.UserManager.ResetPasswordAsync(userId, code, password);
+            if (result.Succeeded)
+            {
+                return new OperationDetails(true, "", "");
+            }
+            else
+            {
+                return new OperationDetails(false, "", "");
+            }
+        }
 
 
         public void Dispose()
