@@ -633,14 +633,21 @@ namespace MRSTWEb.Controllers
             if (ModelState.IsValid)
             {
                 var user = await userService.FindByEmail(model.Email);
-                string code = await userService.GenerateResetPasswordToken(user.Id);
-                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
 
-                bool IsSendEmail = SendEmail.EmailSend(model.Email, "Reset Your Password", "Кeset your password by clicking <a href=\"" + callbackUrl + "\">here</a>", true);
-                if (IsSendEmail)
+                if (user != null)
                 {
-                    return RedirectToAction("ForgotPasswordConfirmation", "Account");
+                    string code = await userService.GenerateResetPasswordToken(user.Id);
+                    var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+
+                    bool isSendEmail = SendEmail.EmailSend(model.Email, "Reset Your Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>", true);
+                    if (isSendEmail)
+                    {
+                        return RedirectToAction("ForgotPasswordConfirmation", "Account");
+                    }
                 }
+
+
+                return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
             return View(model);
         }
@@ -654,7 +661,7 @@ namespace MRSTWEb.Controllers
         [AllowAnonymous]
         public ActionResult ResetPassword(string code)
         {
-            return /*code == null ? View("Error") :*/ View();
+            return code == null ? View("Error") : View();
         }
 
         [HttpPost]
