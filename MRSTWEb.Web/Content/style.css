@@ -73,21 +73,21 @@ section{
     border:var(--border);
 }
 
-.btn{
+.btn {
     margin-top: 1rem;
-    display:inline-block;
-    padding:.9rem 3rem;
+    display: inline-block;
+    padding: .9rem 3rem;
     border-radius: .5rem;
-    color:#fff;
-    background:var(--green);
+    color: #fff;
+    background: var(--green);
     font-size: 1.7rem;
     cursor: pointer;
     font-weight: 500;
 }
 
-.btn:hover{
-    background:var(--dark-color);
-}
+    .btn:hover {
+        background: var(--dark-color);
+    }
 
 .header .header-1{
     background:#fff;
@@ -851,9 +851,68 @@ section{
     color: var(--black);
 }
 
-.btn {
-    text-transform: none;
-    font-size: 16px;
-    color: #fff;
-    background: var(--primary-color);
+
+
+.search-container {
+    display: flex;
+}
+
+.filter-section {
+    width: 25%;
+    padding: 20px;
+    border-right: 1px solid #ccc;
+}
+
+.results-section {
+    width: 75%;
+    padding: 20px;
+}
+
+.filter-group {
+    margin-bottom: 15px;
+}
+
+    .filter-group label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .filter-group input, .filter-group select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+.card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+.card-body {
+    padding: 20px;
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.card-text {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+
+
+.wishlist-icon {
+    font-size: 1.5rem;
+    color: #e74c3c;
+    cursor: pointer;
+    margin-right: 10px;
 }

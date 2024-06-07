@@ -391,7 +391,7 @@
     <Content Include="Views\Account\AdminDashboard.cshtml" />
     <Content Include="Views\Account\OtherUsers.cshtml" />
     <Content Include="Views\Account\ClientProfile.cshtml" />
-    <Content Include="Views\Search\Search.cshtml" />
+    <Content Include="Views\Search\SearchV2.cshtml" />
     <Content Include="Views\Shared\_AccountDropDownList.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Shared\_FilterBooks.cshtml" />
@@ -414,6 +414,7 @@
     <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
     <Content Include="Views\Account\ResetPassword.cshtml" />
     <Content Include="Views\Account\ChangePassword.cshtml" />
+    <Content Include="Views\Shared\_SearchResults.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -363,7 +363,7 @@ namespace MRSTWEb.Controllers
 
             if (isDeleted)
             {
-                TempData["Message"] = "Delivery removed successfully.";
+                TempData["Message"] = "Delivery cost removed successfully.";
                 return RedirectToAction("DeliveryPage", new DeliveryViewModel());
 
             }

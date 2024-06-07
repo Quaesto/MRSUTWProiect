@@ -1,0 +1,163 @@
+﻿@model IEnumerable<MRSTWEb.Models.BookViewModel>
+
+@if (Model.Any())
+{
+    <div class="results-grid">
+        @foreach (var book in Model)
+        {
+            <div class="card">
+                <img class="card-img-top" src="@book.PathImage" alt="Book Image">
+                <div class="card-body">
+                    <h5 class="card-title">@book.Title</h5>
+                    <p class="card-text">@book.Author</p>
+                    <p class="card-text">@book.Genre</p>
+                    <p class="card-text">@book.Language</p>
+                    <p class="card-text">$@book.Price</p>
+                    <div class="card-buttons">
+                        @if (Request.IsAuthenticated)
+                        {
+                            <i class="wishlist-icon far fa-heart addToWishlistLink" data-book-id="@book.Id" onclick="toggleWishlist(this, @book.Id)"></i>
+
+                            using (Ajax.BeginForm("AddToCart", "Buy", new { BookId = book.Id }, new AjaxOptions
+                            {
+                                HttpMethod = "POST",
+                                UpdateTargetId = "cartItems",
+                                InsertionMode = InsertionMode.Replace,
+                                OnSuccess = "updateTotalPriceAndItemCount('add')"
+                            }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <button type="submit" style="cursor:pointer" class="btn-lg btn-success add-to-cart" data-bookId="@book.Id">
+                                    Add To Cart
+                                </button>
+                            }
+
+                            <a href="#" class="fas fa-eye view-details" data-toggle="modal" data-target="#bookModal" data-book-id="@book.Id"></a>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn" style="cursor:pointer" onclick="redirectToLogin()">Add To Cart</button>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <h5>No results found.</h5>
+}
+
+<script>
+    function toggleWishlist(element, bookId) {
+        if (element.classList.contains('far')) {
+            element.classList.remove('far');
+            element.classList.add('fas');
+            element.style.color = '#e74c3c';
+            addToWishlist(bookId);
+        } else {
+            element.classList.remove('fas');
+            element.classList.add('far');
+            element.style.color = '#000';
+            // Logică pentru eliminarea din wishlist, dacă este necesar
+        }
+    }
+
+     function addToWishlist(bookId) {
+        $.ajax({
+            url: '@Url.Action("AddToWishList", "Home")',
+            type: 'POST',
+            data: { bookId: bookId },
+            success: function (response) {
+                // Succes: actualizează iconița
+            },
+            error: function (xhr, status, error) {
+                console.error('Error adding book to wishlist: ' + error);
+            }
+        });
+    }
+
+    function redirectToLogin() {
+        window.location.href = '@Url.Action("Login", "Account")';
+    }
+</script>
+
+<style>
+    .results-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .card {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+        width: 100%;
+        max-width: 250px; /* Max width for each card */
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+    }
+
+        .card img {
+            max-height: 200px; /* Set a max height for images */
+            object-fit: contain; /* Ensure the image fits */
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+    .card-body {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .card-text {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+
+    .card-buttons {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .wishlist-icon {
+        font-size: 1.5rem;
+        color: #000;
+        cursor: pointer;
+        margin-right: 10px;
+    }
+
+        .wishlist-icon.fas {
+            color: #e74c3c;
+        }
+
+    .view-details {
+        font-size: 2rem;
+        color: #000;
+        cursor: pointer;
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+    }
+
+    .btn {
+        font-size: 1.2rem;
+        padding: 5px 10px; /* Adjusted size */
+    }
+</style>

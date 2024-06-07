@@ -18,7 +18,13 @@ namespace MRSTWEb.BusinessLogic.Services
     {
         private IUnitOfWork DataBase;
         public SearchService() { DataBase = new EFUnitOfWork(null); }
-       
+
+        public IEnumerable<BookDTO> GetAllBooks()
+        {
+            var books = DataBase.Books.GetAll();
+            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<Book, BookDTO>()).CreateMapper();
+            return mapper.Map<IEnumerable<Book>, IEnumerable<BookDTO>>(books);
+        }
 
         public IEnumerable<BookDTO> FilterPrice(int minValue, int maxValue)
         {
@@ -121,6 +127,17 @@ namespace MRSTWEb.BusinessLogic.Services
         public void Dispose()
         {
             DataBase.Dispose();
+        }
+
+        public IEnumerable<BookDTO> AdvancedSearch(string title, string author, string genre, string language, int minPrice, int maxPrice)
+        {
+            var results = DataBase.Books.GetAll().Where(x => x.Price >= minPrice && x.Price <= maxPrice
+            && FuzzyMatch(x.Title.ToLower(), title)
+            && FuzzyMatch(x.Author.ToLower(), author)
+            && FuzzyMatch(x.Genre.ToLower(), genre)
+            && FuzzyMatch(x.Language.ToLower(), language));
+
+            return MapToDTO(results);
         }
     }
 }

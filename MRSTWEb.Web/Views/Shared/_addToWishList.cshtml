@@ -3,9 +3,9 @@
 <div class="row">
     @foreach (var book in Model)
     {
-        <div class="col-md-4">
-            <div class="card mb-4 box-shadow">
-                <img class="card-img-top" style="width:100px;height:120px" src="@book.PathImage" alt="Book Image">
+        <div class="col-md-4 position-relative">
+            <div class="card mb-4 box-shadow" onmouseenter="startTimer(this)" onmouseleave="stopTimer(this)">
+                <img class="card-img-top book-image" style="width:100px;height:120px" src="@book.PathImage" alt="Book Image">
                 <div class="card-body">
                     <h5 class="card-title">@book.Title</h5>
                     <p class="card-text">@book.Author</p>
@@ -22,6 +22,8 @@
                             @Html.AntiForgeryToken()
                             <button type="submit" style="cursor:pointer" class="btn-lg btn-success add-to-cart">Add To Cart</button>
                         }
+
+                        <button type="button" style="cursor:pointer" class="btn-lg btn-danger remove-from-wishlist" onclick="removeFromWishlist(@book.Id)">Remove</button>
                     }
                     else
                     {
@@ -36,44 +38,144 @@
                     <p>Genre: @book.Genre</p>
                     <p>Language: @book.Language</p>
                     <p>Price: @book.Price$</p>
-
                 </div>
             </div>
         </div>
     }
 </div>
 
+<script>
+    var timer;
+    var detailsElement;
+
+    function startTimer(element) {
+        timer = setTimeout(function() {
+            detailsElement = $(element).find('.book-details');
+            detailsElement.css({
+                position: 'absolute',
+                top: '0',
+                left: '105%',
+                display: 'block'
+            });
+        }, 2000); // 2000 milliseconds = 2 seconds
+    }
+
+    function stopTimer(element) {
+        clearTimeout(timer);
+        if (detailsElement) {
+            detailsElement.hide();
+        }
+    }
+
+    function removeFromWishlist(bookId) {
+        $.ajax({
+            url: '@Url.Action("RemoveFromWishList", "Home")',
+            type: 'POST',
+            data: { bookId: bookId },
+            success: function (response) {
+                // Actualizează lista de dorințe după ștergere
+                $('#wishListItems').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error removing book from wishlist: ' + error);
+            }
+        });
+    }
+
+    function redirectToLogin() {
+        window.location.href = '@Url.Action("Login", "Account")';
+    }
+</script>
 
 <style>
+    .results-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .card {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+        width: 100%;
+        max-width: 250px; /* Max width for each card */
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+    }
+
+        .card img {
+            max-height: 200px; /* Set a max height for images */
+            object-fit: contain; /* Ensure the image fits */
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+    .card-body {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .card-text {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+
+    .card-buttons {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px; /* Added space between buttons */
+    }
+
+    .wishlist-icon {
+        font-size: 1.5rem;
+        color: #000;
+        cursor: pointer;
+        margin-right: 10px;
+    }
+
+        .wishlist-icon.fas {
+            color: #e74c3c;
+        }
+
+    .view-details {
+        font-size: 2rem;
+        color: #000;
+        cursor: pointer;
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+    }
+
+    .btn {
+        font-size: 1.2rem;
+        padding: 5px 10px; /* Adjusted size */
+    }
+
+    .remove-from-wishlist {
+        width: 100%; /* Make the button the same width as Add to Cart */
+    }
 
     .book-details {
         display: none;
-        position: absolute;
-        top: 70%;
-        left: 60%;
-        transform: translate(-50%, -50%);
         background-color: white;
         padding: 20px;
         border: 1px solid #ccc;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         z-index: 999;
     }
-
-    .card:hover .book-details {
-        display: block;
-    }
-
-    p {
-        font-size: 12px;
-    }
-
-    h5 {
-        font-size: 20px;
-    }
-
 </style>
-<script>
-    function redirectToLogin() {
-        window.location.href = '@Url.Action("Login", "Account")';
-    }
-</script>

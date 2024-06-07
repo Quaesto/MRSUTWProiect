@@ -36,9 +36,8 @@ namespace MRSTWEb.Controllers
             this.manageBooksService = new ManageBooksService();
         }
 
-        public async  Task<ActionResult> Index()
+        public async Task<ActionResult> Index()
         {
-
             var booksDTO = cartService.GetBooks();
             var mapper = new MapperConfiguration(cfg => cfg.CreateMap<BookDTO, BookViewModel>()).CreateMapper();
             var books = mapper.Map<IEnumerable<BookDTO>, List<BookViewModel>>(booksDTO);
@@ -59,8 +58,6 @@ namespace MRSTWEb.Controllers
             return View(books);
         }
 
-
-
         //WishList
 
         [HttpPost]
@@ -72,6 +69,7 @@ namespace MRSTWEb.Controllers
 
             return PartialView("_addToWishList", books);
         }
+
         [HttpPost]
         public ActionResult RemoveFromWishList(int bookId)
         {
@@ -79,18 +77,21 @@ namespace MRSTWEb.Controllers
             var books = getBooksFromWishList();
             return PartialView("_addToWishList", books);
         }
+
         [HttpGet]
         public ActionResult WishList()
         {
             var books = getBooksFromWishList();
             return View(books);
         }
+
         [HttpGet]
         public JsonResult getWishList()
         {
             var books = getBooksFromWishList();
             return Json(new { books }, JsonRequestBehavior.AllowGet);
         }
+
         private List<BookViewModel> getBooksFromWishList()
         {
             var wishList = wishListService.GetWishList();
@@ -106,19 +107,15 @@ namespace MRSTWEb.Controllers
                     Language = item.BookDTO.Language,
                     Genre = item.BookDTO.Genre,
                     Author = item.BookDTO.Author,
-
                 };
                 books.Add(bookViewModel);
             }
             return books;
         }
 
-        //
-
         //Reviews Functionalities
         [HttpPost]
-        [Authorize(Roles ="admin")]
-        
+        [Authorize(Roles = "admin")]
         public ActionResult RemoveReview(int reviewId)
         {
             reviewService.RemoveReview(reviewId);
@@ -131,6 +128,7 @@ namespace MRSTWEb.Controllers
             var reviews = reviewService.GetReviewByBookId(bookId);
             return Json(new { reviews }, JsonRequestBehavior.AllowGet);
         }
+
         [HttpGet]
         public JsonResult GetUserReviews(string userId, int bookId)
         {
@@ -140,8 +138,8 @@ namespace MRSTWEb.Controllers
 
             return Json(new { review, book }, JsonRequestBehavior.AllowGet);
         }
+
         [HttpPost]
-  
         public ActionResult PostReview(ReviewViewModel model)
         {
             if (ModelState.IsValid)
@@ -157,11 +155,11 @@ namespace MRSTWEb.Controllers
 
                 reviewService.AddReview(reviewDto);
                 return Json(new { success = true });
-
             }
 
             return Json(new { success = false });
         }
+
         [HttpPost]
         [Authorize(Roles = "admin")]
         public ActionResult RemovePostedReviewFromMainPage(int reviewId)
@@ -183,14 +181,12 @@ namespace MRSTWEb.Controllers
             else
             {
                 reviewDto.IsFavourite = true;
-
                 reviewService.UpdateReview(reviewDto);
-
                 return Json(new { success = true });
             }
         }
-        //END of REVIEWS functionalities
 
+        //END of REVIEWS functionalities
 
         public JsonResult GetBookDetails(int id)
         {
@@ -201,14 +197,15 @@ namespace MRSTWEb.Controllers
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
-
             return View();
         }
+
         public ActionResult IsAuthenticated()
         {
             bool isAuthenticated = User.Identity.IsAuthenticated;
             return Json(new { isAuthenticated }, JsonRequestBehavior.AllowGet);
         }
+
         //Review HELPERS
         private async Task<UserModel> getUserFromReview(ReviewViewModel review)
         {
@@ -221,12 +218,13 @@ namespace MRSTWEb.Controllers
             };
             return userModel;
         }
+
         public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";
-
             return View();
         }
+
         protected override void Dispose(bool disposing)
         {
             cartService.Dispose();
@@ -235,6 +233,5 @@ namespace MRSTWEb.Controllers
             manageBooksService.Dispose();
             base.Dispose(disposing);
         }
-
     }
 }
