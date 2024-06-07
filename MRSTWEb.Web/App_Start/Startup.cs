@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using Hangfire;
+using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.DataProtection;
@@ -11,7 +12,7 @@ using System;
 namespace MRSTWEb.App_Start
 {
     public class Startup
-    {   
+    {
         public void Configuration(IAppBuilder app)
         {
             var dataProtectionProvider = app.GetDataProtectionProvider();
@@ -22,10 +23,15 @@ namespace MRSTWEb.App_Start
             {
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
                 LoginPath = new PathString("/Account/Login"),
-                ExpireTimeSpan = TimeSpan.FromMinutes(5),
+                ExpireTimeSpan = TimeSpan.FromMinutes(10),
                 CookieName = "ApplicationCookie",
                 SlidingExpiration = true,
+
             });
-        }    
+
+            GlobalConfiguration.Configuration.UseSqlServerStorage("DefaultConnection");
+            app.UseHangfireDashboard();
+            app.UseHangfireServer();
+        }
     }
 }

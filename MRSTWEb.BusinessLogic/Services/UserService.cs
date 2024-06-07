@@ -236,6 +236,10 @@ namespace MRSTWEb.BusinessLogic.Services
         public async Task<UserDTO> FindByEmail(string email)
         {
             var user = await Database.UserManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return null;
+            }
             var userDto = new UserDTO
             {
                 Id = user.ClientProfile.Id,
