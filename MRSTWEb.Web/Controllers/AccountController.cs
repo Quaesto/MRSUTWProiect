@@ -26,6 +26,8 @@ namespace MRSTWEb.Controllers
         private IOrderService orderService;
         private IManageBooksService manageBooksService;
         private IReviewService reviewService;
+        private IExternalLoginService externalLoginService;
+
         private IUserService userService
         {
             get
@@ -47,6 +49,7 @@ namespace MRSTWEb.Controllers
             this.orderService = new OrderService();
             this.manageBooksService = new ManageBooksService();
             this.reviewService = new ReviewService();
+            this.externalLoginService = new ExternalLoginService();
         }
         [HttpPost]
         [Authorize(Roles = "admin")]
@@ -78,6 +81,55 @@ namespace MRSTWEb.Controllers
             return View(users);
         }
 
+
+        public async Task<ActionResult> GoogleLoginCallback(string code)
+        {
+            if (code != null)
+            {
+                var user = externalLoginService.GetUserFromGoogleAPI(code);
+
+                string email = user.GetValue("email").ToString();
+                string name = user.GetValue("name").ToString();
+                string picture = user.GetValue("picture").ToString();
+
+                var userModel = new UserModel
+                {
+                    Name = name,
+                    UserName = email,
+                    Email = email,
+                    ProfileImage = picture,
+                    Address = "Enter Address",
+
+                };
+
+                if (await CheckIfUserExist(email))
+                {
+                    var role = await SignInUser(email);
+                    if (role == "user")
+                    {
+                        return RedirectToAction("ClientProfile", "Account");
+                    }
+
+                }
+                else
+                {
+                    var result = await RegisterUserByGoogle(userModel);
+                    if (result.Succeeded)
+                    {
+                        await SignInUser(email);
+                        return RedirectToAction("ClientProfile", "Account");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "The google login failed");
+                    }
+                }
+
+
+            }
+            await Task.Delay(0);
+            return Content("Error");
+        }
 
 
         [Authorize(Roles = "admin")]
@@ -708,6 +760,70 @@ namespace MRSTWEb.Controllers
 
 
         #region Helpers
+
+
+        private async Task<string> SignInUser(string email)
+        {
+
+            var user = await userService.FindByEmail(email);
+
+            var userDto = new UserDTO
+            {
+
+                Name = user.Name,
+                Email = user.Email,
+                ProfileImage = user.ProfileImage,
+                UserName = user.UserName,
+                Password = "Google",
+                Address = user.Address,
+
+
+            };
+            ClaimsIdentity claim = await userService.Authenticate(userDto);
+            if (claim == null)
+            {
+                ModelState.AddModelError("", "Incorrect login or password.");
+            }
+            else
+            {
+
+                authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                authenticationManager.SignIn(new AuthenticationProperties { IsPersistent = false }, claim);
+
+                return "user";
+
+            }
+            return null;
+        }
+        public async Task<OperationDetails> RegisterUserByGoogle(UserModel model)
+        {
+
+            var userDto = new UserDTO
+            {
+                Email = model.Email,
+                Name = model.Name,
+                UserName = model.Email,
+                Password = "Google",
+                ProfileImage = model.ProfileImage,
+                Role = "user",
+                Address = model.Address,
+            };
+            var result = await userService.Create(userDto);
+            return result;
+
+        }
+        private async Task<bool> CheckIfUserExist(string email)
+        {
+            var user = await userService.FindByEmail(email);
+            if (user == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
         private async Task SetInitialData()
         {
             UserDTO adminUser = GetAdminInfo();

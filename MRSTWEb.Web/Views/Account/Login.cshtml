@@ -26,12 +26,45 @@
 
             <div class="form-group">
                 <button type="submit">Login</button>
+                <div class="google-login" style=" display: flex; justify-content: center; margin-top: 20px;">
+                    <a class="google-button" href="https://accounts.google.com/o/oauth2/auth?client_id=800643618878-kp8dt4fo0sc7h0nmt05i4in8rdni36g9.apps.googleusercontent.com&redirect_uri=https://localhost:44385/Account/GoogleLoginCallback&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&response_type=code&state=asdafwswdwefwsdg&access_type=offline&prompt=select_account">Google</a>
+                </div>
             </div>
         }
 
-    <div class="form-group">
-        <p style="font-size: 15px">Don't have an account? <a href="@Url.Action("Register", "Account")">Register</a></p>
-        <p style="font-size: 15px">Forgot Password? <a href="@Url.Action("ForgotPassword", "Account")">Reset it</a></p>
-    </div>
+        <div class="form-group">
+            <p style="font-size: 15px">Don't have an account? <a href="@Url.Action("Register", "Account")">Register</a></p>
+            <p style="font-size: 15px">Forgot Password? <a href="@Url.Action("ForgotPassword", "Account")">Reset it</a></p>
+        </div>
     </div>
 </div>
+
+
+<style>
+    /* Styling for the Google login button */
+    .google-login {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .google-button {
+        display: inline-block;
+        text-decoration: none;
+        border: 2px solid #4285f4;
+        background-color: #4285f4;
+        color: white;
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        border-radius: 4px;
+        transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    }
+
+        .google-button:hover {
+            background-color: #357ae8;
+            border-color: #357ae8;
+        }
+</style>

@@ -7,6 +7,7 @@ using MRSTWEb.BusinessLogic.Interfaces;
 using MRSTWEb.BusinessLogic.Services;
 using Owin;
 using System;
+using Microsoft.Owin.Security.Google;
 
 [assembly: OwinStartup(typeof(MRSTWEb.App_Start.Startup))]
 namespace MRSTWEb.App_Start
@@ -28,7 +29,13 @@ namespace MRSTWEb.App_Start
                 SlidingExpiration = true,
 
             });
+            app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
 
+            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
+            {
+                ClientId = "800643618878-kp8dt4fo0sc7h0nmt05i4in8rdni36g9.apps.googleusercontent.com",
+                ClientSecret = "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"
+            });
             GlobalConfiguration.Configuration.UseSqlServerStorage("DefaultConnection");
             app.UseHangfireDashboard();
             app.UseHangfireServer();
