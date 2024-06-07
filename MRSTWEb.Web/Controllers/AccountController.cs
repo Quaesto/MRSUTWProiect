@@ -17,6 +17,7 @@ using System.Web;
 using System.Web.Mvc;
 using MRSTWEb.BuisnessLogic.Services;
 using MRSTWEb.BusinessLogic.Services;
+using System;
 
 namespace MRSTWEb.Controllers
 {
@@ -82,15 +83,27 @@ namespace MRSTWEb.Controllers
         }
 
 
+        //Google Login
+        [HandleError]
         public async Task<ActionResult> GoogleLoginCallback(string code)
         {
             if (code != null)
             {
                 var user = externalLoginService.GetUserFromGoogleAPI(code);
 
-                string email = user.GetValue("email").ToString();
-                string name = user.GetValue("name").ToString();
-                string picture = user.GetValue("picture").ToString();
+                if (user == null)
+                {
+                    return View("Error", (object)"Failed to retrieve user information from Google.");
+                }
+
+                string email = user.GetValue("email")?.ToString();
+                string name = user.GetValue("name")?.ToString();
+                string picture = user.GetValue("picture")?.ToString();
+
+                if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(name))
+                {
+                    return View("Error", (object)"Incomplete user information received from Google.");
+                }
 
                 var userModel = new UserModel
                 {
@@ -99,37 +112,45 @@ namespace MRSTWEb.Controllers
                     Email = email,
                     ProfileImage = picture,
                     Address = "Enter Address",
-
                 };
 
-                if (await CheckIfUserExist(email))
+                try
                 {
-                    var role = await SignInUser(email);
-                    if (role == "user")
+                    if (await CheckIfUserExist(email))
                     {
-                        return RedirectToAction("ClientProfile", "Account");
-                    }
-
-                }
-                else
-                {
-                    var result = await RegisterUserByGoogle(userModel);
-                    if (result.Succeeded)
-                    {
-                        await SignInUser(email);
-                        return RedirectToAction("ClientProfile", "Account");
+                        var role = await SignInUser(email);
+                        if (role == "user")
+                        {
+                            return RedirectToAction("ClientProfile", "Account");
+                        }
+                        else
+                        {
+                            return View("Error", (object)"User role is not recognized.");
+                        }
                     }
                     else
                     {
-                        ModelState.AddModelError("", "The google login failed");
+                        var result = await RegisterUserByGoogle(userModel);
+                        if (result.Succeeded)
+                        {
+                            await SignInUser(email);
+                            return RedirectToAction("ClientProfile", "Account");
+                        }
+                        else
+                        {
+                            return View("Error", (object)"Registration via Google failed.");
+                        }
                     }
                 }
-
-
+                catch (Exception ex)
+                {
+                    return View("Error", (object)$"An unexpected error occurred: {ex.Message}");
+                }
             }
-            await Task.Delay(0);
-            return Content("Error");
+            return View("Error", (object)"Authorization code is missing.");
         }
+
+
 
 
         [Authorize(Roles = "admin")]

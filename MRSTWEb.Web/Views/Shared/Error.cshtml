@@ -1,13 +1,73 @@
-﻿<!DOCTYPE html>
-<html>
+﻿@model string
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width" />
+    <meta charset="UTF-8">
     <title>Error</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #ECD3B7;
+            color: #721c24;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .error-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            border: 2px solid #f5c6cb;
+            border-radius: 8px;
+            background-color: #fff;
+            max-width: 400px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .error-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .error-message {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .home-link {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+            .home-link:hover {
+                background-color: #0056b3;
+            }
+    </style>
 </head>
 <body>
-    <hgroup>
-        <h1>Error.</h1>
-        <h2>An error occurred while processing your request.</h2>
-    </hgroup>
+    <div class="error-container">
+        <div class="error-title">An Error Occurred</div>
+        <div class="error-message">@Model</div>
+        <a href="@Url.Action("Index","Home")" class="home-link">Go to Home</a>
+    </div>
 </body>
 </html>
