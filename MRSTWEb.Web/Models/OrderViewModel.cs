@@ -9,20 +9,24 @@ namespace MRSTWEb.Models
     {
         public int Id { get; set; }
         [Required(ErrorMessage = "The First Name is Required")]
+        [Display(Name = "First Name")]
         public string FirstName { get; set; }
         [Required(ErrorMessage = "The Last Name is Required")]
+        [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
         [Required(ErrorMessage = "The Address filed is required.")]
         public string Address { get; set; }
         [Required(ErrorMessage = "The City is Required")]
         public string City { get; set; }
+        [Display(Name = "Post Code")]
         public string PostCode { get; set; }
         [Required(ErrorMessage = "The Phone Number field is required.")]
         [Display(Name = "Phone Number")]
         [RegularExpression(@"^\d+$", ErrorMessage = "Please enter a valid phone number.")]
         [StringLength(8, ErrorMessage = "The Phone Number exceeds the required length")]
         public string Phone { get; set; }
+        [EmailAddress]
         [Required(ErrorMessage = "The Email is Required")]
         public string Email { get; set; }
         public decimal TotalSumToPay { get; set; }

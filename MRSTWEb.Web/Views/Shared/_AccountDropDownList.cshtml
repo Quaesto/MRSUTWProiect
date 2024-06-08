@@ -33,6 +33,8 @@
                             Profile
                         </a>
                         <a class="dropdown-item" href="@Url.Action("ChangePassword", "Account")">Change Password</a>
+                        <a class="dropdown-item" href="@Url.Action("OrderDetails", "Account", new {userId = User.Identity.GetUserId()})">Your Orders</a>
+
                     </div>
                 </li>
             </ul>
@@ -54,10 +56,6 @@
                         <a class="dropdown-item" href="@Url.Action("AddProduct","Account")">Add New Book</a>
                         <a class="dropdown-item" href="@Url.Action("ViewClientReviews","Account")">View Reviews</a>
                         <a class="dropdown-item" href="@Url.Action("DeliveryPage","Account")">Add Delivery Cost</a>
-
-
-
-
 
 
                     </div>

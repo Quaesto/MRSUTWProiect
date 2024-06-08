@@ -4,7 +4,7 @@ namespace MRSTWEb.Models
 {
     public class ForgotPasswordViewModel
     {
-        [Required]
+        [Required(ErrorMessage = "The Email is Required")]
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }

@@ -16,8 +16,9 @@ namespace MRSTWEb.BusinessLogic.Services
 {
     public class UserService : IUserService
     {
+        private Domain.EF.AppContext db;
         IUnitOfWork Database { get; set; }
-        public UserService(IUnitOfWork uow) { Database = uow; }
+        public UserService(IUnitOfWork uow) { Database = uow; db = new Domain.EF.AppContext(); }
 
         public async Task<ClaimsIdentity> Authenticate(UserDTO userDTO)
         {
@@ -44,7 +45,7 @@ namespace MRSTWEb.BusinessLogic.Services
                 //Adauga roluri
                 await Database.UserManager.AddToRoleAsync(user.Id, userDTO.Role);
                 //Creaza profilul utilizatorului
-                ClientProfile clientProfile = new ClientProfile { Id = user.Id, Address = userDTO.Address, Name = userDTO.Name, ProfileImage = userDTO.ProfileImage };
+                ClientProfile clientProfile = new ClientProfile { Id = user.Id, Address = "", Name = "", ProfileImage = userDTO.ProfileImage };
                 Database.ClientManager.Create(clientProfile);
                 await Database.SaveAsync();
                 return new OperationDetails(true, "Registration was successfull", "");
@@ -58,50 +59,53 @@ namespace MRSTWEb.BusinessLogic.Services
 
         public async Task<OperationDetails> DeleteUserByUserId(string userId)
         {
-            var user = await Database.UserManager.FindByIdAsync(userId);
-            if (user == null)
+            using (var context = new Domain.EF.AppContext())
             {
-                return new OperationDetails(false, "User not found", "");
-            }
-
-            if (user.Orders != null)
-            {
-                var orderIds = user.Orders.Select(o => o.Id).ToList();
-                foreach (var orderId in orderIds)
+                using (var transaction = context.Database.BeginTransaction())
                 {
-                    Database.Orders.Delete(orderId);
+                    try
+                    {
+                        var user = await context.Users.Include(u => u.Orders)
+                                                      .Include(u => u.Reviews)
+                                                      .Include(u => u.ClientProfile)
+                                                      .FirstOrDefaultAsync(u => u.Id == userId);
+                        if (user == null)
+                        {
+                            return new OperationDetails(false, "User not found", "");
+                        }
+
+                        if (user.Orders.Any())
+                        {
+                            context.Orders.RemoveRange(user.Orders);
+                        }
+
+                        if (user.Reviews.Any())
+                        {
+                            context.Reviews.RemoveRange(user.Reviews);
+                        }
+
+                        if (user.ClientProfile != null)
+                        {
+                            context.ClientProfiles.Remove(user.ClientProfile);
+                        }
+
+                        context.Users.Remove(user);
+
+                        await context.SaveChangesAsync();
+                        transaction.Commit();
+                        return new OperationDetails(true, "User deleted successfully", "");
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+
+                        return new OperationDetails(false, $"Failed to delete user: {ex.Message}", "");
+                    }
                 }
-                Database.Save();
-            }
-
-            if (user.Reviews.Any())
-            {
-                var reviewIds = user.Reviews.Select(r => r.Id).ToList();
-                foreach (var reviewId in reviewIds)
-                {
-                    Database.Reviews.Delete(reviewId);
-                }
-                Database.Save();
-            }
-
-            if (user.ClientProfile != null)
-            {
-                Database.ClientManager.Delete(user.ClientProfile);
-                await Database.SaveAsync();
-            }
-
-            var result = await Database.UserManager.DeleteAsync(user);
-
-            if (result.Succeeded)
-            {
-                await Database.SaveAsync();
-                return new OperationDetails(true, "User deleted successfully", "");
-            }
-            else
-            {
-                return new OperationDetails(false, "Failed to delete user", "");
             }
         }
+
+
 
         public async Task<IEnumerable<UserDTO>> GetAllUsers()
         {
@@ -160,7 +164,8 @@ namespace MRSTWEb.BusinessLogic.Services
 
         public async Task SetInitialData(UserDTO adminDto, List<string> roles)
         {
-            foreach(string roleName in roles) {
+            foreach (string roleName in roles)
+            {
                 var role = await Database.RoleManager.FindByNameAsync(roleName);
                 if (role == null)
                 {

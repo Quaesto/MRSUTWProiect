@@ -46,7 +46,7 @@
         @using (Html.BeginForm("DeleteBookDiscount", "Account", new { bookId = Model.Id }, FormMethod.Post, new { @class = "deleteDiscountForm-" + Model.Id }))
         {
             @Html.HiddenFor(model => model.Id)
-            <button type="submit" class="btn btn-danger" style="margin-bottom: 15px; margin-top:15px;width: 100%; border: none; border-radius: 5px;" onclick="confirmDelete(@Model.Id)">Remove Discount</button>
+            <button type="submit" class="btn btn-danger" style="margin-bottom: 15px;background-color:blue; margin-top:15px;width: 100%; border: none; border-radius: 5px;" onclick="confirmDelete(@Model.Id)">Remove Discount</button>
 
         }
 
@@ -91,10 +91,6 @@
     }
 
 </script>
-@{
-    ViewBag.Title = "SetBookDiscount";
-    Layout = "~/Views/Shared/_MainPageLayout.cshtml";
-}
 
-<h2>SetBookDiscount</h2>
+
 

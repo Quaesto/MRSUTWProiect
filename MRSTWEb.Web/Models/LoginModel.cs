@@ -8,10 +8,10 @@ namespace MRSTWEb.Models
 {
     public class LoginModel
     {
-        [Required]
+        [Required(ErrorMessage = "The User Name is Required")]
         [Display(Name = "User Name")]
         public string UserName { get; set; }
-        [Required]
+        [Required(ErrorMessage = "The Password is Required")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
     }

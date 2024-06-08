@@ -8,21 +8,22 @@ namespace MRSTWEb.Models
 {
     public class RegisterModel
     {
-        [Required]
+        [Required(ErrorMessage = "The Email is Required")]
+        [EmailAddress]
         public string Email { get; set; }
-        [Required]
+        [Required(ErrorMessage = "The Password is Required")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
-        [Required]
+        [Required(ErrorMessage = "The Confirm Password  is Required")]
         [DataType(DataType.Password)]
         [Compare("Password")]
         [Display(Name = "Confirm Password")]
         public string ConfirmPassword { get; set; }
-        [Required]
+
         public string Address { get; set; }
-        [Required]
+
         public string Name { get; set; }
-        [Required]
+        [Required(ErrorMessage = "The User Name is Required")]
         [Display(Name = "User Name")]
         public string UserName { get; set; }
     }

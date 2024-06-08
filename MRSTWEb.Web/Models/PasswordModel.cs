@@ -8,7 +8,7 @@ namespace MRSTWEb.Models
 {
     public class PasswordModel
     {
-        [Required]
+        [Required(ErrorMessage = "The Password is Required")]
         [Display(Name = "New Password")]
         [DataType(DataType.Password)]
         public string Password { get; set; }

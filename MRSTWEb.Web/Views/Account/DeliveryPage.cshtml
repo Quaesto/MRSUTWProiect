@@ -25,7 +25,7 @@
         @using (Html.BeginForm("RemoveDelivery", "Account", new { deliveryCostId = Model.Id }, FormMethod.Post, new { @class = "deleteDeliveryForm-" + Model.Id }))
         {
             @Html.HiddenFor(model => model.Id)
-            <button type="submit" class="btn btn-danger" style="margin-bottom: 15px; margin-top:15px;width: 100%; border: none; border-radius: 5px;" onclick="confirmDelete(@Model.Id)">Remove Delivery Cost</button>
+            <button type="submit" class="btn btn-danger" style="margin-bottom: 15px; background-color:blue; margin-top:15px;width: 100%; border: none; border-radius: 5px;" onclick="confirmDelete(@Model.Id)">Remove Delivery Cost</button>
 
         }
 

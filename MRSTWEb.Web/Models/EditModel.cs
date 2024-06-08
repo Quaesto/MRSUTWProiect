@@ -8,15 +8,17 @@ namespace MRSTWEb.Models
 {
     public class EditModel
     {
-        [Required]
-        public string Name { get; set; }
-        [Required]
-        public string Address { get; set; }
-        [Required]
-        public string UserName { get; set; }
-        [Required]
 
+        public string Name { get; set; }
+
+        public string Address { get; set; }
+        [Required(ErrorMessage = "The First Name is Required")]
+        [Display(Name = "User Name")]
+        public string UserName { get; set; }
+        [Required(ErrorMessage = "The Email is Required")]
+        [EmailAddress]
         public string Email { get; set; }
+        [Display(Name = "Image")]
         public string ProfileImage { get; set; }
     }
 }
