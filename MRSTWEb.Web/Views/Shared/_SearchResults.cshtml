@@ -5,7 +5,7 @@
     <div class="results-grid">
         @foreach (var book in Model)
         {
-            <div class="card">
+            <div class="card" onmouseover="startTimer(this)" onmouseout="stopTimer(this)">
                 <img class="card-img-top" src="@book.PathImage" alt="Book Image">
                 <div class="card-body">
                     <h5 class="card-title">@book.Title</h5>
@@ -14,10 +14,10 @@
                     <p class="card-text">@book.Language</p>
                     <p class="card-text">$@book.Price</p>
                     <div class="card-buttons">
+                        <i class="wishlist-icon far fa-heart addToWishlistLink" data-book-id="@book.Id" onclick="toggleWishlist(this, @book.Id)"></i>
+
                         @if (Request.IsAuthenticated)
                         {
-                            <i class="wishlist-icon far fa-heart addToWishlistLink" data-book-id="@book.Id" onclick="toggleWishlist(this, @book.Id)"></i>
-
                             using (Ajax.BeginForm("AddToCart", "Buy", new { BookId = book.Id }, new AjaxOptions
                             {
                                 HttpMethod = "POST",
@@ -31,8 +31,6 @@
                                     Add To Cart
                                 </button>
                             }
-
-                            <a href="#" class="fas fa-eye view-details" data-toggle="modal" data-target="#bookModal" data-book-id="@book.Id"></a>
                         }
                         else
                         {
@@ -64,7 +62,7 @@ else
         }
     }
 
-     function addToWishlist(bookId) {
+    function addToWishlist(bookId) {
         $.ajax({
             url: '@Url.Action("AddToWishList", "Home")',
             type: 'POST',
@@ -80,6 +78,28 @@ else
 
     function redirectToLogin() {
         window.location.href = '@Url.Action("Login", "Account")';
+    }
+
+    var timer;
+    var detailsElement;
+
+    function startTimer(element) {
+        timer = setTimeout(function() {
+            detailsElement = $(element).find('.book-details');
+            detailsElement.css({
+                position: 'absolute',
+                top: '0',
+                left: '105%',
+                display: 'block'
+            });
+        }, 2000); // 2000 milliseconds = 2 seconds
+    }
+
+    function stopTimer(element) {
+        clearTimeout(timer);
+        if (detailsElement) {
+            detailsElement.hide();
+        }
     }
 </script>
 
@@ -152,12 +172,16 @@ else
         color: #000;
         cursor: pointer;
         position: absolute;
-        bottom: 10px;
+        top: 10px;
         right: 10px;
     }
 
     .btn {
         font-size: 1.2rem;
         padding: 5px 10px; /* Adjusted size */
+    }
+
+    .book-details {
+        display: none;
     }
 </style>
