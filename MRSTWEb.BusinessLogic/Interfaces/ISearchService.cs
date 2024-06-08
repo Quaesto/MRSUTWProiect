@@ -11,7 +11,7 @@ namespace MRSTWEb.BusinessLogic.Interfaces
     {
         IEnumerable<BookDTO> GetAllBooks();
         IEnumerable<BookDTO> Search(string keyword);
-        IEnumerable<BookDTO> FilterPrice(int minValue, int maxValue);
+      
         IEnumerable<BookDTO> AdvancedSearch(string title, string author, string genre, string language, int minPrice, int maxPrice);
         void Dispose();
     }

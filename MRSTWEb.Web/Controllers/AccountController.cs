@@ -734,7 +734,7 @@ namespace MRSTWEb.Controllers
         [AllowAnonymous]
         public ActionResult ResetPassword(string code)
         {
-            return code == null ? View("Error") : View();
+            return code == null ? View("Error",(object)"The Reset Token wasn't generated") : View();
         }
 
         [HttpPost]
@@ -749,8 +749,9 @@ namespace MRSTWEb.Controllers
             var user = await userService.FindByEmail(model?.Email);
             if (user == null)
             {
-                // Don't reveal that the user does not exist
-                return RedirectToAction("Login", "Account");
+
+                ModelState.AddModelError("", "The email introduced is incorrect!");
+                return View(model);
             }
             var result = await userService.ResetPassword(user.Id, model.Code, model.Password);
             if (result.Succeeded)

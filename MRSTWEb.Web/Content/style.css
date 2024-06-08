@@ -10,17 +10,14 @@
     --box-shadow:0 .5rem 1rem rgba(0,0,0,.1);
 }
 
-* {
+*{
     font-family: 'Poppins', sans-serif;
-    margin: 0;
-    padding: 0;
+    margin:0; padding:0;
     box-sizing: border-box;
-    outline: none;
-    border: none;
+    outline: none; border:none;
     text-decoration: none;
-    text-transform: none;
-    transition: all .2s linear;
-    transition: width none;
+    transition:all .2s linear;
+    transition:width none;
 }
 
 html{
@@ -73,21 +70,21 @@ section{
     border:var(--border);
 }
 
-.btn {
+.btn{
     margin-top: 1rem;
-    display: inline-block;
-    padding: .9rem 3rem;
+    display:inline-block;
+    padding:.9rem 3rem;
     border-radius: .5rem;
-    color: #fff;
-    background: var(--green);
+    color:#fff;
+    background:var(--green);
     font-size: 1.7rem;
     cursor: pointer;
     font-weight: 500;
 }
 
-    .btn:hover {
-        background: var(--dark-color);
-    }
+.btn:hover{
+    background:var(--dark-color);
+}
 
 .header .header-1{
     background:#fff;
@@ -226,7 +223,6 @@ section{
 
 .login-form-container form h3{
     font-size: 2.5rem;
-    text-transform: uppercase;
     color:var(--black);
     text-align: center;
 }
@@ -823,96 +819,4 @@ section{
         font-size: 50%;
     }
 
-}
-
-.user-profile h5,
-.user-profile p,
-.user-profile strong {
-    text-transform: none;
-}
-
-
-.label-form, .form-control {
-    text-transform: none;
-}
-
-.form-container h2 {
-    text-transform: none;
-    font-size: 24px;
-    color: var(--black);
-}
-
-.form-group label, .form-group input {
-    text-transform: none;
-}
-
-.form-control {
-    font-size: 16px;
-    color: var(--black);
-}
-
-
-
-.search-container {
-    display: flex;
-}
-
-.filter-section {
-    width: 25%;
-    padding: 20px;
-    border-right: 1px solid #ccc;
-}
-
-.results-section {
-    width: 75%;
-    padding: 20px;
-}
-
-.filter-group {
-    margin-bottom: 15px;
-}
-
-    .filter-group label {
-        display: block;
-        margin-bottom: 5px;
-    }
-
-    .filter-group input, .filter-group select {
-        width: 100%;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
-
-.card {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s;
-}
-
-    .card:hover {
-        transform: translateY(-5px);
-    }
-
-.card-body {
-    padding: 20px;
-}
-
-.card-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-.card-text {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-}
-
-
-
-.wishlist-icon {
-    font-size: 1.5rem;
-    color: #e74c3c;
-    cursor: pointer;
-    margin-right: 10px;
 }

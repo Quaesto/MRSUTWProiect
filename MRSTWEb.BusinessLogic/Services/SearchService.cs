@@ -26,18 +26,7 @@ namespace MRSTWEb.BusinessLogic.Services
             return mapper.Map<IEnumerable<Book>, IEnumerable<BookDTO>>(books);
         }
 
-        public IEnumerable<BookDTO> FilterPrice(int minValue, int maxValue)
-        {
-            decimal minPrice = (decimal)minValue;
-            decimal maxPrice = (decimal)maxValue;
-
-            var books = DataBase.Books.GetAll().Where(x => x.Price >= minPrice && x.Price <= maxPrice);
-
-            var mapper = new MapperConfiguration(cfg => cfg.CreateMap<Book, BookDTO>()).CreateMapper();
-            var bookDTOs = mapper.Map<IEnumerable<Book>, IEnumerable<BookDTO>>(books);
-
-            return bookDTOs;
-        }
+      
 
         public IEnumerable<BookDTO> Search(string keyword)
         {
@@ -52,9 +41,9 @@ namespace MRSTWEb.BusinessLogic.Services
 
             var books = SearchBooks(searchItem, maxPrice);
 
-            var advancedSearch = PerformAdvancedSearch(books, keyword, maxPrice);
+          
 
-            return MapToDTO(advancedSearch.Any() ? advancedSearch : books);
+            return MapToDTO(books);
         }
 
         private void ProcessKeyword(string keyword, out string searchItem, out decimal? maxPrice)
@@ -88,42 +77,13 @@ namespace MRSTWEb.BusinessLogic.Services
             return books.AsQueryable();
         }
 
-        private IEnumerable<Book> PerformAdvancedSearch(IQueryable<Book> books, string keyword, decimal? maxPrice)
-        {
-            var advancedSearch = books.Where(x => FuzzyMatch(x.Title.ToLower(), keyword) ||
-                                                   FuzzyMatch(x.Author.ToLower(), keyword) ||
-                                                   FuzzyMatch(x.Genre.ToLower(), keyword) ||
-                                                   FuzzyMatch(x.Language.ToLower(), keyword) ||
-                                                   (maxPrice.HasValue && (x.Price >= maxPrice - 2 && x.Price <= maxPrice + 2)));
-
-            return advancedSearch;
-        }
+      
         private IEnumerable<BookDTO> MapToDTO(IEnumerable<Book> books)
         {
             var mapper = new MapperConfiguration(cfg => cfg.CreateMap<Book, BookDTO>()).CreateMapper();
             return mapper.Map<IEnumerable<Book>, List<BookDTO>>(books);
         }
-        private bool FuzzyMatch(string text, string keyword)
-        {
-            int maxErrors = 2;
-            int errors = 0;
-            int i = 0, j = 0;
-            while (i < text.Length && j < keyword.Length)
-            {
-                if (text[i] != keyword[j])
-                {
-                    errors++;
-                    if (errors > maxErrors)
-                        return false;
-                }
-                else
-                {
-                    j++;
-                }
-                i++;
-            }
-            return true;
-        }
+     
         public void Dispose()
         {
             DataBase.Dispose();
@@ -131,11 +91,12 @@ namespace MRSTWEb.BusinessLogic.Services
 
         public IEnumerable<BookDTO> AdvancedSearch(string title, string author, string genre, string language, int minPrice, int maxPrice)
         {
-            var results = DataBase.Books.GetAll().Where(x => x.Price >= minPrice && x.Price <= maxPrice
-            && FuzzyMatch(x.Title.ToLower(), title)
-            && FuzzyMatch(x.Author.ToLower(), author)
-            && FuzzyMatch(x.Genre.ToLower(), genre)
-            && FuzzyMatch(x.Language.ToLower(), language));
+
+            var results = DataBase.Books.GetAll().Where(x => x.Price != 0 && x.Price >= minPrice && x.Price <= maxPrice
+            && x.Title != null &&  x.Title.ToLower().Contains(title.ToLower())
+            && x.Author != null && x.Author.ToLower().Contains(author.ToLower())
+            && x.Genre != null && x.Genre.ToLower().Contains(genre.ToLower())
+            && x.Language != null &&  x.Language.ToLower().Contains(language.ToLower()));
 
             return MapToDTO(results);
         }

@@ -33,6 +33,30 @@ namespace MRSTWEb.Controllers
             var books = mapper.Map<IEnumerable<BookDTO>, List<BookViewModel>>(allBooks);
             return View(books);
         }
+        public ActionResult SearchFromSearchBar(string keyword)
+        {
+            var books =  _searchService.Search(keyword);
+            var booksVM = new List<BookViewModel>();    
+            foreach(var book in books)
+            {
+                var bookVM = new BookViewModel
+                {
+                    Id = book.Id,
+                    Title = book.Title,
+                    Author = book.Author,
+                    Language = book.Language,
+                    ExpirationTime = book.ExpirationTime,
+                    PathImage = book.PathImage,
+                    Genre = book.Genre,
+                    Percentage = book.Percentage,
+                    Price = book.Price,
+                    SetTime = book.SetTime,
+                };
+                booksVM.Add(bookVM);    
+            }
+
+            return View("SearchV2", booksVM);
+        }
 
         [HttpPost]
         public PartialViewResult AdvancedSearch(string title, string author, string genre, string language, int minPrice, int maxPrice)

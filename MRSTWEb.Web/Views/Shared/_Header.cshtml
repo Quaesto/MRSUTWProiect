@@ -5,13 +5,10 @@
 
     @Html.Partial("_FilterBooks")
 
-
-    <form action="@Url.Action("Search", "Search")" class="search-form" method="get">
-        <input type="search" name="keyword" class="form-control" placeholder="Search here..." id="search-box">
-        <label for="search-box" class="fas fa-search search-icon" onclick="startSearch()"></label>
-
+    <form action="@Url.Action("SearchFromSearchBar", "Search")" class="search-form" method="get">
+        <input type="search" name="keyword" class="form-control" placeholder="Search here..." id="search-box" onkeypress="handleKeyPress(event)">
+        <label for="search-box" class="fas fa-search search-icon" onclick="searchByKeyword()"></label>
     </form>
-
 
     @Html.Partial("_AccountDropDownList")
 
@@ -27,19 +24,19 @@
     </nav>
 </div>
 
-
 <script src="~/Scripts/jquery-3.7.1.min.js"></script>
 <script src="~/Jquery_scripts/getAllBooks.js"></script>
 
-
-
 <script>
-    function searchByKeyword(keyWord) {
-        document.getElementById('search-box').value = keyWord;
+    function searchByKeyword() {
+        var keyword = document.getElementById('search-box').value;
         document.querySelector('.search-form').submit();
     }
-    function startSearch() {
 
-        document.querySelector('.search-form').submit();
+    function handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            searchByKeyword();
+        }
     }
 </script>

@@ -1,68 +1,8 @@
 ﻿
-<div class="dropdown">
-    <a class="logo dropdown-toggle" href="@Url.Action("Index","Home")" role="button" id="logoDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="fas fa-book"></i>  bookly
-    </a>
+<a class="logo" href="@Url.Action("Index","Home")">
+    <i class="fas fa-book"></i>  bookly
+</a>
 
-    <div class="container-fluid">
-        <ul class="navbar-nav ml-auto">
 
-            <li class="nav-item dropdown">
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <li>
-                        <a class="dropdown-item" href="#">
-                            Filter By Price &raquo;
-                        </a>
-                        <ul class="dropdown-menu dropdown-submenu price">
-                            <li>
-                                <div data-role="main" class="ui-content">
-                                    <form id="priceFilterForm" method="get" action="@Url.Action("FilterBooksByPrice", "Search")">
-                                        <div data-role="rangeslider">
-                                            <label for="price-min">Min Price:</label>
-                                            <span id="minPriceDisplay">10</span>
-                                            <input type="range" name="minValue" id="price-min" value="10" min="0" max="22">
 
-                                            <label for="price-max">Max Price:</label>
-                                            <span id="maxPriceDisplay">16</span>
-                                            <input type="range" name="maxValue" id="price-max" value="16" min="0" max="22">
-                                        </div>
-                                        <input type="submit" style="cursor:pointer" data-inline="true" value="Submit">
-                                    </form>
-                                </div>
-                            </li>
-
-                        </ul>
-                    </li>
-
-                    <li>
-                        <a class="dropdown-item" href="#">
-                            Filter By Title &raquo;
-                        </a>
-                        <ul class="dropdown-menu dropdown-submenu title">
-                        </ul>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="#">
-                            Filter By Authors &raquo;
-                        </a>
-                        <ul class="dropdown-menu dropdown-submenu author">
-                        </ul>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="#">
-                            Filter By Genre &raquo;
-                        </a>
-                        <ul class="dropdown-menu dropdown-submenu genre">
-                        </ul>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="#">Filter By Language &raquo;</a>
-                        <ul class="dropdown-menu dropdown-submenu language">
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </div>
-</div>
 
