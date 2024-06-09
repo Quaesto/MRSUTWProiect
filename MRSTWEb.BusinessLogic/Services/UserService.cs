@@ -42,9 +42,7 @@ namespace MRSTWEb.BusinessLogic.Services
                 var result = await Database.UserManager.CreateAsync(user, userDTO.Password);
 
                 if (result.Errors.Count() > 0) return new OperationDetails(false, result.Errors.FirstOrDefault(), "");
-                //Adauga roluri
                 await Database.UserManager.AddToRoleAsync(user.Id, userDTO.Role);
-                //Creaza profilul utilizatorului
                 ClientProfile clientProfile = new ClientProfile { Id = user.Id, Address = userDTO.Address, Name = userDTO.Name, ProfileImage = userDTO.ProfileImage };
                 Database.ClientManager.Create(clientProfile);
                 await Database.SaveAsync();
@@ -142,9 +140,9 @@ namespace MRSTWEb.BusinessLogic.Services
                 Id = u.Id,
                 Email = u.Email,
                 UserName = u.UserName,
-                Address = u.ClientProfile.Address,
-                Name = u.ClientProfile.Name,
-                ProfileImage = u.ClientProfile.ProfileImage,
+                Address = u.ClientProfile != null ? u.ClientProfile.Address ?? string.Empty : string.Empty,
+                Name = u.ClientProfile != null ? u.ClientProfile.Name ?? string.Empty : string.Empty,
+                ProfileImage = u.ClientProfile != null ? u.ClientProfile.ProfileImage : null,
                 IsLockedOut = u.LockoutEndDateUtc.HasValue && u.LockoutEndDateUtc > DateTimeOffset.UtcNow
 
             }).ToList();
@@ -164,10 +162,10 @@ namespace MRSTWEb.BusinessLogic.Services
                 Id = user.ClientProfile.Id,
                 Email = user.Email,
                 UserName = user.UserName,
-                Address = user.ClientProfile.Address,
-                Name = user.ClientProfile.Name,
+                Address = user.ClientProfile != null ? user.ClientProfile.Address ?? string.Empty : string.Empty,
+                Name = user.ClientProfile != null ? user.ClientProfile.Name ?? string.Empty : string.Empty,
                 Password = user.PasswordHash,
-                ProfileImage = user.ClientProfile?.ProfileImage,
+                ProfileImage = user.ClientProfile != null ? user.ClientProfile.ProfileImage : null,
             };
         }
 
@@ -181,9 +179,9 @@ namespace MRSTWEb.BusinessLogic.Services
                     Id = user.Id,
                     UserName = username,
                     Email = user.Email,
-                    Address = user.ClientProfile.Address,
-                    Name = user.ClientProfile.Name,
-                    ProfileImage = user.ClientProfile?.ProfileImage,
+                    Address = user.ClientProfile != null ? user.ClientProfile.Address ?? string.Empty : string.Empty,
+                    Name = user.ClientProfile != null ? user.ClientProfile.Name ?? string.Empty : string.Empty,
+                    ProfileImage = user.ClientProfile != null ? user.ClientProfile.ProfileImage : null,
                 };
             }
             return null;
@@ -212,16 +210,10 @@ namespace MRSTWEb.BusinessLogic.Services
                 return new OperationDetails(false, "Client profile not found", "");
             }
 
-            if (!string.IsNullOrEmpty(user.Name))
-            {
                 client.Name = user.Name;
-            }
 
-            if (!string.IsNullOrEmpty(user.Address))
-            {
                 client.Address = user.Address;
-            }
-
+            
             if (!string.IsNullOrEmpty(user.ProfileImage))
             {
                 client.ProfileImage = user.ProfileImage;

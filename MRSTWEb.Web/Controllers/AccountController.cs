@@ -631,15 +631,9 @@ namespace MRSTWEb.Controllers
                 {
                     user.Email = model.Email;
                 }
-                if (!string.IsNullOrEmpty(model.Name))
-                {
                     user.Name = model.Name;
-                }
-
-                if (!string.IsNullOrEmpty(model.Address))
-                {
                     user.Address = model.Address;
-                }
+                
                 if (!string.IsNullOrEmpty(pathImage))
                 {
                     model.ProfileImage = pathImage;

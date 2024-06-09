@@ -8,9 +8,7 @@ namespace MRSTWEb.Models
 {
     public class EditModel
     {
-
         public string Name { get; set; }
-
         public string Address { get; set; }
         [Required(ErrorMessage = "The First Name is Required")]
         [Display(Name = "User Name")]
