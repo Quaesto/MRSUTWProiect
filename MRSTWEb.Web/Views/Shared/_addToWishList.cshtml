@@ -23,7 +23,7 @@
                             <button type="submit" style="cursor:pointer" class="btn-lg btn-success add-to-cart">Add To Cart</button>
                         }
 
-                        <button type="button" style="cursor:pointer" class="btn-lg btn-danger remove-from-wishlist" onclick="removeFromWishlist(@book.Id)">Remove</button>
+
                     }
                     else
                     {
@@ -49,7 +49,7 @@
     var detailsElement;
 
     function startTimer(element) {
-        timer = setTimeout(function() {
+        timer = setTimeout(function () {
             detailsElement = $(element).find('.book-details');
             detailsElement.css({
                 position: 'absolute',
@@ -67,24 +67,8 @@
         }
     }
 
-    function removeFromWishlist(bookId) {
-        $.ajax({
-            url: '@Url.Action("RemoveFromWishList", "Home")',
-            type: 'POST',
-            data: { bookId: bookId },
-            success: function (response) {
-                // Actualizează lista de dorințe după ștergere
-                $('#wishListItems').html(response);
-            },
-            error: function (xhr, status, error) {
-                console.error('Error removing book from wishlist: ' + error);
-            }
-        });
-    }
 
-    function redirectToLogin() {
-        window.location.href = '@Url.Action("Login", "Account")';
-    }
+
 </script>
 
 <style>

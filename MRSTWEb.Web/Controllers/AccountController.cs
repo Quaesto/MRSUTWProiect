@@ -96,9 +96,9 @@ namespace MRSTWEb.Controllers
                     return View("Error", (object)"Failed to retrieve user information from Google.");
                 }
 
-                string email = user.GetValue("email")?.ToString();
-                string name = user.GetValue("name")?.ToString();
-                string picture = user.GetValue("picture")?.ToString();
+                string email = user.GetValue("email").ToString();
+                string name = user.GetValue("name").ToString();
+                string picture = user.GetValue("picture").ToString();
 
                 if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(name))
                 {
@@ -111,7 +111,7 @@ namespace MRSTWEb.Controllers
                     UserName = email,
                     Email = email,
                     ProfileImage = picture,
-                    Address = "Enter Address",
+                    Address = "",
                 };
 
                 try
@@ -300,8 +300,6 @@ namespace MRSTWEb.Controllers
                 UserDTO userDTO = new UserDTO
                 {
                     Email = model.Email,
-                    Name = model.Name,
-                    Address = model.Address,
                     UserName = model.UserName,
                     Password = model.Password,
                     ProfileImage = "/Images/client.jpg",
@@ -315,13 +313,13 @@ namespace MRSTWEb.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "admin")]
+        [Authorize]
         public async Task<ActionResult> OrderDetails(string userId)
         {
             var user = await GetUserWithOrders(userId);
             return View(user);
         }
-        [Authorize(Roles = "admin")]
+        [Authorize]
         [HttpGet]
         public ActionResult ItemsBought(int OrderId)
         {
@@ -354,6 +352,7 @@ namespace MRSTWEb.Controllers
 
             return View(books);
         }
+
 
         //Discount functions
         [Authorize(Roles = "admin")]
@@ -477,7 +476,7 @@ namespace MRSTWEb.Controllers
             }
             return View("DeliveryPage", deliveryCostViewModel);
         }
- 
+
 
         //END Delivery functions
 
@@ -735,7 +734,7 @@ namespace MRSTWEb.Controllers
         [AllowAnonymous]
         public ActionResult ResetPassword(string code)
         {
-            return code == null ? View("Error",(object)"The Reset Token wasn't generated") : View();
+            return code == null ? View("Error", (object)"The Reset Token wasn't generated") : View();
         }
 
         [HttpPost]
@@ -868,7 +867,7 @@ namespace MRSTWEb.Controllers
         }
         private UserModel MapToUserModel(UserDTO user)
         {
-            return new UserModel
+            var usermodel = new UserModel
             {
                 UserName = user.UserName,
                 Email = user.Email,
@@ -877,6 +876,24 @@ namespace MRSTWEb.Controllers
                 Name = user.Name,
                 ProfileImage = user.ProfileImage,
             };
+            var reviews = reviewService.GetUserReview(user.Id);
+            var reviewsModel = new List<ReviewViewModel>();
+            foreach (var review in reviews)
+            {
+                var reviewModel = new ReviewViewModel
+                {
+                    Id = review.Id,
+                    Rating = review.Rating,
+                    Comment = review.Comment,
+                    BookId = review.BookId,
+                    ApplicationUserId = user.Id,
+                    IsFavourite = review.IsFavourite,
+
+                };
+                reviewsModel.Add(reviewModel);
+            }
+            usermodel.Reviews = reviewsModel;
+            return usermodel;
         }
         private BookViewModel MapBookToBookModel(BookDTO book)
         {

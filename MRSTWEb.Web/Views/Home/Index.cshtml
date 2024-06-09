@@ -14,12 +14,12 @@
         <div class="row">
 
             <div class="content">
-                <h3>Up to 75% off</h3>
+                <h3>up to 75% off</h3>
                 <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam deserunt nostrum accusamus. Nam alias
-                    sit necessitatibus, aliquid ex minima at!
+                <p>
+                    Discover the joy of reading with our amazing discounts! From bestsellers to hidden gems, we've got something for everyone. Start exploring now!
                 </p>
-                <a href="@Url.Action("SearchV2", "Search")" class="btn" >Shop Now</a>
+                <a href="@Url.Action("SearchV2", "Search")" class="btn" style="background-color:blue">Shop Now</a>
             </div>
 
             <div class="swiper books-slider">
@@ -44,15 +44,15 @@
     <div class="icons">
         <i class="fas fa-shipping-fast"></i>
         <div class="content">
-            <h3>Free shipping</h3>
-            <p>Order over $100</p>
+            <h3>free shipping</h3>
+            <p>order over $100</p>
         </div>
     </div>
 
     <div class="icons">
         <i class="fas fa-lock"></i>
         <div class="content">
-            <h3>Secure payment</h3>
+            <h3>secure payment</h3>
             <p>100 secure payment</p>
         </div>
     </div>
@@ -60,7 +60,7 @@
     <div class="icons">
         <i class="fas fa-redo-alt"></i>
         <div class="content">
-            <h3>Easy returns</h3>
+            <h3>easy returns</h3>
             <p>10 days returns</p>
         </div>
     </div>
@@ -69,7 +69,7 @@
         <i class="fas fa-headset"></i>
         <div class="content">
             <h3>24/7 support</h3>
-            <p>Call us anytime</p>
+            <p>call us anytime</p>
         </div>
     </div>
 </section>
@@ -79,7 +79,7 @@
 <!-- ======= Featured ======= -->
 <section class="featured" id="featured">
 
-    <h1 class="heading"> <span>Featured books</span> </h1>
+    <h1 class="heading"> <span>featured books</span> </h1>
 
     <div class="swiper featured-slider">
 
@@ -102,8 +102,7 @@
                         {
                             <a href="#" class="addToWishlistLink fas fa-heart" data-book-id="@book.Id"></a>
                         }
-                        <a href="#" class="fas fa-eye" data-toggle="modal" data-target="#bookModal"
-                           data-book-id="@book.Id"></a>
+
 
                     </div>
 
@@ -166,20 +165,7 @@
 
 </section>
 
-<!-- ======= Newsletter container ======= -->
-<div class="newsletter-container">
 
-    <section class="newsletter">
-
-        <form action="">
-            <h3>Subscribe for latest updates</h3>
-            <input type="email" name="" placeholder="enter your email" id="" class="box">
-            <input type="submit" value="subscribe" class="btn">
-        </form>
-
-    </section>
-
-</div>
 
 <!-- ======= Arrivals ======= -->
 <section class="arrivals" id="arrivals">
@@ -285,7 +271,7 @@
                 <div class="modal-footer">
 
                     <button type="button" data-userid="@User.Identity.GetUserId()" data-productid="@(arrival.Id)"
-                            class="btn btn-primary submit">
+                            class="btn btn-primary submit" style="background-color:blue">
                         Submit
                     </button>
                 </div>
@@ -334,7 +320,7 @@
                             using (Html.BeginForm("RemovePostedReviewFromMainPage", "Home", FormMethod.Post))
                             {
                                 <input type="hidden" name="reviewId" value="@review.Id" />
-                                <button type="submit" class="btn btn-danger">Unpublic Review</button>
+                                <button type="submit" class="btn btn-danger" style="background-color:red">Unpublic Review</button>
                             }
                         }
                     </div>
@@ -354,13 +340,10 @@
     <section class="deal">
 
         <div class="content">
-            <h3>Deal of the day</h3>
-            <h1>Up to 50% off</h1>
-            <p>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Unde perspiciatis in atque dolore tempora
-                quaerat at fuga dolorum natus velit.
-            </p>
-            <a href="#" class="btn">Shop now</a>
+            <h3>deal of the day</h3>
+            <h1>upto 50% off</h1>
+            <p>Don't miss out on today's special offer! Enjoy incredible discounts on selected titles for a limited time only.</p>
+
         </div>
 
         <div class="image">
@@ -373,91 +356,7 @@
 
 </div>
 
-<!-- ======= Blogs ======= -->
-<section class="blogs" id="blogs">
-    <h1 class="heading"> <span>our blogs</span> </h1>
 
-    <div class="swiper blogs-slider">
-
-        <div class="swiper-wrapper">
-
-            <div class="swiper-slide box">
-                <div class="image">
-                    <img src="~/Images/blog-1.jpg" alt="">
-                </div>
-                <div class="content">
-                    <h3>blog title goes here</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio, odio.</p>
-                    <a href="#" class="btn">read more</a>
-                </div>
-            </div>
-
-            <div class="swiper-slide box">
-                <div class="image">
-                    <img src="~/Images/blog-2.jpg" alt="">
-                </div>
-                <div class="content">
-                    <h3>blog title goes here</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio, odio.</p>
-                    <a href="#" class="btn">read more</a>
-                </div>
-            </div>
-
-            <div class="swiper-slide box">
-                <div class="image">
-                    <img src="~/Images/blog-3.jpg" alt="">
-                </div>
-                <div class="content">
-                    <h3>blog title goes here</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio, odio.</p>
-                    <a href="#" class="btn">read more</a>
-                </div>
-            </div>
-
-            <div class="swiper-slide box">
-                <div class="image">
-                    <img src="~/Images/blog-4.jpg" alt="">
-                </div>
-                <div class="content">
-                    <h3>blog title goes here</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio, odio.</p>
-                    <a href="#" class="btn">read more</a>
-                </div>
-            </div>
-
-            <div class="swiper-slide box">
-                <div class="image">
-                    <img src="~/Images/blog-5.jpg" alt="">
-                </div>
-                <div class="content">
-                    <h3>blog title goes here</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio, odio.</p>
-                    <a href="#" class="btn">read more</a>
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="modal fade" id="bookModal" tabindex="-1" role="dialog" aria-labelledby="bookModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title" id="bookModalLabel">Book Details</h3>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="font-size: 3em;">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-</section>
 
 
 <link rel="stylesheet" href="~/Content/css/star-rating.css" />
@@ -468,7 +367,7 @@
     }
 
 </script>
-<script src="~/Jquery_scripts/GetBookDetails.js"></script>
+
 <script src="~/Jquery_scripts/submitReviews.js"></script>
 
 

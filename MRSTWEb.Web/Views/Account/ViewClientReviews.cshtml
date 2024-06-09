@@ -43,7 +43,7 @@
                             <p style="font-size: 16px; font-weight: bold; color: #333;" class="total-rating_@(review.BookId)"
                                data-userid="@user.Id"></p>
 
-                            <button type="submit" class="btn btn-danger favouriteButton" data-review="@review.Id">
+                            <button type="submit" class="btn btn-danger favouriteButton" style="background-color:lightslategrey" data-review="@review.Id">
                                 Post
                                 Review
                             </button>
@@ -53,7 +53,7 @@
                             }))
                             {
                                 @Html.HiddenFor(model => review.Id)
-                                <button type="submit" class="btn btn-danger" onclick="confirmDelete(@review.Id)">Remove Review</button>
+                                <button type="submit" class="btn btn-danger" style="background-color:red" onclick="confirmDelete(@review.Id,@review.BookId)">Remove Review</button>
 
                             }
 
@@ -92,9 +92,12 @@
 
 <script src="~/Jquery_scripts/updateUserReviewInAdmin.js"></script>
 <script>
-    function confirmDelete(reviewId) {
+    function confirmDelete(reviewId, bookId) {
         if (confirm("Are you sure you want to remove the review?")) {
+            localStorage.removeItem('reviews_' + bookId);
             document.querySelector("deleteReview-" + reviewId).submit();
+
+
         }
     }
 </script>

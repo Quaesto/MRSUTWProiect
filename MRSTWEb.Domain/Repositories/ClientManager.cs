@@ -17,6 +17,7 @@ namespace MRSTWEb.Domain.Repositories
         public void Delete(ClientProfile item)
         {
             DataBase.ClientProfiles.Remove(item);
+            DataBase.SaveChanges();
 
         }
         public void Dispose()

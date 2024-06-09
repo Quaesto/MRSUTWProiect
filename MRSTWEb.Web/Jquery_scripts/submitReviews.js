@@ -1,26 +1,26 @@
 ﻿$(document).ready(function () {
 
-
-
     function checkUserReview(productId, userId, callback) {
-
-        $.ajax({
-            url: '/Home/GetReviews',
-            type: 'GET',
-            data: { bookId: productId },
-            success: function (data) {
-                var userReview = data.reviews.find(review => review.ApplicationUserId === userId);
-                if (userReview) {
-                    callback(true);
-                } else {
+        var reviews = getCachedReviews(productId);
+        if (reviews) {
+            var userReview = reviews.find(review => review.ApplicationUserId === userId);
+            callback(!!userReview);
+        } else {
+            $.ajax({
+                url: '/Home/GetReviews',
+                type: 'GET',
+                data: { bookId: productId },
+                success: function (data) {
+                    cacheReviews(productId, data.reviews);
+                    var userReview = data.reviews.find(review => review.ApplicationUserId === userId);
+                    callback(!!userReview);
+                },
+                error: function () {
+                    console.log("An error occurred while checking user review.");
                     callback(false);
                 }
-            },
-            error: function () {
-                console.log("An error occurred while checking user review.");
-                callback(false);
-            }
-        });
+            });
+        }
     }
 
     function checkAuthentication(productId) {
@@ -45,20 +45,22 @@
     function updateStars(productId) {
         $('.star-rating[data-productid="' + productId + '"]').html('<i class="fa fa-spinner fa-spin"></i>');
 
-
-
-        $.ajax({
-            url: '/Home/GetReviews?bookId=' + productId,
-            type: 'GET',
-            success: function (data) {
-                var reviews = data.reviews;
-                renderStarsAndRatings(reviews, productId);
-
-            },
-            error: function () {
-                console.log("An error occurred while fetching reviews.");
-            }
-        });
+        var reviews = getCachedReviews(productId);
+        if (reviews) {
+            renderStarsAndRatings(reviews, productId);
+        } else {
+            $.ajax({
+                url: '/Home/GetReviews?bookId=' + productId,
+                type: 'GET',
+                success: function (data) {
+                    cacheReviews(productId, data.reviews);
+                    renderStarsAndRatings(data.reviews, productId);
+                },
+                error: function () {
+                    console.log("An error occurred while fetching reviews.");
+                }
+            });
+        }
     }
 
     function renderStarsAndRatings(reviews, productId) {
@@ -70,7 +72,6 @@
         }
 
         var averageRating = totalReviews > 0 ? (totalRating / totalReviews).toFixed(1) : 0.0;
-
         var roundedAverageRating = Math.floor(averageRating * 2) / 2;
 
         var starsHtml = '';
@@ -139,12 +140,13 @@
                     success: function (response) {
                         if (response.success === true) {
                             console.log("Review successfully submitted.");
+                            invalidateCache(productId);
 
                             $('#reviewModal_' + productId).modal('hide');
                             updateStars(productId);
                         } else {
                             modalWarnings.html(`<p style="color: red;">Failed to submit review.</p>`);
-                            console.log(rating, productId,userId);
+                            console.log(rating, productId, userId);
                         }
                     },
                     error: function () {
@@ -157,9 +159,6 @@
         });
     });
 
-
-
-
     function checkCommentLength(reviewText, modalWarnings) {
         var commentLength = reviewText.val().length;
         if (commentLength > 50) {
@@ -167,6 +166,19 @@
         } else {
             modalWarnings.html('');
         }
+    }
+
+    function getCachedReviews(productId) {
+        var reviews = localStorage.getItem('reviews_' + productId);
+        return reviews ? JSON.parse(reviews) : null;
+    }
+
+    function cacheReviews(productId, reviews) {
+        localStorage.setItem('reviews_' + productId, JSON.stringify(reviews));
+    }
+
+    function invalidateCache(productId) {
+        localStorage.removeItem('reviews_' + productId);
     }
 
     var encounteredProductIds = {};

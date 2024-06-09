@@ -25,7 +25,7 @@
                         <div class="summary-item"><span class="text">Shipping</span><span class="delivery">$0.00</span></div>
                         <div class="summary-item"><span class="text">Total</span><span id="totalPrice" class="price">$0.00</span></div>
 
-                        @Html.ActionLink("Checkout", "Checkout", "Buy", null, new { @class = "btn btn-primary btn-lg btn-block" })
+                        @Html.ActionLink("Checkout", "Checkout", "Buy", null, new { @class = "btn btn-primary btn-lg btn-block", style = "background-color:blue" })
                     </div>
                 </div>
             </div>
@@ -80,7 +80,7 @@
                                 }))
                                 {
                                     @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn add-to-cart">Add To Cart</button>
+                                    <button type="submit" class="btn add-to-cart" style="background-color:blue">Add To Cart</button>
                                 }
                             </div>
                         </div>

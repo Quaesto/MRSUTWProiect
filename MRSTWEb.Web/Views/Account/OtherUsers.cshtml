@@ -96,6 +96,7 @@
             var form = document.querySelector(".removeUserForm-" + userId);
             if (form) {
                 form.submit();
+                localStorage.clear();
             } else {
                 console.error("Form not found for user ID:", userId);
             }
