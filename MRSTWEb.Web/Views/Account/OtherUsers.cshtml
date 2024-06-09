@@ -43,6 +43,23 @@
                                             }
                                             /
                                             @Html.ActionLink("Orders", "OrderDetails", "Account", new { userId = user.Id }, new { @class = "action-link" })
+                                            /
+                                            @if (!user.IsLockedOut)
+                                            {
+                                                using (Html.BeginForm("LockoutUser", "Account", new { userId = user.Id }, FormMethod.Post, new { @class = "lockoutUserForm-" + user.Id }))
+                                                {
+                                                    <input type="hidden" name="userId" value="@user.Id" />
+                                                    <button type="submit" class="action-link" onclick="confirmLockout(@user.Id)">Lockout</button>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                using (Html.BeginForm("UnlockUser", "Account", new { userId = user.Id }, FormMethod.Post, new { @class = "unlockUserForm-" + user.Id }))
+                                                {
+                                                    <input type="hidden" name="userId" value="@user.Id" />
+                                                    <button type="submit" class="action-link" onclick="confirmUnlock(@user.Id)">Unlock</button>
+                                                }
+                                            }
                                         </div>
                                     </td>
                                 </tr>
@@ -102,6 +119,30 @@
             }
         }
     }
+    function confirmLockout(userId) {
+        if (confirm("Are you sure you want to lock out this user?")) {
+            var form = document.querySelector(".lockoutUserForm-" + userId);
+            if (form) {
+                form.submit();
+
+            } else {
+                console.error("Form not found for user ID:", userId);
+            }
+        }
+    }
+
+    function confirmUnlock(userId) {
+        if (confirm("Are you sure you want to unlock this user?")) {
+            var form = document.querySelector(".unlockUserForm-" + userId);
+            if (form) {
+                form.submit();
+
+            } else {
+                console.error("Form not found for user ID:", userId);
+            }
+        }
+    }
+
 </script>
 
 

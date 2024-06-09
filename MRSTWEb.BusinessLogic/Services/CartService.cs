@@ -277,7 +277,6 @@ namespace MRSTWEb.BuisnessLogic.Services
                 Genre = book.Genre,
                 Language = book.Language,
 
-
             };
             if (book.Discount != null)
             {

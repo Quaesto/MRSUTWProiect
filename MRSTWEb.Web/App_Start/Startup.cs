@@ -8,6 +8,7 @@ using MRSTWEb.BusinessLogic.Services;
 using Owin;
 using System;
 using Microsoft.Owin.Security.Google;
+using MRSTWEb.Domain.Identity;
 
 [assembly: OwinStartup(typeof(MRSTWEb.App_Start.Startup))]
 namespace MRSTWEb.App_Start
@@ -16,6 +17,7 @@ namespace MRSTWEb.App_Start
     {
         public void Configuration(IAppBuilder app)
         {
+
             var dataProtectionProvider = app.GetDataProtectionProvider();
             IServiceCreator serviceCreator = new ServiceCreator(dataProtectionProvider);
 

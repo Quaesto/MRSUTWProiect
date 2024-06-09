@@ -10,5 +10,7 @@
         public string Address { get; set; }
         public string Role { get; set; }
         public string ProfileImage { get; set; }
+        public bool IsLockedOut { get; set; }
+
     }
 }

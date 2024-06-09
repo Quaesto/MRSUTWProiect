@@ -20,5 +20,12 @@ namespace MRSTWEb.BusinessLogic.Interfaces
         Task<UserDTO> FindByEmail(string email);
         Task<string> GenerateResetPasswordToken(string userId);
         Task<OperationDetails> ResetPassword(string userId, string code, string password);
+
+        Task<bool> IsUserLockedOut(string userId);
+
+        Task<bool> CheckcUserPassword(UserDTO user, string password);
+        Task ResetFailedCount(string userId);
+        Task AccessFailed(string userId);
+        Task SetLockoundEndDate(string userId, DateTimeOffset time);
     }
 }

@@ -51,11 +51,11 @@ namespace MRSTWEb.BuisnessLogic.Services
             return mapper.Map<Order, OrderDTO>(order);
         }
 
-        public IEnumerable<OrderDTO> GetOrders(string category)
+        /*public IEnumerable<OrderDTO> GetOrders(string category)
         {
             var mapper = new MapperConfiguration(cfg => cfg.CreateMap<Order, OrderDTO>()).CreateMapper();
             return mapper.Map<IEnumerable<Order>, List<OrderDTO>>(DataBase.Orders.GetAll());
-        }
+        }*/
 
         public IEnumerable<OrderDTO> GetOrdersByUserId(string id)
         {
@@ -97,7 +97,7 @@ namespace MRSTWEb.BuisnessLogic.Services
                 order.Items.Add(orderItem);
             }
             DataBase.Orders.Create(order);
-       
+
         }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security.DataProtection;
 using MRSTWEb.Domain.Entities;
+using System;
 
 namespace MRSTWEb.Domain.Identity
 {
@@ -9,6 +10,10 @@ namespace MRSTWEb.Domain.Identity
     {
         public ApplicationUserManager(IUserStore<ApplicationUser> store, IDataProtectionProvider dataProtectionProvider) : base(store)
         {
+
+            this.UserLockoutEnabledByDefault = true;
+            this.DefaultAccountLockoutTimeSpan = TimeSpan.FromMinutes(5);
+            this.MaxFailedAccessAttemptsBeforeLockout = 5;
 
             this.RegisterTwoFactorProvider("Email Code", new EmailTokenProvider<ApplicationUser>
             {
@@ -22,5 +27,6 @@ namespace MRSTWEb.Domain.Identity
                     dataProtectionProvider.Create("ASP.NET Identity"));
             }
         }
+
     }
 }

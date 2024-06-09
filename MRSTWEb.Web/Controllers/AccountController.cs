@@ -18,6 +18,8 @@ using System.Web.Mvc;
 using MRSTWEb.BuisnessLogic.Services;
 using MRSTWEb.BusinessLogic.Services;
 using System;
+using MRSTWEb.Domain.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace MRSTWEb.Controllers
 {
@@ -28,6 +30,9 @@ namespace MRSTWEb.Controllers
         private IManageBooksService manageBooksService;
         private IReviewService reviewService;
         private IExternalLoginService externalLoginService;
+
+
+
 
         private IUserService userService
         {
@@ -186,7 +191,7 @@ namespace MRSTWEb.Controllers
             var passwordHasher = new PasswordHasher();
             var passwordVerificationResult = passwordHasher.VerifyHashedPassword(user.Password, model.CurrentPassword);
 
-            if (passwordVerificationResult == PasswordVerificationResult.Success)
+            if (passwordVerificationResult == Microsoft.AspNet.Identity.PasswordVerificationResult.Success)
             {
                 var newPasswordHash = passwordHasher.HashPassword(model.Password);
                 user.Password = newPasswordHash;
@@ -234,46 +239,99 @@ namespace MRSTWEb.Controllers
             return View(user);
         }
 
+        [HttpPost]
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult> LockoutUser(string userId)
+        {
+            var user = await userService.GetUserById(userId);
+            if (user == null) return HttpNotFound();
 
+            if (!await userService.IsUserLockedOut(userId))
+            {
+                return View("Error", (object)"The Lockout is not enabled fot this user!");
+            }
+            await userService.SetLockoundEndDate(userId, DateTimeOffset.MaxValue);
+            await userService.ResetFailedCount(userId);
+
+            return RedirectToAction("OtherUsers", "Account");
+        }
+        [HttpPost]
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult> UnlockUser(string userId)
+        {
+            var user = await userService.GetUserById(userId);
+            if (user == null) return HttpNotFound();
+            await userService.SetLockoundEndDate(userId, DateTimeOffset.MinValue);
+            return RedirectToAction("OtherUsers", "Account");
+        }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                UserDTO userDTO = new UserDTO { UserName = model.UserName, Password = model.Password };
-                ClaimsIdentity claim = await userService.Authenticate(userDTO);
+                return View(model);
+            }
+
+            var user = await userService.GetUserByUsername(model.UserName);
+            if (user == null)
+            {
+                ModelState.AddModelError("", "Incorrect login or password.");
+                return View(model);
+            }
+
+            if (await userService.IsUserLockedOut(user.Id))
+            {
+                ModelState.AddModelError("", "Your account has been locked out. Please try again later.");
+                return View(model);
+            }
+
+            if (await userService.CheckcUserPassword(user, model.Password))
+            {
+                await userService.ResetFailedCount(user.Id);
+
+                ClaimsIdentity claim = await userService.Authenticate(new UserDTO { UserName = model.UserName, Password = model.Password });
 
                 if (claim == null)
                 {
                     ModelState.AddModelError("", "Incorrect login or password.");
+                    return View(model);
+                }
+
+                var userRole = claim.FindFirst(ClaimTypes.Role)?.Value;
+                authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                authenticationManager.SignIn(new AuthenticationProperties { IsPersistent = false }, claim);
+
+                if (userRole == "admin")
+                {
+                    return RedirectToAction("AdminDashboard", "Account");
+                }
+                else if (userRole == "user")
+                {
+                    return RedirectToAction("ClientProfile", "Account");
+                }
+            }
+            else
+            {
+                await userService.AccessFailed(user.Id);
+
+                if (await userService.IsUserLockedOut(user.Id))
+                {
+                    ModelState.AddModelError("", "Your account has been locked out due to multiple failed login attempts. Please try again later.");
                 }
                 else
                 {
-                    var userRole = claim.FindFirst(ClaimTypes.Role)?.Value;
-                    if (userRole == "admin")
-                    {
-                        authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-                        authenticationManager.SignIn(new AuthenticationProperties { IsPersistent = false }, claim);
-
-
-                        return RedirectToAction("AdminDashboard", "Account");
-                    }
-                    else if (userRole == "user")
-                    {
-
-                        authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-                        authenticationManager.SignIn(new AuthenticationProperties { IsPersistent = false }, claim);
-
-
-                        return RedirectToAction("ClientProfile", "Account");
-                    }
+                    ModelState.AddModelError("", "Incorrect login or password.");
                 }
+
+                return View(model);
             }
+
             return View(model);
         }
+
 
         public ActionResult Login()
         {
@@ -301,6 +359,8 @@ namespace MRSTWEb.Controllers
                 {
                     Email = model.Email,
                     UserName = model.UserName,
+                    Address = model.Address,
+                    Name = model.Name,
                     Password = model.Password,
                     ProfileImage = "/Images/client.jpg",
                     Role = "user",
@@ -561,7 +621,6 @@ namespace MRSTWEb.Controllers
 
         public async Task<ActionResult> EditClientProfile(EditModel model)
         {
-            var userId = User.Identity.GetUserId();
             var user = await userService.GetUserById(User.Identity.GetUserId());
             if (user == null) return new HttpStatusCodeResult(System.Net.HttpStatusCode.NotFound);
 
@@ -572,13 +631,15 @@ namespace MRSTWEb.Controllers
                 {
                     user.Email = model.Email;
                 }
-                
+                if (!string.IsNullOrEmpty(model.Name))
+                {
                     user.Name = model.Name;
-                
+                }
 
-                
+                if (!string.IsNullOrEmpty(model.Address))
+                {
                     user.Address = model.Address;
-                
+                }
                 if (!string.IsNullOrEmpty(pathImage))
                 {
                     model.ProfileImage = pathImage;
@@ -609,8 +670,6 @@ namespace MRSTWEb.Controllers
             }
             return View(model);
         }
-
-
         [HttpGet]
         [Authorize(Roles = "admin")]
         public ActionResult AddProduct()
@@ -875,6 +934,7 @@ namespace MRSTWEb.Controllers
                 Id = user.Id,
                 Name = user.Name,
                 ProfileImage = user.ProfileImage,
+                IsLockedOut = user.IsLockedOut,
             };
             var reviews = reviewService.GetUserReview(user.Id);
             var reviewsModel = new List<ReviewViewModel>();

@@ -16,8 +16,9 @@ namespace MRSTWEb.BusinessLogic.Services
 {
     public class UserService : IUserService
     {
+        private Domain.EF.AppContext db;
         IUnitOfWork Database { get; set; }
-        public UserService(IUnitOfWork uow) { Database = uow; }
+        public UserService(IUnitOfWork uow) { Database = uow; db = new Domain.EF.AppContext(); }
 
         public async Task<ClaimsIdentity> Authenticate(UserDTO userDTO)
         {
@@ -37,19 +38,17 @@ namespace MRSTWEb.BusinessLogic.Services
             ApplicationUser user = await Database.UserManager.FindByEmailAsync(userDTO.Email);
             if (user == null)
             {
-                user = new ApplicationUser { Email = userDTO.Email, UserName = userDTO.UserName };
+                user = new ApplicationUser { Email = userDTO.Email, UserName = userDTO.UserName, LockoutEnabled = true };
                 var result = await Database.UserManager.CreateAsync(user, userDTO.Password);
 
                 if (result.Errors.Count() > 0) return new OperationDetails(false, result.Errors.FirstOrDefault(), "");
-
-                // Adaugă roluri
+                //Adauga roluri
                 await Database.UserManager.AddToRoleAsync(user.Id, userDTO.Role);
-
-                // Creează profilul utilizatorului
+                //Creaza profilul utilizatorului
                 ClientProfile clientProfile = new ClientProfile { Id = user.Id, Address = userDTO.Address, Name = userDTO.Name, ProfileImage = userDTO.ProfileImage };
                 Database.ClientManager.Create(clientProfile);
                 await Database.SaveAsync();
-                return new OperationDetails(true, "Registration was successful", "");
+                return new OperationDetails(true, "Registration was successfull", "");
             }
             else
             {
@@ -57,67 +56,97 @@ namespace MRSTWEb.BusinessLogic.Services
             }
         }
 
+        public async Task SetLockoundEndDate(string userId, DateTimeOffset time)
+        {
+            await Database.UserManager.SetLockoutEndDateAsync(userId, time);
+        }
+
+        public async Task<bool> IsUserLockedOut(string userId)
+        {
+            var user = await Database.UserManager.FindByIdAsync(userId);
+            if (user.LockoutEnabled) return true;
+            return false;
+        }
+        public async Task AccessFailed(string userId)
+        {
+            await Database.UserManager.AccessFailedAsync(userId);
+        }
+        public async Task ResetFailedCount(string userId)
+        {
+            await Database.UserManager.ResetAccessFailedCountAsync(userId);
+        }
+
+
+        public async Task<bool> CheckcUserPassword(UserDTO user, string password)
+        {
+            var ApplicationUser = await Database.UserManager.FindByEmailAsync(user.Email);
+            return await Database.UserManager.CheckPasswordAsync(ApplicationUser, password);
+        }
 
         public async Task<OperationDetails> DeleteUserByUserId(string userId)
         {
-            var user = await Database.UserManager.FindByIdAsync(userId);
-            if (user == null)
+            using (var context = new Domain.EF.AppContext())
             {
-                return new OperationDetails(false, "User not found", "");
-            }
-
-            if (user.Orders != null)
-            {
-                var orderIds = user.Orders.Select(o => o.Id).ToList();
-                foreach (var orderId in orderIds)
+                using (var transaction = context.Database.BeginTransaction())
                 {
-                    Database.Orders.Delete(orderId);
+                    try
+                    {
+                        var user = await context.Users.Include(u => u.Orders)
+                                                      .Include(u => u.Reviews)
+                                                      .Include(u => u.ClientProfile)
+                                                      .FirstOrDefaultAsync(u => u.Id == userId);
+                        if (user == null)
+                        {
+                            return new OperationDetails(false, "User not found", "");
+                        }
+
+                        if (user.Orders.Any())
+                        {
+                            context.Orders.RemoveRange(user.Orders);
+                        }
+
+                        if (user.Reviews.Any())
+                        {
+                            context.Reviews.RemoveRange(user.Reviews);
+                        }
+
+                        if (user.ClientProfile != null)
+                        {
+                            context.ClientProfiles.Remove(user.ClientProfile);
+                        }
+
+                        context.Users.Remove(user);
+
+                        await context.SaveChangesAsync();
+                        transaction.Commit();
+                        return new OperationDetails(true, "User deleted successfully", "");
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+
+                        return new OperationDetails(false, $"Failed to delete user: {ex.Message}", "");
+                    }
                 }
-                Database.Save();
-            }
-
-            if (user.Reviews.Any())
-            {
-                var reviewIds = user.Reviews.Select(r => r.Id).ToList();
-                foreach (var reviewId in reviewIds)
-                {
-                    Database.Reviews.Delete(reviewId);
-                }
-                Database.Save();
-            }
-
-            if (user.ClientProfile != null)
-            {
-                Database.ClientManager.Delete(user.ClientProfile);
-                await Database.SaveAsync();
-            }
-
-            var result = await Database.UserManager.DeleteAsync(user);
-
-            if (result.Succeeded)
-            {
-                await Database.SaveAsync();
-                return new OperationDetails(true, "User deleted successfully", "");
-            }
-            else
-            {
-                return new OperationDetails(false, "Failed to delete user", "");
             }
         }
+
+
 
         public async Task<IEnumerable<UserDTO>> GetAllUsers()
         {
             var users = await Database.UserManager.Users.ToListAsync();
             if (!users.Any()) return null;
-
             return users.Select(u => new UserDTO
             {
                 Id = u.Id,
                 Email = u.Email,
                 UserName = u.UserName,
-                Address = u.ClientProfile != null ? u.ClientProfile.Address ?? string.Empty : string.Empty,
-                Name = u.ClientProfile != null ? u.ClientProfile.Name ?? string.Empty : string.Empty,
-                ProfileImage = u.ClientProfile != null ? u.ClientProfile.ProfileImage : null,
+                Address = u.ClientProfile.Address,
+                Name = u.ClientProfile.Name,
+                ProfileImage = u.ClientProfile.ProfileImage,
+                IsLockedOut = u.LockoutEndDateUtc.HasValue && u.LockoutEndDateUtc > DateTimeOffset.UtcNow
+
             }).ToList();
         }
 
@@ -129,15 +158,16 @@ namespace MRSTWEb.BusinessLogic.Services
                 return null;
             }
 
+
             return new UserDTO
             {
-                Id = user.ClientProfile != null ? user.ClientProfile.Id : string.Empty,
+                Id = user.ClientProfile.Id,
                 Email = user.Email,
                 UserName = user.UserName,
-                Address = user.ClientProfile != null ? user.ClientProfile.Address ?? string.Empty : string.Empty,
-                Name = user.ClientProfile != null ? user.ClientProfile.Name ?? string.Empty : string.Empty,
+                Address = user.ClientProfile.Address,
+                Name = user.ClientProfile.Name,
                 Password = user.PasswordHash,
-                ProfileImage = user.ClientProfile != null ? user.ClientProfile.ProfileImage : null,
+                ProfileImage = user.ClientProfile?.ProfileImage,
             };
         }
 
@@ -151,9 +181,9 @@ namespace MRSTWEb.BusinessLogic.Services
                     Id = user.Id,
                     UserName = username,
                     Email = user.Email,
-                    Address = user.ClientProfile != null ? user.ClientProfile.Address ?? string.Empty : string.Empty,
-                    Name = user.ClientProfile != null ? user.ClientProfile.Name ?? string.Empty : string.Empty,
-                    ProfileImage = user.ClientProfile != null ? user.ClientProfile.ProfileImage : null,
+                    Address = user.ClientProfile.Address,
+                    Name = user.ClientProfile.Name,
+                    ProfileImage = user.ClientProfile?.ProfileImage,
                 };
             }
             return null;
@@ -161,7 +191,8 @@ namespace MRSTWEb.BusinessLogic.Services
 
         public async Task SetInitialData(UserDTO adminDto, List<string> roles)
         {
-            foreach(string roleName in roles) {
+            foreach (string roleName in roles)
+            {
                 var role = await Database.RoleManager.FindByNameAsync(roleName);
                 if (role == null)
                 {
@@ -181,21 +212,22 @@ namespace MRSTWEb.BusinessLogic.Services
                 return new OperationDetails(false, "Client profile not found", "");
             }
 
-            if (user.Name != null)
+            if (!string.IsNullOrEmpty(user.Name))
             {
                 client.Name = user.Name;
             }
 
-            if (user.Address != null)
+            if (!string.IsNullOrEmpty(user.Address))
             {
                 client.Address = user.Address;
             }
 
-            if (user.ProfileImage != null)
+            if (!string.IsNullOrEmpty(user.ProfileImage))
             {
                 client.ProfileImage = user.ProfileImage;
             }
             Database.ClientManager.UpdateClientProfile(client);
+
 
             ApplicationUser applicationUser = await Database.UserManager.FindByIdAsync(user.Id);
 
@@ -204,19 +236,21 @@ namespace MRSTWEb.BusinessLogic.Services
                 return new OperationDetails(false, "User not found", "");
             }
 
-            if (user.UserName != null)
+
+            if (!string.IsNullOrEmpty(user.UserName))
             {
                 applicationUser.UserName = user.UserName;
             }
 
-            if (user.Email != null)
+            if (!string.IsNullOrEmpty(user.Email))
             {
                 applicationUser.Email = user.Email;
             }
-            if (user.Password != null)
+            if (!string.IsNullOrEmpty(user.Password))
             {
                 applicationUser.PasswordHash = user.Password;
             }
+
 
             IdentityResult result = await Database.UserManager.UpdateAsync(applicationUser);
 

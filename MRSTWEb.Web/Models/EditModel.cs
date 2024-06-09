@@ -12,11 +12,13 @@ namespace MRSTWEb.Models
         public string Name { get; set; }
 
         public string Address { get; set; }
-        [Required]
+        [Required(ErrorMessage = "The First Name is Required")]
+        [Display(Name = "User Name")]
         public string UserName { get; set; }
-        [Required]
-
+        [Required(ErrorMessage = "The Email is Required")]
+        [EmailAddress]
         public string Email { get; set; }
+        [Display(Name = "Image")]
         public string ProfileImage { get; set; }
     }
 }
