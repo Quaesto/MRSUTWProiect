@@ -18,9 +18,9 @@ namespace MRSTWEb.Models
         [Compare("Password")]
         [Display(Name = "Confirm Password")]
         public string ConfirmPassword { get; set; }
-        [Required]
+  
         public string Address { get; set; }
-        [Required]
+
         public string Name { get; set; }
         [Required]
         [Display(Name = "User Name")]

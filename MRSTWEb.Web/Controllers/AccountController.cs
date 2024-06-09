@@ -562,6 +562,7 @@ namespace MRSTWEb.Controllers
 
         public async Task<ActionResult> EditClientProfile(EditModel model)
         {
+            var userId = User.Identity.GetUserId();
             var user = await userService.GetUserById(User.Identity.GetUserId());
             if (user == null) return new HttpStatusCodeResult(System.Net.HttpStatusCode.NotFound);
 
@@ -572,15 +573,13 @@ namespace MRSTWEb.Controllers
                 {
                     user.Email = model.Email;
                 }
-                if (!string.IsNullOrEmpty(model.Name))
-                {
+                
                     user.Name = model.Name;
-                }
+                
 
-                if (!string.IsNullOrEmpty(model.Address))
-                {
+                
                     user.Address = model.Address;
-                }
+                
                 if (!string.IsNullOrEmpty(pathImage))
                 {
                     model.ProfileImage = pathImage;
@@ -611,6 +610,8 @@ namespace MRSTWEb.Controllers
             }
             return View(model);
         }
+
+
         [HttpGet]
         [Authorize(Roles = "admin")]
         public ActionResult AddProduct()

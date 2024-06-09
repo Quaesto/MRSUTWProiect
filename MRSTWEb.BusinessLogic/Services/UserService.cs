@@ -41,13 +41,15 @@ namespace MRSTWEb.BusinessLogic.Services
                 var result = await Database.UserManager.CreateAsync(user, userDTO.Password);
 
                 if (result.Errors.Count() > 0) return new OperationDetails(false, result.Errors.FirstOrDefault(), "");
-                //Adauga roluri
+
+                // Adaugă roluri
                 await Database.UserManager.AddToRoleAsync(user.Id, userDTO.Role);
-                //Creaza profilul utilizatorului
+
+                // Creează profilul utilizatorului
                 ClientProfile clientProfile = new ClientProfile { Id = user.Id, Address = userDTO.Address, Name = userDTO.Name, ProfileImage = userDTO.ProfileImage };
                 Database.ClientManager.Create(clientProfile);
                 await Database.SaveAsync();
-                return new OperationDetails(true, "Registration was successfull", "");
+                return new OperationDetails(true, "Registration was successful", "");
             }
             else
             {
@@ -107,15 +109,15 @@ namespace MRSTWEb.BusinessLogic.Services
         {
             var users = await Database.UserManager.Users.ToListAsync();
             if (!users.Any()) return null;
+
             return users.Select(u => new UserDTO
             {
                 Id = u.Id,
                 Email = u.Email,
                 UserName = u.UserName,
-                Address = u.ClientProfile.Address,
-                Name = u.ClientProfile.Name,
-                ProfileImage = u.ClientProfile.ProfileImage,
-
+                Address = u.ClientProfile != null ? u.ClientProfile.Address ?? string.Empty : string.Empty,
+                Name = u.ClientProfile != null ? u.ClientProfile.Name ?? string.Empty : string.Empty,
+                ProfileImage = u.ClientProfile != null ? u.ClientProfile.ProfileImage : null,
             }).ToList();
         }
 
@@ -127,16 +129,15 @@ namespace MRSTWEb.BusinessLogic.Services
                 return null;
             }
 
-
             return new UserDTO
             {
-                Id = user.ClientProfile.Id,
+                Id = user.ClientProfile != null ? user.ClientProfile.Id : string.Empty,
                 Email = user.Email,
                 UserName = user.UserName,
-                Address = user.ClientProfile.Address,
-                Name = user.ClientProfile.Name,
+                Address = user.ClientProfile != null ? user.ClientProfile.Address ?? string.Empty : string.Empty,
+                Name = user.ClientProfile != null ? user.ClientProfile.Name ?? string.Empty : string.Empty,
                 Password = user.PasswordHash,
-                ProfileImage = user.ClientProfile?.ProfileImage,
+                ProfileImage = user.ClientProfile != null ? user.ClientProfile.ProfileImage : null,
             };
         }
 
@@ -150,9 +151,9 @@ namespace MRSTWEb.BusinessLogic.Services
                     Id = user.Id,
                     UserName = username,
                     Email = user.Email,
-                    Address = user.ClientProfile.Address,
-                    Name = user.ClientProfile.Name,
-                    ProfileImage = user.ClientProfile?.ProfileImage,
+                    Address = user.ClientProfile != null ? user.ClientProfile.Address ?? string.Empty : string.Empty,
+                    Name = user.ClientProfile != null ? user.ClientProfile.Name ?? string.Empty : string.Empty,
+                    ProfileImage = user.ClientProfile != null ? user.ClientProfile.ProfileImage : null,
                 };
             }
             return null;
@@ -180,22 +181,21 @@ namespace MRSTWEb.BusinessLogic.Services
                 return new OperationDetails(false, "Client profile not found", "");
             }
 
-            if (!string.IsNullOrEmpty(user.Name))
+            if (user.Name != null)
             {
                 client.Name = user.Name;
             }
 
-            if (!string.IsNullOrEmpty(user.Address))
+            if (user.Address != null)
             {
                 client.Address = user.Address;
             }
 
-            if (!string.IsNullOrEmpty(user.ProfileImage))
+            if (user.ProfileImage != null)
             {
                 client.ProfileImage = user.ProfileImage;
             }
             Database.ClientManager.UpdateClientProfile(client);
-
 
             ApplicationUser applicationUser = await Database.UserManager.FindByIdAsync(user.Id);
 
@@ -204,21 +204,19 @@ namespace MRSTWEb.BusinessLogic.Services
                 return new OperationDetails(false, "User not found", "");
             }
 
-
-            if (!string.IsNullOrEmpty(user.UserName))
+            if (user.UserName != null)
             {
                 applicationUser.UserName = user.UserName;
             }
 
-            if (!string.IsNullOrEmpty(user.Email))
+            if (user.Email != null)
             {
                 applicationUser.Email = user.Email;
             }
-            if (!string.IsNullOrEmpty(user.Password))
+            if (user.Password != null)
             {
                 applicationUser.PasswordHash = user.Password;
             }
-
 
             IdentityResult result = await Database.UserManager.UpdateAsync(applicationUser);
 

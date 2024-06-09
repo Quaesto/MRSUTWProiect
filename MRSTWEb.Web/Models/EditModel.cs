@@ -8,9 +8,9 @@ namespace MRSTWEb.Models
 {
     public class EditModel
     {
-        [Required]
+
         public string Name { get; set; }
-        [Required]
+
         public string Address { get; set; }
         [Required]
         public string UserName { get; set; }
