@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -53,17 +54,49 @@ namespace MRSTWEb.BusinessLogic.Services
                 return new OperationDetails(false, "User with this login already exists", "Email");
             }
         }
-
+        public async Task<bool> UserConfirmedEmail(string userId)
+        {
+            return await Database.UserManager.IsEmailConfirmedAsync(userId);    
+        }
         public async Task SetLockoundEndDate(string userId, DateTimeOffset time)
         {
             await Database.UserManager.SetLockoutEndDateAsync(userId, time);
         }
+        public async Task<string> GenereateEmailConfirmationToken(string userId)
+        {
+            var code = await Database.UserManager.GenerateEmailConfirmationTokenAsync(userId);
+            return code;
+        }
+        public async Task<OperationDetails> ConfirmEmail(string userId,string code)
+        {
+            var result = await Database.UserManager.ConfirmEmailAsync(userId, code);
+            if (result.Succeeded)
+            {
+                return new OperationDetails(true,"Confirmation Send","");
+            }
+            else
+            {
+                return new OperationDetails(false, "Confirmation Could Not Be send", "");
 
+            }
+        }
+       
         public async Task<bool> IsUserLockedOut(string userId)
         {
             var user = await Database.UserManager.FindByIdAsync(userId);
-            if (user.LockoutEnabled) return true;
+            if (user.LockoutEndDateUtc.HasValue && user.LockoutEndDateUtc > DateTime.UtcNow) return true;
             return false;
+        }
+        public async Task<bool> UserHasLockedOutValue(string userId)
+        {
+            
+            var user = await Database.UserManager.FindByIdAsync(userId);
+            if (user.LockoutEnabled)
+            {
+                return true;
+            }
+            return false;
+
         }
         public async Task AccessFailed(string userId)
         {
@@ -143,7 +176,7 @@ namespace MRSTWEb.BusinessLogic.Services
                 Address = u.ClientProfile != null ? u.ClientProfile.Address ?? string.Empty : string.Empty,
                 Name = u.ClientProfile != null ? u.ClientProfile.Name ?? string.Empty : string.Empty,
                 ProfileImage = u.ClientProfile != null ? u.ClientProfile.ProfileImage : null,
-                IsLockedOut = u.LockoutEndDateUtc.HasValue && u.LockoutEndDateUtc > DateTimeOffset.UtcNow
+                IsLockedOut = (u.LockoutEndDateUtc.HasValue && u.LockoutEndDateUtc > DateTime.UtcNow) ? true : false,
 
             }).ToList();
         }
@@ -166,6 +199,7 @@ namespace MRSTWEb.BusinessLogic.Services
                 Name = user.ClientProfile != null ? user.ClientProfile.Name ?? string.Empty : string.Empty,
                 Password = user.PasswordHash,
                 ProfileImage = user.ClientProfile != null ? user.ClientProfile.ProfileImage : null,
+                IsLockedOut = user.LockoutEndDateUtc.HasValue && user.LockoutEndDateUtc > DateTime.UtcNow
             };
         }
 
@@ -198,6 +232,7 @@ namespace MRSTWEb.BusinessLogic.Services
                     await Database.RoleManager.CreateAsync(role);
                 }
             }
+            
             await Create(adminDto);
         }
 

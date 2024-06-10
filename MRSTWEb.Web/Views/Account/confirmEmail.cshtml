@@ -1,0 +1,12 @@
+﻿
+@{
+    ViewBag.Title = "Email Confirmation";
+    Layout = "~/Views/Shared/_MainPageLayout.cshtml";
+}
+
+<div class="container d-flex justify-content-center align-content-center flex-column" style="margin-top:100px;margin-bottom:100px">
+    <h2>Email confirmed</h2>
+    <p style="font-size:15px;">
+        Your email has been successfully confirmed. <a href="@Url.Action("Login","Account")">You can now log in with your account.</a>
+    </p>
+</div>

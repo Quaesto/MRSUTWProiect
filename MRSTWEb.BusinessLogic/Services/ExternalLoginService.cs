@@ -8,11 +8,17 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using MRSTWEb.BusinessLogic.Interfaces;
+using System.Data.Entity;
+using MRSTWEb.Domain.Interfaces;
+using MRSTWEb.Domain.Repositories;
+using Microsoft.AspNet.Identity;
 
 namespace MRSTWEb.BusinessLogic.Services
 {
     public class ExternalLoginService : IExternalLoginService
     {
+        private IUnitOfWork Database;
+        public ExternalLoginService() { Database = new EFUnitOfWork(null); }
         public JObject GetUserFromGoogleAPI(string code)
         {
             var client = new RestClient("https://www.googleapis.com/oauth2/v4/token");
@@ -37,6 +43,8 @@ namespace MRSTWEb.BusinessLogic.Services
             var content2 = response2.Content;
 
             var user = (JObject)JsonConvert.DeserializeObject(content2);
+        
+
 
             return user;
         }

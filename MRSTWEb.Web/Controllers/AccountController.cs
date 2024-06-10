@@ -123,6 +123,11 @@ namespace MRSTWEb.Controllers
                 {
                     if (await CheckIfUserExist(email))
                     {
+                        var userDto = await userService.FindByEmail(email);
+                        if (await userService.IsUserLockedOut(userDto.Id)) {
+
+                            return View("Error", (object)"Your account has been locked out. Please try again later.");
+                        }
                         var role = await SignInUser(email);
                         if (role == "user")
                         {
@@ -246,7 +251,7 @@ namespace MRSTWEb.Controllers
             var user = await userService.GetUserById(userId);
             if (user == null) return HttpNotFound();
 
-            if (!await userService.IsUserLockedOut(userId))
+            if (!await userService.UserHasLockedOutValue(userId))
             {
                 return View("Error", (object)"The Lockout is not enabled fot this user!");
             }
@@ -287,13 +292,14 @@ namespace MRSTWEb.Controllers
                 ModelState.AddModelError("", "Your account has been locked out. Please try again later.");
                 return View(model);
             }
-
+           
+            
             if (await userService.CheckcUserPassword(user, model.Password))
             {
                 await userService.ResetFailedCount(user.Id);
 
                 ClaimsIdentity claim = await userService.Authenticate(new UserDTO { UserName = model.UserName, Password = model.Password });
-
+               
                 if (claim == null)
                 {
                     ModelState.AddModelError("", "Incorrect login or password.");
@@ -301,6 +307,11 @@ namespace MRSTWEb.Controllers
                 }
 
                 var userRole = claim.FindFirst(ClaimTypes.Role)?.Value;
+                if (!await userService.UserConfirmedEmail(user.Id) && userRole != "admin")
+                {
+                    ModelState.AddModelError("", "Your email was not confirmed yet. Please Confirm your email");
+                    return View(model);
+                }
                 authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                 authenticationManager.SignIn(new AuthenticationProperties { IsPersistent = false }, claim);
 
@@ -367,10 +378,43 @@ namespace MRSTWEb.Controllers
 
                 };
                 OperationDetails operationDetalis = await userService.Create(userDTO);
-                if (operationDetalis.Succeeded) return RedirectToAction("Login");
+
+                if (operationDetalis.Succeeded) {
+                    var user = await userService.FindByEmail(model.Email);
+                    var code = await userService.GenereateEmailConfirmationToken(user.Id);
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    bool isSendEmail = SendEmail.EmailSend(model.Email, "Confirm Email", "Please confirm your email <a href=\"" + callbackUrl + "\">here</a>", true);
+                    if (isSendEmail)
+                    {
+                        return RedirectToAction("ConfirmationEmailSend", "Account");
+                    }
+                    
+                }
+               
                 else ModelState.AddModelError(operationDetalis.Property, operationDetalis.Message);
             }
             return View(model);
+        }
+        public ActionResult ConfirmationEmailSend()
+        {
+            return View();
+        }
+        
+        public async Task<ActionResult> ConfirmEmail(string userId, string code)
+        {
+            if (userId == null || code == null)
+            {
+                return View("Error", (object)"Something Went Wrong!");
+            }
+            var result = await userService.ConfirmEmail(userId, code);
+            if (result.Succeeded)
+            {
+                return View("confirmEmail");
+            }
+            else
+            {
+                return View("Error", (object)"Couldn't Verify the email confirmation");
+            }
         }
 
         [Authorize]
@@ -854,6 +898,7 @@ namespace MRSTWEb.Controllers
 
 
             };
+            
             ClaimsIdentity claim = await userService.Authenticate(userDto);
             if (claim == null)
             {
@@ -883,7 +928,9 @@ namespace MRSTWEb.Controllers
                 Role = "user",
                 Address = model.Address,
             };
+          
             var result = await userService.Create(userDto);
+          
             return result;
 
         }

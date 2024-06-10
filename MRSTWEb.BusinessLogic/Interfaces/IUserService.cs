@@ -27,5 +27,11 @@ namespace MRSTWEb.BusinessLogic.Interfaces
         Task ResetFailedCount(string userId);
         Task AccessFailed(string userId);
         Task SetLockoundEndDate(string userId, DateTimeOffset time);
+        Task<bool> UserHasLockedOutValue(string userId);
+        Task<string> GenereateEmailConfirmationToken(string userId);
+        Task<bool> UserConfirmedEmail(string userId);
+        Task<OperationDetails> ConfirmEmail(string userId, string code);
+
+
     }
 }

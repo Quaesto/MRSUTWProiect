@@ -3,7 +3,11 @@
 
 <section class="header-1">
 
-    @Html.Partial("_FilterBooks")
+
+    <a class="logo" href="@Url.Action("Index","Home")">
+        <i class="fas fa-book"></i>  Bookly
+    </a>
+
 
     <form action="@Url.Action("SearchFromSearchBar", "Search")" class="search-form" method="get">
         <input type="search" name="keyword" class="form-control" placeholder="Search here..." id="search-box" onkeypress="handleKeyPress(event)">

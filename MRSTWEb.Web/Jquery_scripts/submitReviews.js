@@ -4,7 +4,7 @@
         var reviews = getCachedReviews(productId);
         if (reviews) {
             var userReview = reviews.find(review => review.ApplicationUserId === userId);
-            callback(!!userReview);
+            callback(userReview = true);
         } else {
             $.ajax({
                 url: '/Home/GetReviews',
@@ -13,11 +13,11 @@
                 success: function (data) {
                     cacheReviews(productId, data.reviews);
                     var userReview = data.reviews.find(review => review.ApplicationUserId === userId);
-                    callback(!!userReview);
+                    callback(userReview = false);
                 },
                 error: function () {
                     console.log("An error occurred while checking user review.");
-                    callback(false);
+                    callback(true);
                 }
             });
         }
